@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+
+<RFR.FewerRuinsTerrain> Conf. Maps - Настройки ландшафта </RFR.FewerRuinsTerrain>
+<RFR.FewerRuinsThings> Conf. Maps - настройки «Вещи» </RFR.FewerRuinsThings>
+<RFR.FewerRuinsWorld> Conf. Maps - настройки карт мира </RFR.FewerRuinsWorld>
+
+<RFR.ruinsLevel> Плотность руин на новых картах: </RFR.ruinsLevel>
+
+<RFR.RuinsNone> Никаких руин! Нетронутый пейзаж. </RFR.RuinsNone>
+<RFR.RuinsVeryLow> Очень низкая плотность. Немногие, если таковые имеются, руины присутствуют. </RFR.RuinsVeryLow>
+<RFR.RuinsLow> Низкая плотность руин. </RFR.RuinsLow>
+<RFR.RuinsNormal> Нормальный. (Плотность ванили). </RFR.RuinsNormal>
+<RFR.RuinsHigh> Высокая плотность руин. </RFR.RuinsHigh>
+<RFR.RuinsVeryHigh> Очень высокая плотность. </RFR.RuinsVeryHigh>
+<RFR.RuinsExtreme> Чрезвычайно высокая плотность. </RFR.RuinsExtreme>
+<RFR.RuinsInsane> Безумно высокая плотность. Возможно, больше «внутри», чем «снаружи». </RFR.RuinsInsane>
+<RFR.RuinsRandom> RANDOM. Каждый раз, когда создается карта, настройка будет выбрана случайным образом. </RFR.RuinsRandom>
+
+<RFR.shrinesLevel> Плотность «древних святынь» на новых картах: </RFR.shrinesLevel>
+
+<RFR.ShrinesNone> Абсолютно никаких святынь не найдено. </RFR.ShrinesNone>
+<RFR.ShrinesVeryLow> Очень низкая плотность. Несколько святынь. Возможно, даже совсем нет. </RFR.ShrinesVeryLow>
+<RFR.ShrinesLow> Низкая плотность святынь. </RFR.ShrinesLow>
+<RFR.ShrinesNormal> Нормальный. (Плотность ванили). </RFR.ShrinesNormal>
+<RFR.ShrinesHigh> Высокая плотность святынь. </RFR.ShrinesHigh>
+<RFR.ShrinesVeryHigh> Очень высокая плотность. </RFR.ShrinesVeryHigh>
+<RFR.ShrinesExtreme> Чрезвычайно высокая плотность. </RFR.ShrinesExtreme>
+<RFR.ShrinesInsane> Безумно высокая плотность. «Древние опасности» повсюду! </RFR.ShrinesInsane>
+<RFR.ShrinesRandom> RANDOM. Каждый раз, когда создается карта, настройка будет выбрана случайным образом. </RFR.ShrinesRandom>
+
+<RFR.stoneType> Камни, используемые в святилищах и руинах: </RFR.stoneType>
+
+<RFR.StoneVanilla> Каменные руины будут построены из случайных типов камней. (Это ванильное поведение.) </RFR.StoneVanilla>
+<RFR.StoneMixed> Большинство каменных руин были построены из «местных» типов камней (доступных на карте). </RFR.StoneMixed>
+<RFR.StoneLocal> Все каменные руины будут построены из местных видов камня. </RFR.StoneLocal>
+<RFR.StoneRandom> RANDOM. Каждый раз, когда создается карта, настройка будет выбрана случайным образом. </RFR.StoneRandom>
+
+<RFR.animalDensityLevel> Плотность фауны на новых картах: </RFR.animalDensityLevel>
+
+<RFR.AnimalDensitySparse> Низкая. Относительно мало животных. </RFR.AnimalDensitySparse>
+<RFR.AnimalDensityNormal> Нормальный. (Плотность ванили). </RFR.AnimalDensityNormal>
+<RFR.AnimalDensityDense> Большая. Больше животных, чем обычно. </RFR.AnimalDensityDense>
+<RFR.AnimalDensityExtreme> Экстрим. Дикая жизнь. </RFR.AnimalDensityExtreme>
+<RFR.AnimalDensityRandom> RANDOM. Каждый раз, когда создается карта, настройка будет выбрана случайным образом. </RFR.AnimalDensityRandom>
+
+<RFR.plantDensityLevel> Плотность флоры на новых картах: </RFR.plantDensityLevel>
+
+<RFR.PlantDensitySparse> Низкая. Относительно мало растений. </RFR.PlantDensitySparse>
+<RFR.PlantDensityNormal> Нормальный. (Плотность ванили). </RFR.PlantDensityNormal>
+<RFR.PlantDensityDense> ПБольшая. Больше растения, чем обычно. </RFR.PlantDensityDense>
+<RFR.PlantDensityExtreme> Экстрем. Дикая жизнь. </RFR.PlantDensityExtreme>
+<RFR.PlantDensityRandom> RANDOM. Каждый раз, когда создается карта, параметр будет выбран случайным образом. </RFR.PlantDensityRandom>
+
+<RFR.oreLevel> Плотность руды на новых картах: </RFR.oreLevel>
+
+<RFR.OreNone> Низкая, руды вообще нет. Это, конечно, затрудняет игру. </RFR.OreNone>
+<RFR.OreLow> Стредняя плотность руды. (Половина ванили.) </RFR.OreLow>
+<RFR.OreNormal> Нормальный. (Плотность ванили). </RFR.OreNormal>
+<RFR.OreHigh> Высокая плотность руды. (В два раза больше ванили.) </RFR.OreHigh>
+<RFR.OreVeryHigh> Очень высокая плотность руды. (В четыре больше ванили.) </RFR.OreVeryHigh>
+<RFR.OreRandom> RANDOM. Каждый раз, когда создается карта, параметр будет выбран случайным образом. </RFR.OreRandom>
+
+<RFR.geysersLevel> Плотность гейзеров на новых картах: </RFR.geysersLevel>
+
+<RFR.GeysersNone> Нет гейзеров вообще. Нет геотермальной энергии для вас! </RFR.GeysersNone>
+<RFR.GeysersLow> Низкая плотность гейзеров. (Половина ванили.) </RFR.GeysersLow>
+<RFR.GeysersNormal> Нормальный. (Плотность ванили). </RFR.GeysersNormal>
+<RFR.GeysersHigh> Высокая плотность гейзеров. (Дважды нормально.) </RFR.GeysersHigh>
+<RFR.GeysersVeryHigh> Очень высокая плотность гейзеров. (В четыре раза нормальный.) </RFR.GeysersVeryHigh>
+<RFR.GeysersRandom> RANDOM. Каждый раз, когда создается карта, параметр будет выбран случайным образом. </RFR.GeysersRandom>
+
+<RFR.chunksLevel> Плотность каменных обломков на новых картах: </RFR.chunksLevel>
+
+<RFR.ChunksNone> Никаких каменных обломков вообще. Если вы хотите камень, вам придется его добыть! </RFR.ChunksNone>
+<RFR.ChunksLow> Низкая плотность блоков. (Половина ванили.) </RFR.ChunksLow>
+<RFR.ChunksNormal> Нормальный. (Плотность ванили). </RFR.ChunksNormal>
+<RFR.ChunksRandom> RANDOM. Каждый раз, когда создается карта, параметр будет выбран случайным образом. </RFR.ChunksRandom>
+
+<RFR.mountainLevel> «Уровень горы» на новых картах: </RFR.mountainLevel>
+
+<RFR.MountainVeryLow> Очень низкий. Плоских гор будет малой (если таковые имеются) выходы. Горные карты будут иметь большие открытые пространства. </RFR.MountainVeryLow>
+<RFR.MountainLow> Низкий плотность гор. </RFR.MountainLow>
+<RFR.MountainNormal> Нормальный плотность гор. (Генерация карты ванили.) </RFR.MountainNormal>
+<RFR.MountainHigh> Высокая плотность гор. </RFR.MountainHigh>
+<RFR.MountainVeryHigh> Очень высокая плотность гор. </RFR.MountainVeryHigh>
+<RFR.MountainInsane> Экстремальные. Плоские карты будут очень похожи на карты ванильных гор. Горные карты могут быть почти сплошными. </RFR.MountainInsane>
+<RFR.MountainRandom> RANDOM. Каждый раз, когда создается карта, параметр будет выбран случайным образом. </RFR.MountainRandom>
+
+<RFR.waterLevel> «Уровень воды» на новых картах: </RFR.waterLevel>
+
+<RFR.WaterVeryLow> Очень низкий уровень воды. Озера и болота будут довольно маленькими. </RFR.WaterVeryLow>
+<RFR.WaterLow> Низкий уровень воды. </RFR.WaterLow>
+<RFR.WaterNormal> Нормальный уровень воды. (Генерация карты ванили.) </RFR.WaterNormal>
+<RFR.WaterHigh> Высокий уровень воды. </RFR.WaterHigh>
+<RFR.WaterVeryHigh> Очень высокий уровень воды. Карты, вероятно, будут содержать большие озера или болота. </RFR.WaterVeryHigh>
+<RFR.WaterRandom> RANDOM. Каждый раз, когда создается карта, параметр будет выбран случайным образом. </RFR.WaterRandom>
+
+<RFR.fertilityLevel> Плодородие почв новых карт: </RFR.fertilityLevel>
+
+<RFR.FertilityNone> Очень малое количество богатой почвы. </RFR.FertilityNone>
+<RFR.FertilityLow> Низкое количество богатой почвы. </RFR.FertilityLow>
+<RFR.FertilityNormal> Нормальный. (Плодородие почек ванили). </RFR.FertilityNormal>
+<RFR.FertilityHigh> Большое количество богатой почвы. </RFR.FertilityHigh>
+<RFR.FertilityVeryHigh> Очень высокое количество богатой почвы. </RFR.FertilityVeryHigh>
+<RFR.FertilityRandom> RANDOM. Каждый раз, когда создается карта, параметр будет выбран случайным образом. </RFR.FertilityRandom>
+
+<RFR.coastLevel> Уровень океана на прибрежных картах: </RFR.coastLevel>
+
+<RFR.CoastNormal> Ванила. Полоса океана и песок на одном краю карты. </RFR.CoastNormal>
+<RFR.CoastHigh1> Немного высок. Большая полоса океана и песка. </RFR.CoastHigh1>
+<RFR.CoastHigh2> Больше. Гораздо большая полоса океана и песка, чем в ванили. </RFR.CoastHigh2>
+<RFR.CoastVeryHigh1> Очень высокий. Больше океана и много пляжа. </RFR.CoastVeryHigh1>
+<RFR.CoastVeryHigh2> Еще выше. Еще больше океана. Еще больше песка. Еще менее полезная земля. </RFR.CoastVeryHigh2>
+<RFR.CoastVeryHigh3> Чрезвычайно высокий. Большая часть карты будет состоять из океанской воды и песчаных отмелей. </RFR.CoastVeryHigh3>
+<RFR.CoastInsane> Безумно высокий. Удачи найти любую сушу! </RFR.CoastInsane>
+<RFR.CoastRandom> RANDOM. Каждый раз, когда создается карта, параметр будет выбран случайным образом. </RFR.CoastRandom>
+
+<RFR.DisallowIslands> Запретить острова «Скальных пород» </RFR.DisallowIslands>
+<RFR.DisallowIslandsTip> Если этот флажок установлен, в океанах, озерах и болотах не появятся скальные выходы. Обратите внимание, что объединение этой опции с высоким уровнем воды может серьезно уменьшить количество камня даже на горных картах. </RFR.DisallowIslandsTip>
+
+<RFR.stoneMin> Минимальное количество типов камней на плато (Ванила = 2): </RFR.stoneMin>
+<RFR.stoneMax> Максимальное количество типов камней на плато (Ванила = 3): </RFR.stoneMax>
+
+<RFR.stoneNotes> Если вы установите максимальное количество каменных типов ниже минимального, ваша ошибка будет автоматически исправлена, при этом максимальный сброс будет равен минимальному. </RFR.stoneNotes>
+
+<RFR.graniteCommonality> Общая редкость гранита на карте мира: </RFR.graniteCommonality>
+<RFR.limestoneCommonality> Общая редкость известняка на карте мира: </RFR.limestoneCommonality>
+<RFR.marbleCommonality> Общая редкость мрамора на карте мира: </RFR.marbleCommonality>
+<RFR.sandstoneCommonality> Общая редкость песчаника на карте мира: </RFR.sandstoneCommonality>
+<RFR.slateCommonality> Общая редкость сланца на карте мира: </RFR.slateCommonality>
+<RFR.extraStoneCommonality> Общая редкость камней из mod-ов (если таковые имеются) на карте мира: </RFR.extraStoneCommonality>
+
+<RFR.Rare>Очень редко</RFR.Rare>
+	<RFR.Average>Редко</RFR.Average>
+	<RFR.Common>Обычно</RFR.Common>
+
+</LanguageData>

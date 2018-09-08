@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ModMetaData>
+
+	<name>Configurable Maps - B19</name>
+	<author>Rainbeau Flambe (original) & Kiame Vivacity</author>
+	<url></url>
+	<targetVersion>0.19.0</targetVersion>
+	<description>
+"Configurable Maps" provides you with a number of configuration options that you can use to tailor the way your maps generate. Simply visit "Mod Settings" from the game's "Options" menu. You'll find three different sets of options for the mod.
+
+(1) "Things" Settings:
+
+You can alter the number of ruins and "ancient shrines" that generate on new maps. You can set them low, so you'll no longer find yourself starting the game in an area that looks like it might once have been someone's town square. Or you can set them high, so it seems as if you've landed in what was once a bustling city.
+
+(Regardless of the settings, the mod ensures that buildings will be significantly more common among ruins than unattached wall segments, and that those buildings will be shaped more like rooms than like hallways.)
+
+You can decide whether you want ruins to be constructed solely or primarily from stone types actually available on the map, or if you want them to be constructed from random materials (as in vanilla).
+
+You can adjust the "biodensity" on new maps, to determine how thickly populated with plant and animal life the maps should be. These settings are, of course, relative to the base values for a given biome. Even a "sparse" tropical rainforest will have a much higher biodensity than a "dense" extreme desert or ice sheet.
+
+(2) Terrain Settings:
+
+You can adjust the amount of ore which generates on new maps, to make the game more or less challenging. You can additionally choose to disable "fake" ores, so that compacted steel, plasteel and machinery will not appear on your maps. You can also adjust the number of geysers, so that sources of geothermal power are easier or harder to find. And you can adjust the quantity of stone chunks scattered on new maps.
+
+You can adjust the maps' "mountain level," perhaps so that flat maps have almost no rock outcroppings, or perhaps so that mountain maps have little open space.
+ 
+You can adjust the maps' "water level," which will make lakes, marshes, and the like either more or less common. Note that this will not change the essential nature of a biome. Lowering the water level will reduce the size of marsh areas on boreal forest or rainforest maps, for example, but it won't eliminate them completely, and neither will raising the water level allow marshes to suddenly begin appearing on temperate forest maps.
+
+You can also adjust the "fertility" of soil on maps, to adjust the relative amount of rich soil as opposed to regular soil.
+
+Finally, you can adjust the ocean level on coastal maps. This allows you to control the amount of water which will appear on maps with coasts. At the one extreme, you'll have vanilla-style maps with just a small strip of ocean and a fairly small sandy beach on one edge. At the other extreme, you can now create maps that are almost completely submerged.
+
+An additional checkbox allows you the option to disallow rocky outcrop "islands" from appearing in lakes, marshes or oceans.
+
+(3) World Map Settings:
+
+You can adjust the minimum and maximum number of stone types which can appear in a tile on the world map. You can also adjust the relative commonality of various types of stone, so for example, you could set your worlds to generate with lots of granite but very little sandstone.
+
+(Note that these settings won't appear if you're also using "Cupro's Stones," as that mod offers more robust options regarding exactly how many and which types of stone you want to see on the world map.)
+
+- Rainbeau Flambe (dburgdorf)
+
+=====
+
+Compatibility:
+
+Since "Configurable Maps" does nothing but alter initial map generation, adding it to or removing it from a game in progress will have no impact. It should be compatible with any other mods, except perhaps those that also modify terrain and map generation.
+
+=====
+
+Credits:
+
+The mod utilizes Pardeike's "Harmony Patch Library." (No additional download is required, as the library is included with the mod.)
+
+The German language translation file was provided by Ludeon forums user Maculator. The Japanese language file was provided by Proxyer. Russian translation files were provided by Steam user "Чей-то друг."
+
+=====
+
+License:
+
+If you're a modpack maker and want to include "Configurable Maps" in your pack, or if you're a modder and want to use it as the basis of a derivative mod, please feel free to do so. I ask only that you let me know about it. 
+
+=====
+
+If you have any (helpful) suggestions for improvement, please let me know!
+
+	</description>
+
+</ModMetaData>

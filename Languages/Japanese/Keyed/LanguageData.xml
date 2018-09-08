@@ -1,0 +1,141 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+
+  <RFR.FewerRuinsTerrain>Configurable Maps -地形の設定</RFR.FewerRuinsTerrain>
+  <RFR.FewerRuinsThings>Configurable Maps -遺跡/動植物の設定</RFR.FewerRuinsThings>
+  <RFR.FewerRuinsWorld>Configurable Maps -世界地図の設定</RFR.FewerRuinsWorld>
+
+  <RFR.ruinsLevel>新規マップの遺跡密度:</RFR.ruinsLevel>
+
+  <RFR.RuinsNone>遺跡なし：遺跡はまったくありません！ 素朴な風景。</RFR.RuinsNone>
+  <RFR.RuinsVeryLow>非常に低密度：もしあっても、遺跡はほとんどありません。</RFR.RuinsVeryLow>
+  <RFR.RuinsLow>低密度</RFR.RuinsLow>
+  <RFR.RuinsNormal>通常：(バニラの密度)</RFR.RuinsNormal>
+  <RFR.RuinsHigh>高密度</RFR.RuinsHigh>
+  <RFR.RuinsVeryHigh>非常に高密度</RFR.RuinsVeryHigh>
+  <RFR.RuinsExtreme>極度に高密度</RFR.RuinsExtreme>
+  <RFR.RuinsInsane>狂気的な高密度：見えている「外側」よりも「内側」にある可能性があります。</RFR.RuinsInsane>
+  <RFR.RuinsRandom>ランダム：マップが作成されるたびに、設定がランダムに選択されます。</RFR.RuinsRandom>
+
+  <RFR.shrinesLevel>新規マップの「古代神殿」密度:</RFR.shrinesLevel>
+
+  <RFR.ShrinesNone>古代神殿なし：発見される古代神殿は絶対にありません。</RFR.ShrinesNone>
+  <RFR.ShrinesVeryLow>非常に低密度：古代神殿はほとんどありません。恐らく全くありません。</RFR.ShrinesVeryLow>
+  <RFR.ShrinesLow>低密度</RFR.ShrinesLow>
+  <RFR.ShrinesNormal>通常：(バニラの密度)</RFR.ShrinesNormal>
+  <RFR.ShrinesHigh>高密度</RFR.ShrinesHigh>
+  <RFR.ShrinesVeryHigh>非常に高密度</RFR.ShrinesVeryHigh>
+  <RFR.ShrinesExtreme>極度に高密度</RFR.ShrinesExtreme>
+  <RFR.ShrinesInsane>狂気的な高密度：「古代の危険」がそこら中にあります！</RFR.ShrinesInsane>
+  <RFR.ShrinesRandom>ランダム：マップが作成されるたびに、設定がランダムに選択されます。</RFR.ShrinesRandom>
+
+  <RFR.stoneType>古代神殿と遺跡で使用される石材:</RFR.stoneType>
+
+  <RFR.StoneVanilla>遺跡の石材は、完全にランダムな石ブロック材料から選ばれます。(これはバニラの状況です)</RFR.StoneVanilla>
+  <RFR.StoneMixed>ほとんどの遺跡の石材は、そのマップに入手可能な岩石のタイプ(世界地図上で利用可能なもの)から選ばれて建設されます。</RFR.StoneMixed>
+  <RFR.StoneLocal>すべての遺跡の石材は、そのマップで入手可能な岩石のタイプからが選ばれて建設されます。</RFR.StoneLocal>
+  <RFR.StoneRandom>ランダム：マップが作成されるたびに、設定がランダムに選択されます。</RFR.StoneRandom>
+
+  <RFR.animalDensityLevel>新規マップの動物密度:</RFR.animalDensityLevel>
+
+  <RFR.AnimalDensitySparse>希薄：通常より動物たちが少ない</RFR.AnimalDensitySparse>
+  <RFR.AnimalDensityNormal>通常：(バニラの密度)</RFR.AnimalDensityNormal>
+  <RFR.AnimalDensityDense>高密度：通常より動物たちが多い</RFR.AnimalDensityDense>
+  <RFR.AnimalDensityExtreme>極度：動物で満ち溢れている</RFR.AnimalDensityExtreme>
+  <RFR.AnimalDensityRandom>ランダム：マップが作成されるたびに、設定がランダムに選択されます。</RFR.AnimalDensityRandom>
+
+  <RFR.plantDensityLevel>新規マップでの植物密度:</RFR.plantDensityLevel>
+
+  <RFR.PlantDensitySparse>希薄：通常より植物が少ない</RFR.PlantDensitySparse>
+  <RFR.PlantDensityNormal>通常：(バニラの密度)</RFR.PlantDensityNormal>
+  <RFR.PlantDensityDense>高密度：通常より植物が多い</RFR.PlantDensityDense>
+  <RFR.PlantDensityExtreme>極度：植物で満ち溢れている</RFR.PlantDensityExtreme>
+  <RFR.PlantDensityRandom>ランダム：マップが作成されるたびに、設定がランダムに選択されます。</RFR.PlantDensityRandom>
+
+  <RFR.oreLevel>新規マップの鉱石密度:</RFR.oreLevel>
+
+  <RFR.OreNone>鉱石なし：鉱石は全くありません。もちろん、これはゲームをより困難にします。</RFR.OreNone>
+  <RFR.OreLow>低密度：通常の半分</RFR.OreLow>
+  <RFR.OreNormal>通常：(バニラの密度)</RFR.OreNormal>
+  <RFR.OreHigh>高密度：通常の2倍</RFR.OreHigh>
+  <RFR.OreVeryHigh>超高密度：通常の4倍</RFR.OreVeryHigh>
+  <RFR.OreRandom>ランダム：マップが作成されるたびに、設定がランダムに選択されます。</RFR.OreRandom>
+
+  <RFR.geysersLevel>新規マップの間欠泉密度:</RFR.geysersLevel>
+
+  <RFR.GeysersNone>間欠泉なし：全く間欠泉がありません。入植者のための地熱エネルギーもありません！</RFR.GeysersNone>
+  <RFR.GeysersLow>低密度：通常の半分</RFR.GeysersLow>
+  <RFR.GeysersNormal>通常：(バニラの密度)</RFR.GeysersNormal>
+  <RFR.GeysersHigh>高密度：通常の2倍</RFR.GeysersHigh>
+  <RFR.GeysersVeryHigh>超高密度：通常の4倍</RFR.GeysersVeryHigh>
+  <RFR.GeysersRandom>ランダム：マップが作成されるたびに、設定がランダムに選択されます。</RFR.GeysersRandom>
+
+  <RFR.chunksLevel>新規マップの石の塊密度:</RFR.chunksLevel>
+
+  <RFR.ChunksNone>石の塊なし：石の塊は全くありません。もしあなたが石を必要とするなら採掘するしか方法はありません。</RFR.ChunksNone>
+  <RFR.ChunksLow>低密度：通常の半分</RFR.ChunksLow>
+  <RFR.ChunksNormal>通常：(バニラの密度)</RFR.ChunksNormal>
+  <RFR.ChunksRandom>ランダム：マップが作成されるたびに、設定がランダムに選択されます。</RFR.ChunksRandom>
+
+  <RFR.mountainLevel>新規マップの山エリア密度:</RFR.mountainLevel>
+
+  <RFR.MountainVeryLow>非常に低密度：平地には露出した岩のエリアはほぼ在りません。山岳マップには広い平地空間があります。</RFR.MountainVeryLow>
+  <RFR.MountainLow>低密度：通常より山エリアが少ない</RFR.MountainLow>
+  <RFR.MountainNormal>通常：通常の山エリア密度(バニラのマップ生成密度)</RFR.MountainNormal>
+  <RFR.MountainHigh>高密度：通常より山エリアが多い</RFR.MountainHigh>
+  <RFR.MountainVeryHigh>非常に高密度：非常に山エリアが多い</RFR.MountainVeryHigh>
+  <RFR.MountainInsane>極度に高密度：平地マップでは、バニラの山地マップとよく似た感じになります。山岳マップでは、ほぼ全てが山です。</RFR.MountainInsane>
+  <RFR.MountainRandom>ランダム：マップが作成されるたびに、設定がランダムに選択されます。</RFR.MountainRandom>
+
+  <RFR.waterLevel>新規マップの水位:</RFR.waterLevel>
+
+  <RFR.WaterVeryLow>非常に低密度：通常よりとても水域が少ない。湖や沼は非常に小さくなります。</RFR.WaterVeryLow>
+  <RFR.WaterLow>低密度：通常より水域が少ない</RFR.WaterLow>
+  <RFR.WaterNormal>通常：通常の水域密度(バニラのマップ生成密度)</RFR.WaterNormal>
+  <RFR.WaterHigh>高密度：通常より水域が多い</RFR.WaterHigh>
+  <RFR.WaterVeryHigh>非常に高密度：非常に水域が多い。マップには大きな湖沼や沼地があるでしょう。</RFR.WaterVeryHigh>
+  <RFR.WaterRandom>ランダム：マップが作成されるたびに、設定がランダムに選択されます。</RFR.WaterRandom>
+
+  <RFR.fertilityLevel>新規マップの肥沃度:</RFR.fertilityLevel>
+
+  <RFR.FertilityNone>非常に低密度：荒れ果てたマップ。肥沃な土壌が非常に少ない。</RFR.FertilityNone>
+  <RFR.FertilityLow>低密度：不毛なマップ。肥沃な土壌が少ない。</RFR.FertilityLow>
+  <RFR.FertilityNormal>通常：通常の「肥えた土」密度(バニラのマップ生成密度)</RFR.FertilityNormal>
+  <RFR.FertilityHigh>高密度：肥沃なマップ。肥沃な土壌が多い</RFR.FertilityHigh>
+  <RFR.FertilityVeryHigh>非常に高密度：非常に肥沃な場所。</RFR.FertilityVeryHigh>
+  <RFR.FertilityRandom>ランダム：マップが作成されるたびに、設定がランダムに選択されます。</RFR.FertilityRandom>
+
+  <RFR.coastLevel>海岸マップの海面水位:</RFR.coastLevel>
+
+  <RFR.CoastNormal>通常：バニラの状態。マップの一方向に海水面と砂浜があります。</RFR.CoastNormal>
+  <RFR.CoastHigh1>少し高密度：少し多い。海水面と砂浜が通常より大きくなります。</RFR.CoastHigh1>
+  <RFR.CoastHigh2>高密度：多い。バニラよりもはるかに大きな海水面と砂浜の領域があります。</RFR.CoastHigh2>
+  <RFR.CoastVeryHigh1>非常に高密度：とても多い。より多くの海水面と多くの砂浜。</RFR.CoastVeryHigh1>
+  <RFR.CoastVeryHigh2>更に高密度：さらに多くの海水面。さらに多くの砂浜。さらに減少する有用な土地。</RFR.CoastVeryHigh2>
+  <RFR.CoastVeryHigh3>極度に高密度：非常に多い。マップの多くは海水面と砂浜で構成されます。</RFR.CoastVeryHigh3>
+  <RFR.CoastInsane>狂気的な高密度：狂気に近い。あなたが乾いた土地を見つけられることを祈ります！</RFR.CoastInsane>
+  <RFR.CoastRandom>ランダム：マップが作成されるたびに、設定がランダムに選択されます。</RFR.CoastRandom>
+
+  <RFR.DisallowIslands>「岩が突き出ている」だけの島を禁止</RFR.DisallowIslands>
+  <RFR.DisallowIslandsTip>このオプションをオンにすると、海洋や湖沼や沼地の地形には岩石の露出が無くなります。このオプションを「水域密度:高密度」と組み合わせると、山岳マップ上でも石の量を大幅に減らすことができます。</RFR.DisallowIslandsTip>
+
+  <RFR.stoneMin>石の種類の最小数/タイル毎(バニラ= 2):</RFR.stoneMin>
+  <RFR.stoneMax>石の種類の最大数/タイル毎(バニラ= 3):</RFR.stoneMax>
+
+  <RFR.stoneNotes>もし石の種類の最大数を最小値よりも小さく設定すると、あなたの間違いは自動的に修正され、最大値は最小値にリセットされます。</RFR.stoneNotes>
+
+  <RFR.graniteCommonality>世界地図上での花崗岩の存在確率:</RFR.graniteCommonality>
+  <RFR.limestoneCommonality>世界地図上での石灰岩の存在確率:</RFR.limestoneCommonality>
+  <RFR.marbleCommonality>世界地図上での大理石の存在確率:</RFR.marbleCommonality>
+  <RFR.sandstoneCommonality>世界地図上での砂岩の存在確率:</RFR.sandstoneCommonality>
+  <RFR.slateCommonality>世界地図上での粘板岩の存在確率:</RFR.slateCommonality>
+  <RFR.extraStoneCommonality>世界地図上でのModで追加された岩(もしあれば)の存在確率:</RFR.extraStoneCommonality>
+
+  <RFR.Rare>貴重</RFR.Rare>
+  <RFR.Average>平均的</RFR.Average>
+  <RFR.Common>多い</RFR.Common>
+
+  <RFR.AllowFakeOres>「潰れた」鉱石を許可</RFR.AllowFakeOres>
+  <RFR.AllowFakeOresTip>このオプションをオフにすると、潰れた鉄材、潰れたプラスチール、潰れた機械がマップに配置されません。もちろん、これはゲームをより難しくしますが、先住民による文化が残っていない真に見捨てられた世界で遊びたい場合は、より自然に見える地図を作成することができます。</RFR.AllowFakeOresTip>
+
+</LanguageData>

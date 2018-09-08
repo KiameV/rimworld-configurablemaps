@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+
+	<RFR.FewerRuinsTerrain>Configurable Maps - Gelände Einstellungen</RFR.FewerRuinsTerrain>
+	<RFR.FewerRuinsThings>Configurable Maps - "Sonstiges" Einstellungen</RFR.FewerRuinsThings>
+	<RFR.FewerRuinsWorld>Configurable Maps - World Map Settings</RFR.FewerRuinsWorld>
+
+	<RFR.ruinsLevel>Dichte der Ruinen auf neuen Karten:</RFR.ruinsLevel>
+
+	<RFR.RuinsNone>Keine Ruinen. Eine Karte ohne Gebäude.</RFR.RuinsNone>
+	<RFR.RuinsVeryLow>Sehr wenige Ruinen. wenige, wenn nicht sogar garkeine Ruinen vorhanden.</RFR.RuinsVeryLow>
+	<RFR.RuinsLow>Wenige Ruinen.</RFR.RuinsLow>
+	<RFR.RuinsNormal>Ein paar Ruinen. (Wie im normalen Spiel)</RFR.RuinsNormal>
+	<RFR.RuinsHigh>Viele Ruinen.</RFR.RuinsHigh>
+	<RFR.RuinsVeryHigh>Sehr viele Ruinen.</RFR.RuinsVeryHigh>
+	<RFR.RuinsExtreme>Extrem viele Ruinen.</RFR.RuinsExtreme>
+	<RFR.RuinsInsane>Übertrieben viele Ruinen. Mehr "drinnen" als "draußen"...</RFR.RuinsInsane>
+	<RFR.RuinsRandom>Zufällig. Keine, wenige, viele... wer weiß?!</RFR.RuinsRandom>
+	
+	<RFR.shrinesLevel>Dichte der "Antiken Schreine" auf neuen Karten:</RFR.shrinesLevel>
+
+	<RFR.ShrinesNone>Keine Schreine..</RFR.ShrinesNone>
+	<RFR.ShrinesVeryLow>Sehr wenige schreine Wenige, wenn nicht sogar garkeine Schreine vorhanden.</RFR.ShrinesVeryLow>
+	<RFR.ShrinesLow>Wenige Schreine.</RFR.ShrinesLow>
+	<RFR.ShrinesNormal>Ein paar Schreine. (Wie im normalen Spiel)</RFR.ShrinesNormal>
+	<RFR.ShrinesHigh>Viele Schreine.</RFR.ShrinesHigh>
+	<RFR.ShrinesVeryHigh>Sehr viele Schreine.</RFR.ShrinesVeryHigh>
+	<RFR.ShrinesExtreme>Extrem viele Schreine.</RFR.ShrinesExtreme>
+	<RFR.ShrinesInsane>Übertrieben viele Schreine. Schreine so weit das Auge reicht! </RFR.ShrinesInsane>
+	<RFR.ShrinesRandom>Zufällig. Keine, wenige, viele... wer weiß?!.</RFR.ShrinesRandom>
+
+	<RFR.stoneType>Steine für den Bau von Ruinen und Schreinen auf neuen Karten:</RFR.stoneType>
+	
+	<RFR.StoneVanilla>Zufällig. (Wie im normalen Spiel)</RFR.StoneVanilla>
+	<RFR.StoneMixed>Großteils aus lokal vorkommenden Steinen.</RFR.StoneMixed>
+	<RFR.StoneLocal>Nur aus lokal vorkommenden Steinen.</RFR.StoneLocal>
+	<RFR.StoneRandom>Zufällig. Lokal, importiert... wer weiß?!</RFR.StoneRandom>
+
+	<RFR.animalDensityLevel>Dichte der Fauna auf neuen Karten:</RFR.animalDensityLevel>
+
+	<RFR.AnimalDensitySparse>Dünn. Ein paar Tiere hier und da..</RFR.AnimalDensitySparse>
+	<RFR.AnimalDensityNormal>Normal. (Wie im normalen Spiel)</RFR.AnimalDensityNormal>
+	<RFR.AnimalDensityDense>Dicht.</RFR.AnimalDensityDense>
+	<RFR.AnimalDensityExtreme>Extrem Dicht. Tiere überall!</RFR.AnimalDensityExtreme>
+	<RFR.AnimalDensityRandom>Zufällig. Dünn, dicht... wer weiß?!</RFR.AnimalDensityRandom>
+
+	<RFR.plantDensityLevel>Dichte der Flora auf neuen Karten:</RFR.plantDensityLevel>
+
+	<RFR.PlantDensitySparse>Dünn. Ein paar pflanzen hier und da.</RFR.PlantDensitySparse>
+	<RFR.PlantDensityNormal>Normal. (Wie im normalen Spiel)</RFR.PlantDensityNormal>
+	<RFR.PlantDensityDense>Dicht.</RFR.PlantDensityDense>
+	<RFR.PlantDensityExtreme>Extrem. Der Gärtner hat wohl Urlaub...</RFR.PlantDensityExtreme>
+	<RFR.PlantDensityRandom>Zufällig. Dünn, dicht... wer weiß?!</RFR.PlantDensityRandom>
+	
+	<RFR.oreLevel>Erzvorkommen auf neuen Karten:</RFR.oreLevel>
+
+	<RFR.OreNone>Kein Erz. Könnte schwer werden.</RFR.OreNone>
+	<RFR.OreLow>Wenig. (Häfte des normalen Vorkommens)</RFR.OreLow>
+	<RFR.OreNormal>Normal. (Wie im normalen Spiel)</RFR.OreNormal>
+	<RFR.OreHigh>Viel. (Das Doppelte des Normalen Vorkommens)</RFR.OreHigh>
+	<RFR.OreVeryHigh>Sehr viel. (Das Vierfache des Normalen Vorkommens)</RFR.OreVeryHigh>
+	<RFR.OreRandom>Zufällig. Wenig, viel... wer weiß?!</RFR.OreRandom>
+	
+	<RFR.geysersLevel>Häufigkeit von Geysiren auf neuen Karten:</RFR.geysersLevel>
+
+	<RFR.GeysersNone>Keine. Keine Geothermale Energie für dich!</RFR.GeysersNone>
+	<RFR.GeysersLow>Wenige. (Halb so viele Geysire)</RFR.GeysersLow>
+	<RFR.GeysersNormal>Normal. (Wie im normalen Speil)</RFR.GeysersNormal>
+	<RFR.GeysersHigh>Viele. (Doppelt so viele Geysire)</RFR.GeysersHigh>
+	<RFR.GeysersVeryHigh>Sehr viele. (Vier mal so viele Geysire)</RFR.GeysersVeryHigh>
+	<RFR.GeysersRandom>Zufällig. Wenige, viele... wer weiß?!</RFR.GeysersRandom>
+
+	<RFR.chunksLevel>Häufigkeit von Steinbrocken auf neuen Karten:</RFR.chunksLevel>
+
+	<RFR.ChunksNone>Keine. Fang an zu graben!</RFR.ChunksNone>
+	<RFR.ChunksLow>Wenige. (Halb so viele Brocken)</RFR.ChunksLow>
+	<RFR.ChunksNormal>Normal. (Wie im normalen Speil)</RFR.ChunksNormal>
+	<RFR.ChunksRandom>Zufällig. Keine, wenige... wer weiß?</RFR.ChunksRandom>
+
+	<RFR.mountainLevel>Menge an Bergen auf neuen Karten:</RFR.mountainLevel>
+
+	<RFR.MountainVeryLow>Eben. Flache Karten werden höchstens ein paar hügel haben, bergige werden viele Täler aufweisen.</RFR.MountainVeryLow>
+	<RFR.MountainLow>Vorwiegend flach.</RFR.MountainLow>
+	<RFR.MountainNormal>Normal. (Wie im normalen Spiel)</RFR.MountainNormal>
+	<RFR.MountainHigh>Hügelig.</RFR.MountainHigh>
+	<RFR.MountainVeryHigh>Bergig.</RFR.MountainVeryHigh>
+	<RFR.MountainInsane>Alpin. Flache Karten sehen aus wie Bergkarten des normalen Spiels und bergige... gnad' uns Gott!</RFR.MountainInsane>
+	<RFR.MountainRandom>Zufällig. Eben, normal, alpin... wer weiß?! </RFR.MountainRandom>
+
+	<RFR.waterLevel>Grundwasserspiegel auf neuen Karten:</RFR.waterLevel>
+
+	<RFR.WaterVeryLow>Sehr trocken. Seen und Sümpfe werden winzig sein.</RFR.WaterVeryLow>
+	<RFR.WaterLow>Trocken.</RFR.WaterLow>
+	<RFR.WaterNormal>Normal. (Wie im normalen Speil)</RFR.WaterNormal>
+	<RFR.WaterHigh>Feucht.</RFR.WaterHigh>
+	<RFR.WaterVeryHigh>Nass. Seen und Sümpfe werden die Karte dominieren!</RFR.WaterVeryHigh>
+	<RFR.WaterRandom>Zufällig. Trocken, feucht... wer weiß?! </RFR.WaterRandom>
+
+	<RFR.fertilityLevel>Soil Fertility of New Maps:</RFR.fertilityLevel>
+
+	<RFR.FertilityNone>Very low quantity of rich soil.</RFR.FertilityNone>
+	<RFR.FertilityLow>Low quantity of rich soil.</RFR.FertilityLow>
+	<RFR.FertilityNormal>Normal. (Vanilla soil fertility.)</RFR.FertilityNormal>
+	<RFR.FertilityHigh>High quantity of rich soil.</RFR.FertilityHigh>
+	<RFR.FertilityVeryHigh>Very high quantity of rich soil.</RFR.FertilityVeryHigh>
+	<RFR.FertilityRandom>RANDOM. Each time a map is created, a setting will be selected randomly.</RFR.FertilityRandom>
+
+	<RFR.coastLevel>Meeresspiegel auf neuen Küstenkarten:</RFR.coastLevel>
+	
+	<RFR.CoastNormal>Normal. (Wie im normalen Speil)</RFR.CoastNormal>
+	<RFR.CoastHigh1>Höher. Mehr Wasser und ein echter Strand.</RFR.CoastHigh1>
+	<RFR.CoastHigh2>Hoch. Viel Wasser und ordentlich Sand.</RFR.CoastHigh2>
+	<RFR.CoastVeryHigh1>Sehr hoch. Noch mehr Wasser und ein echter Badestrand.</RFR.CoastVeryHigh1>
+	<RFR.CoastVeryHigh2>Sehr sehr hoch. Viel mehr Wasser und echt viel Sand!</RFR.CoastVeryHigh2>
+	<RFR.CoastVeryHigh3>Extrem hoch! Eigentlich besteht die Karte fast nur aus Wasser und Sand.</RFR.CoastVeryHigh3>
+	<RFR.CoastInsane>Irrsinnig hoch!!! Viel Glück bei der suche nach trockenem Land.</RFR.CoastInsane>
+	<RFR.CoastRandom>Zufällig. Schwimmer, Nichtschwimmer... wer weiß?!</RFR.CoastRandom>
+
+	<RFR.DisallowIslands>Generiere keine "Felsinseln"</RFR.DisallowIslands>
+	<RFR.DisallowIslandsTip>Wenn diese Option aktiv ist werden keine Felsvorkommen auf Gewässern (Meer, See, Sumpf) generiert. In Kombination mit einem hohen Meeresspiegel/Grundwasserspiegel kann das zu sehr wenigen Felsen auf der Karte (auch auf bergigen Karten) führen!</RFR.DisallowIslandsTip>
+
+	<RFR.stoneMin>Minimum Number of Stone Types Per Tile (Vanilla = 2):</RFR.stoneMin>
+	<RFR.stoneMax>Maximum Number of Stone Types Per Tile (Vanilla = 3):</RFR.stoneMax>
+
+	<RFR.stoneNotes>If you set the maximum number of stone types lower than the minimum, your mistake will automatically be corrected, with the maximum being reset to equal the minimum.</RFR.stoneNotes>
+
+	<RFR.graniteCommonality>Relative commonality of granite on the world map:</RFR.graniteCommonality>
+	<RFR.limestoneCommonality>Relative commonality of limestone on the world map:</RFR.limestoneCommonality>
+	<RFR.marbleCommonality>Relative commonality of marble on the world map:</RFR.marbleCommonality>
+	<RFR.sandstoneCommonality>Relative commonality of sandstone on the world map:</RFR.sandstoneCommonality>
+	<RFR.slateCommonality>Relative commonality of slate on the world map:</RFR.slateCommonality>
+	<RFR.extraStoneCommonality>Relative commonality of mod-added stones (if any) on the world map:</RFR.extraStoneCommonality>
+	
+	<RFR.Rare>Rare</RFR.Rare>
+	<RFR.Average>Uncommon</RFR.Average>
+	<RFR.Common>Common</RFR.Common>
+	
+</LanguageData>

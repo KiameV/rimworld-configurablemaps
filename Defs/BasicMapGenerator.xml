@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+	<GenStepDef>
+		<defName>Terrain</defName>
+		<order>210</order>
+		<genStep Class="ConfigurableMaps.Maker.CMGenStep_Terrain"/>
+	</GenStepDef>
+
+	<GenStepDef>
+		<defName>ScatterRuinsSimple</defName>
+		<order>300</order>
+		<genStep Class="GenStep_ScatterRuinsSimple">
+			<allowInWaterBiome>false</allowInWaterBiome>
+			<countPer10kCellsRange><min>2</min><max>3.8</max></countPer10kCellsRange>
+		</genStep>
+	</GenStepDef>
+
+</Defs>

@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+
+	<RFR.FewerRuinsTerrain>Configurable Maps - Terrain Settings</RFR.FewerRuinsTerrain>
+	<RFR.FewerRuinsThings>Configurable Maps - "Things" Settings</RFR.FewerRuinsThings>
+	<RFR.FewerRuinsWorld>Configurable Maps - World Map Settings</RFR.FewerRuinsWorld>
+	
+	<RFR.ruinsLevel>Density of Ruins on New Maps:</RFR.ruinsLevel>
+
+	<RFR.RuinsNone>No ruins at all! A pristine landscape.</RFR.RuinsNone>
+	<RFR.RuinsVeryLow>Very low density. Few, if any, ruins present.</RFR.RuinsVeryLow>
+	<RFR.RuinsLow>Low density of ruins.</RFR.RuinsLow>
+	<RFR.RuinsNormal>Normal. (Vanilla density.)</RFR.RuinsNormal>
+	<RFR.RuinsHigh>High density of ruins.</RFR.RuinsHigh>
+	<RFR.RuinsVeryHigh>Very high density.</RFR.RuinsVeryHigh>
+	<RFR.RuinsExtreme>Extremely high density.</RFR.RuinsExtreme>
+	<RFR.RuinsInsane>Insanely high density. Possibly more "inside" than "outside."</RFR.RuinsInsane>
+	<RFR.RuinsRandom>RANDOM. Each time a map is created, a setting will be selected randomly.</RFR.RuinsRandom>
+	
+	<RFR.shrinesLevel>Density of "Ancient Shrines" on New Maps:</RFR.shrinesLevel>
+
+	<RFR.ShrinesNone>Absolutely no shrines to be found.</RFR.ShrinesNone>
+	<RFR.ShrinesVeryLow>Very low density. Few shrines. Perhaps even none at all.</RFR.ShrinesVeryLow>
+	<RFR.ShrinesLow>Low density of shrines.</RFR.ShrinesLow>
+	<RFR.ShrinesNormal>Normal. (Vanilla density.)</RFR.ShrinesNormal>
+	<RFR.ShrinesHigh>High density of shrines.</RFR.ShrinesHigh>
+	<RFR.ShrinesVeryHigh>Very high density.</RFR.ShrinesVeryHigh>
+	<RFR.ShrinesExtreme>Extremely high density.</RFR.ShrinesExtreme>
+	<RFR.ShrinesInsane>Insanely high density. "Ancient dangers" are everywhere!</RFR.ShrinesInsane>
+	<RFR.ShrinesRandom>RANDOM. Each time a map is created, a setting will be selected randomly.</RFR.ShrinesRandom>
+
+	<RFR.stoneType>Stones Used in Shrines and Ruins:</RFR.stoneType>
+	
+	<RFR.StoneVanilla>Stone ruins will be constructed from random stone types. (This is vanilla behavior.)</RFR.StoneVanilla>
+	<RFR.StoneMixed>Most stone ruins will be constructed from "local" stone types (those available on the map).</RFR.StoneMixed>
+	<RFR.StoneLocal>All stone ruins will be constructed from locally-available stone types.</RFR.StoneLocal>
+	<RFR.StoneRandom>RANDOM. Each time a map is created, a setting will be selected randomly.</RFR.StoneRandom>
+
+	<RFR.animalDensityLevel>Animal Density of New Maps:</RFR.animalDensityLevel>
+
+	<RFR.AnimalDensitySparse>Sparse. Relatively few animals.</RFR.AnimalDensitySparse>
+	<RFR.AnimalDensityNormal>Normal. (Vanilla density.)</RFR.AnimalDensityNormal>
+	<RFR.AnimalDensityDense>Dense. More animal life than usual.</RFR.AnimalDensityDense>
+	<RFR.AnimalDensityExtreme>Extreme. Teeming with life.</RFR.AnimalDensityExtreme>
+	<RFR.AnimalDensityRandom>RANDOM. Each time a map is created, a setting will be selected randomly.</RFR.AnimalDensityRandom>
+
+	<RFR.plantDensityLevel>Plant Density of New Maps:</RFR.plantDensityLevel>
+
+	<RFR.PlantDensitySparse>Sparse. Relatively few plants.</RFR.PlantDensitySparse>
+	<RFR.PlantDensityNormal>Normal. (Vanilla density.)</RFR.PlantDensityNormal>
+	<RFR.PlantDensityDense>Dense. More plant life than usual.</RFR.PlantDensityDense>
+	<RFR.PlantDensityExtreme>Extreme. Teeming with life.</RFR.PlantDensityExtreme>
+	<RFR.PlantDensityRandom>RANDOM. Each time a map is created, a setting will be selected randomly.</RFR.PlantDensityRandom>
+	
+	<RFR.oreLevel>Density of Ore on New Maps:</RFR.oreLevel>
+
+	<RFR.OreNone>No ore at all. This of course makes the game more difficult.</RFR.OreNone>
+	<RFR.OreLow>Low ore density. (Half of vanilla.)</RFR.OreLow>
+	<RFR.OreNormal>Normal. (Vanilla density.)</RFR.OreNormal>
+	<RFR.OreHigh>High ore density. (Twice normal.)</RFR.OreHigh>
+	<RFR.OreVeryHigh>Very high ore density. (Four times normal.)</RFR.OreVeryHigh>
+	<RFR.OreRandom>RANDOM. Each time a map is created, a setting will be selected randomly.</RFR.OreRandom>
+	
+	<RFR.geysersLevel>Density of Geysers on New Maps:</RFR.geysersLevel>
+
+	<RFR.GeysersNone>No geysers at all. No geothermal energy for you!</RFR.GeysersNone>
+	<RFR.GeysersLow>Low geyser density. (Half of vanilla.)</RFR.GeysersLow>
+	<RFR.GeysersNormal>Normal. (Vanilla density.)</RFR.GeysersNormal>
+	<RFR.GeysersHigh>High geyser density. (Twice normal.)</RFR.GeysersHigh>
+	<RFR.GeysersVeryHigh>Very high geyser density. (Four times normal.)</RFR.GeysersVeryHigh>
+	<RFR.GeysersRandom>RANDOM. Each time a map is created, a setting will be selected randomly.</RFR.GeysersRandom>
+
+	<RFR.chunksLevel>Density of Stone Chunks on New Maps:</RFR.chunksLevel>
+
+	<RFR.ChunksNone>No stone chunks at all. If you want stone, you'll have to mine it!</RFR.ChunksNone>
+	<RFR.ChunksLow>Low chunk density. (Half of vanilla.)</RFR.ChunksLow>
+	<RFR.ChunksNormal>Normal. (Vanilla density.)</RFR.ChunksNormal>
+	<RFR.ChunksRandom>RANDOM. Each time a map is created, a setting will be selected randomly.</RFR.ChunksRandom>
+
+	<RFR.mountainLevel>"Mountain Level" on New Maps:</RFR.mountainLevel>
+
+	<RFR.MountainVeryLow>Very low. Flat maps will have few (if any) outcroppings. Mountain maps will have large open spaces.</RFR.MountainVeryLow>
+	<RFR.MountainLow>Low mountain level.</RFR.MountainLow>
+	<RFR.MountainNormal>Normal mountain level. (Vanilla map generation.)</RFR.MountainNormal>
+	<RFR.MountainHigh>High mountain level.</RFR.MountainHigh>
+	<RFR.MountainVeryHigh>Very high mountain level.</RFR.MountainVeryHigh>
+	<RFR.MountainInsane>Extreme. Flat maps will look much like vanilla mountain maps. Mountain maps may be nearly solid.</RFR.MountainInsane>
+	<RFR.MountainRandom>RANDOM. Each time a map is created, a setting will be selected randomly.</RFR.MountainRandom>
+
+	<RFR.waterLevel>"Water Level" on New Maps:</RFR.waterLevel>
+
+	<RFR.WaterVeryLow>Very low water level. Lakes and marshes will be quite small.</RFR.WaterVeryLow>
+	<RFR.WaterLow>Low water level.</RFR.WaterLow>
+	<RFR.WaterNormal>Normal water level. (Vanilla map generation.)</RFR.WaterNormal>
+	<RFR.WaterHigh>High water level.</RFR.WaterHigh>
+	<RFR.WaterVeryHigh>Very high water level. Maps will likely feature large lakes or marshes.</RFR.WaterVeryHigh>
+	<RFR.WaterRandom>RANDOM. Each time a map is created, a setting will be selected randomly.</RFR.WaterRandom>
+
+	<RFR.fertilityLevel>Soil Fertility of New Maps:</RFR.fertilityLevel>
+
+	<RFR.FertilityNone>Very low quantity of rich soil.</RFR.FertilityNone>
+	<RFR.FertilityLow>Low quantity of rich soil.</RFR.FertilityLow>
+	<RFR.FertilityNormal>Normal. (Vanilla soil fertility.)</RFR.FertilityNormal>
+	<RFR.FertilityHigh>High quantity of rich soil.</RFR.FertilityHigh>
+	<RFR.FertilityVeryHigh>Very high quantity of rich soil.</RFR.FertilityVeryHigh>
+	<RFR.FertilityRandom>RANDOM. Each time a map is created, a setting will be selected randomly.</RFR.FertilityRandom>
+
+	<RFR.coastLevel>Ocean Level on Coastal Maps:</RFR.coastLevel>
+	
+	<RFR.CoastNormal>Vanilla. A strip of ocean and some sand on one edge of the map.</RFR.CoastNormal>
+	<RFR.CoastHigh1>A bit high. A larger strip of ocean and sand.</RFR.CoastHigh1>
+	<RFR.CoastHigh2>High. A much larger strip of ocean and sand than in vanilla.</RFR.CoastHigh2>
+	<RFR.CoastVeryHigh1>Very high. More ocean and a lot of beach.</RFR.CoastVeryHigh1>
+	<RFR.CoastVeryHigh2>Even higher. Even more ocean. Even more sand. Even less useful land.</RFR.CoastVeryHigh2>
+	<RFR.CoastVeryHigh3>Extremely high. Much of the map will consist of ocean water and sandbars.</RFR.CoastVeryHigh3>
+	<RFR.CoastInsane>Insanely high. Good luck finding any dry land!</RFR.CoastInsane>
+	<RFR.CoastRandom>RANDOM. Each time a map is created, a setting will be selected randomly.</RFR.CoastRandom>
+	
+	<RFR.DisallowIslands>Disallow "Rock Outcrop" Islands</RFR.DisallowIslands>
+	<RFR.DisallowIslandsTip>If this option is checked, no rock outcroppings will appear in oceans, lakes or marshes. Note that combining this option with a high water level can seriously reduce the amount of stone even on mountain maps.</RFR.DisallowIslandsTip>
+
+	<RFR.stoneMin>Minimum Number of Stone Types Per Tile (Vanilla = 2):</RFR.stoneMin>
+	<RFR.stoneMax>Maximum Number of Stone Types Per Tile (Vanilla = 3):</RFR.stoneMax>
+
+	<RFR.stoneNotes>If you set the maximum number of stone types lower than the minimum, your mistake will automatically be corrected, with the maximum being reset to equal the minimum.</RFR.stoneNotes>
+
+	<RFR.graniteCommonality>Relative commonality of granite on the world map:</RFR.graniteCommonality>
+	<RFR.limestoneCommonality>Relative commonality of limestone on the world map:</RFR.limestoneCommonality>
+	<RFR.marbleCommonality>Relative commonality of marble on the world map:</RFR.marbleCommonality>
+	<RFR.sandstoneCommonality>Relative commonality of sandstone on the world map:</RFR.sandstoneCommonality>
+	<RFR.slateCommonality>Relative commonality of slate on the world map:</RFR.slateCommonality>
+	<RFR.extraStoneCommonality>Relative commonality of mod-added stones (if any) on the world map:</RFR.extraStoneCommonality>
+	
+	<RFR.Rare>Rare</RFR.Rare>
+	<RFR.Average>Uncommon</RFR.Average>
+	<RFR.Common>Common</RFR.Common>
+
+	<RFR.AllowFakeOres>Allow "Fake" Ores</RFR.AllowFakeOres>
+	<RFR.AllowFakeOresTip>If this option is unchecked, compacted steel, plasteel and machinery will not appear on maps. This will of course make the game more difficult, but will allow you to create maps that look more natural, if you want to play on a world that seems truly untouched by prior habitation.</RFR.AllowFakeOresTip>
+	
+</LanguageData>

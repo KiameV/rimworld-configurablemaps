@@ -1,0 +1,148 @@
+---------------------------------------------------------------------------------
+  Changelog for "Rainbeau's Configurable Maps" (originally "Fewer Ruins")
+---------------------------------------------------------------------------------
+
+- 03/19/2017
+	- Initial release.
+
+- 04/23/2017
+	- The mod now uses the Harmony library instead of detouring core methods.
+
+- 05/06/2017
+	- Updated to RimWorld alpha 17.
+
+- 05/25/2017
+	- Config settings now allow customization of ruin and shrine density.
+
+- 05/27/2017
+	- The mod now also allows customization of ore and geyser density on new
+	  maps.
+
+- 06/03/2017
+	- The mod's name has been changed from "Fewer Ruins" to "Configurable Maps,"
+	  to reflect its expanding utility.
+	- Added the ability to customize the "water level" on new maps, which will
+	  affect the number and size of lakes, marshes, etc.
+
+- 06/04/2017
+	- Added "[RF]" prefix tag to the mod's name for easier mod list sorting.
+
+- 06/10/2017
+	- Added the ability to define whether ruins and shrines should be constructed
+	  from random stone types (as in vanilla) or only from "local" stone types.
+
+- 06/11/2017
+	- River sizes, as well as lakes and marshes, are now affected by the "water
+	  level" setting.
+	- Added a new "ocean level on coastal maps" setting, which allows control of
+	  the amount of water on maps with coasts, from vanilla-style maps with just
+	  a small strip of water and sand on one edge, all the way to maps that are
+	  almost fully submerged.
+
+- 06/27/2017
+	- Added a "biodensity" slider to adjust the density of animal and plant life
+	  on maps (relative to the base values for the biome).
+	- Each settings slider now includes a "random" option.
+	- Larger rivers will now tend to have more deep water, with fewer fordable
+	  spots. This is affected by the "water level" setting; rivers on maps with
+	  high water levels will be less easily forded than those on maps with low
+	  water levels.
+
+- 07/29/2017
+	- Split the settings into two separate configuration screens, one for terrain
+	  options and one for "things" options, in order to allow more to fit.
+	- Split the "biodensity" setting into two separate settings, one for animal
+	  density and one for plant density.
+	- Added a "mountain level" option that works similarly to the "water level"
+	  option.
+
+- 08/24/2017
+	- The "mountain level" slider now produces much more obvious differences in
+	  generated maps.
+	- Added an option to alter the quantity of stone chunks scattered on maps.
+
+- 09/16/2017
+	- Added an option to disallow rock outcroppings in water. This will prevent
+	  the appearance of odd solid rock "islands" in oceans, lakes and marshes.
+	- Low water options now produce somewhat dryer maps than before.
+	- Added a German language translation file courtesy of Ludeon forums user
+	  Maculator.
+
+- 09/17/2017
+	- The impact of the "mountain level" slider is now dependent upon the type
+	  of map being generated. It will have a significant impact on how mountain
+	  maps look, but very little impact on how flat maps look. So setting the
+	  mountain level to "very high" will no longer make every map look like a
+	  mountain map.
+	- Made some adjustments to ensure compatibility with my new "Archipelagos"
+	  mod.
+
+- 09/19/2017
+	- Fixed a small glitch in the "Archipelagos" compatibility.
+
+- 09/23/2017
+	- Added a "soil fertility" slider to adjust the relative amount of rich
+	  soil as opposed to basic soil on a map. (The slider does nothing on maps
+	  for biomes that don't have any rich soil to begin with.)
+	- Added the ability to designate the minimum and maximum number of stone
+	  types that can appear in a world map tile.
+	- Added the ability to designate the relative commonality of various stone
+	  types on the world map.
+	- Updated a few things to match today's "Archipelagos" update.
+
+- 11/07/2017
+	- Updated to RimWorld b18 release.
+	- Fixed animal and plant density settings so they actually apply to 
+	  archipelago maps as well as to vanilla biome maps.
+
+- 11/12/2017
+	- Added Japanese language translation file by Proxyer.
+
+- 11/17/2017
+	- Fixed river generation.
+
+- 12/03/2017
+	- Added Russian translation files by Steam user "Чей-то друг."
+
+- 12/04/2017
+	- The mod now works with the "Mod Sync Ninja" updater.
+
+- 12/09/2017
+	- It is now possible to define the total number of factions that should be
+	  present on a world map, as well as to remove certain faction types or
+	  adjust various faction types' relative abundance.
+	- Tiles on the world map can now be set to have a maximum of eight different
+	  stone types instead of just five, if for some reason you feel the need to
+	  have that many different types of stone readily available.
+	- This mod's settings for number and variety of stone types on world map
+	  tiles should now take precedence over similar settings in other mods,
+	  regardless of load order.
+
+- 12/09/2017
+	- Updated Japanese language files.
+
+- 12/12/2017
+	- Added the option to "group" faction bases on the world map geographically,
+	  rather than just having them scattered all over the map randomly.
+	- Added the ability to "turn off" the mechanoid faction, (mostly) removing
+	  them from the game.
+
+- 12/15/2017
+	- Moved the faction-related settings into a separate mod, "Faction Control."
+
+- 01/01/2018
+	- Added an option to disallow "fake" ores (compacted steel, plasteel and
+	  machinery) on maps.
+
+- 01/01/2018
+	- Updated Japanese language files.
+
+- 01/20/2018
+	- Fixed an incompatibility which prevented floors on "Biomes!" cavern maps
+	  from using that mod's rocky soil instead of rough stone.
+	- Corrected a typo. Ore now has a "low density" option instead of a "lore
+	  density" option.
+
+- 01/21/2018
+	- If "Cupro's Stones" is in use, that mod's settings will now override this
+	  mod's settings regarding number and types of stones in world map tiles.

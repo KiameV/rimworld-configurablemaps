@@ -29,7 +29,7 @@ namespace ConfigurableMaps.Settings
         public static float mountainLevel = 2f;
         public static float waterLevel = 2f;
         public static float fertilityLevel = 2f;
-        public static float coastLevel = 2f;
+        //public static float coastLevel = 2f;
 
         public static bool disallowIslands = false;
         public static bool allowFakeOres = true;
@@ -164,7 +164,7 @@ namespace ConfigurableMaps.Settings
                 GUI.contentColor = Color.white;
             }
             fertilityLevel = list.Slider(fertilityLevel, 0, 6);
-            // ----------------- //
+            /*/ ----------------- //
             // -- Coast Level -- //
             // ----------------- //
             list.Gap();
@@ -186,7 +186,7 @@ namespace ConfigurableMaps.Settings
                 list.Label("RFR.coastLevel".Translate() + "  " + "RFR.CoastRandom".Translate());
                 GUI.contentColor = Color.white;
             }
-            coastLevel = list.Slider(coastLevel, 0, 8);
+            coastLevel = list.Slider(coastLevel, 0, 8);*/
             list.Gap();
             list.CheckboxLabeled("RFR.DisallowIslands".Translate(), ref disallowIslands, "RFR.DisallowIslandsTip".Translate());
             list.Gap();
@@ -197,7 +197,7 @@ namespace ConfigurableMaps.Settings
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_Values.Look(ref coastLevel, "coastLevel", 0.5f);
+            //Scribe_Values.Look(ref coastLevel, "coastLevel", 0.5f);
             Scribe_Values.Look(ref geysersLevel, "geysersLevel", 2.5f);
             Scribe_Values.Look(ref chunksLevel, "chunksLevel", 2.5f);
             Scribe_Values.Look(ref oreLevel, "oreLevel", 2.5f);

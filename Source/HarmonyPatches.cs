@@ -52,6 +52,9 @@ namespace ConfigurableMaps
     {
         public static bool Prefix()
         {
+#if DEBUG
+            Log.Warning("GenStep_RockChunks_GrowLowRockFormationFrom Prefix");
+#endif
             float v = TerrainSettings.chunksLevel;
             if (v < 0 || v > 3)
             {
@@ -186,6 +189,9 @@ namespace ConfigurableMaps
     {
         public static bool Prefix(IntVec3 c, Map map)
         {
+#if DEBUG
+            Log.Warning("GenStep_ScatterRuinsSimple_ScatterAt Prefix");
+#endif
             BaseGen.globalSettings.map = map;
             ThingDef thingDef = BaseGenUtility.RandomCheapWallStuff(null, true);
             if (Rand.Value < 0.9f)
@@ -223,6 +229,9 @@ namespace ConfigurableMaps
     {
         public static bool Prefix(TechLevel techLevel, ref ThingDef __result, bool notVeryFlammable = false)
         {
+#if DEBUG
+            Log.Warning("BaseGenUtility_RandomCheapWallStuff Prefix");
+#endif
             if (techLevel.IsNeolithicOrWorse())
             {
                 __result = ThingDefOf.WoodLog;
@@ -256,6 +265,9 @@ namespace ConfigurableMaps
     {
         public static bool Prefix(float countPer10kCells, Map map, ref int __result, int mapSize = -1)
         {
+#if DEBUG
+            Log.Warning("GenStep_Scatterer_CountFromPer10kCells Prefix");
+#endif
             if (mapSize < 0)
             {
                 mapSize = map.Size.x;
@@ -353,6 +365,9 @@ namespace ConfigurableMaps
     {
         public static bool Prefix(List<TerrainThreshold> threshes, float val, ref TerrainDef __result)
         {
+#if TRACE
+            Log.Warning("TerrainAtValue Prefix");
+#endif
             __result = null;
             if (threshes[0].min < -900)
             {
@@ -462,6 +477,9 @@ namespace ConfigurableMaps
         private const float EdgeMountainSpan = 0.42f;
         public static bool Prefix(Map map)
         {
+#if DEBUG
+            Log.Warning("GenStep_ElevationFertility_Generate Prefix");
+#endif
             Rot4 random;
             NoiseRenderer.renderSize = new IntVec2(map.Size.x, map.Size.z);
             ModuleBase perlin = new Perlin(0.0209999997168779, 2, 0.5, 6, Rand.Range(0, 2147483647), QualityMode.High);
@@ -571,6 +589,9 @@ namespace ConfigurableMaps
         [HarmonyPriority(Priority.High)]
         public static bool Prefix(int tile, ref List<ThingDef> __result)
         {
+#if DEBUG
+            Log.Warning("World_NaturalRockTypesIn Prefix");
+#endif
             if (HarmonyPatches.detectedCuprosStones)
             {
                 return true;
@@ -670,6 +691,9 @@ namespace ConfigurableMaps
     {
         public static bool Prefix(Map map)
         {
+#if DEBUG
+            Log.Warning("RockNoises_Init Prefix");
+#endif
             double multiplier = 0.5d * Find.World.NaturalRockTypesIn(map.Tile).ToList().Count;
             int octaves = Rand.RangeInclusive(3, 8);
             RockNoises.rockNoises = new List<RockNoises.RockNoise>();

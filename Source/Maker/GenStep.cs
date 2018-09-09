@@ -17,12 +17,18 @@ namespace ConfigurableMaps.Maker
         {
             get
             {
+#if DEBUG
+            Log.Warning("CMGenStep_Terrain.SeedPart Prefix");
+#endif
                 return "ConfigurableMaps.CMGenStep_Terrain".GetHashCode();
             }
         }
 
         public override void Generate(Map map, GenStepParams parms)
         {
+#if DEBUG
+            Log.Warning("CMGenStep_Terrain.Generate Prefix");
+#endif
             CMBeachMaker.Init(map);
             CMRiverMaker riverMaker = this.GenerateRiver(map);
             List<IntVec3> intVec3s = new List<IntVec3>();
@@ -303,7 +309,7 @@ namespace ConfigurableMaps.Maker
             }
             if (map.Biome.defName.Contains("Archipelago"))
             {
-                //
+                /*/
                 // Coast Level (for Islands)
                 //
                 float adjustment = 0.0f;
@@ -350,7 +356,7 @@ namespace ConfigurableMaps.Maker
                             }
                         }
                     }
-                }
+                }*/
                 if (elevation > 0.65f && elevation <= 0.69f)
                 {
                     return TerrainDefOf.Gravel;
@@ -369,7 +375,7 @@ namespace ConfigurableMaps.Maker
                 }
                 TerrainDef deepWater = TerrainDefOf.WaterOceanDeep;
                 TerrainDef shallowWater = TerrainDefOf.WaterOceanShallow;
-                if (lakeIsles.Equals(true))
+                /*if (lakeIsles.Equals(true))
                 {
                     deepWater = TerrainDefOf.WaterDeep;
                     shallowWater = TerrainDefOf.WaterShallow;
@@ -414,8 +420,8 @@ namespace ConfigurableMaps.Maker
                 if (terrainDefA != null)
                 {
                     return terrainDefA;
-                }
-                return borderTerrainH;
+                }*/
+                return null;// borderTerrainH;
             }
             TerrainDef terrainDef = null;
             if (river != null)

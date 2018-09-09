@@ -22,6 +22,9 @@ namespace ConfigurableMaps.Maker
         private float fordability;
         public CMRiverMaker(Vector3 center, float angle, RiverDef riverDef)
         {
+#if DEBUG
+            Log.Warning("CMRiverMaker Prefix");
+#endif
             //
             // Water Level (for Rivers)
             //
@@ -77,6 +80,9 @@ namespace ConfigurableMaps.Maker
         }
         public TerrainDef TerrainAt(IntVec3 loc, bool recordForValidation = false)
         {
+#if DEBUG
+            Log.Warning("CMRiverMaker.TerrainAt Prefix");
+#endif
             float value = this.generator.GetValue(loc);
             float single = this.surfaceLevel - Mathf.Abs(value);
             if (single > 2f && this.shallowizer.GetValue(loc) > this.fordability)
@@ -139,6 +145,9 @@ namespace ConfigurableMaps.Maker
         }
         public Vector3 WaterCoordinateAt(IntVec3 loc)
         {
+#if DEBUG
+            Log.Warning("CMRiverMaker.WaterCoordinateAt Prefix");
+#endif
             Vector3 vector3 = new Vector3(this.coordinateX.GetValue(loc), 0f, this.coordinateZ.GetValue(loc));
             return vector3;
         }

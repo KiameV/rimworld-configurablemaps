@@ -101,12 +101,6 @@ xcopy "$(ProjectDir)..\About\Preview.png" "$(OutDir)..\About\" /Y /I
 xcopy "$(ProjectDir)..\About\PublishedFileId.txt" "$(OutDir)..\About\" /Y /I
 
 
-xcopy "$(ProjectDir)..\Defs\*.*" "$(OutDir)..\Defs" /Y /I /E
-
-
-
-
-
 xcopy "$(ProjectDir)..\Languages\*.*" "$(OutDir)..\Languages" /Y /I /E
 
 

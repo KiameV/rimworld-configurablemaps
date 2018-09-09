@@ -16,12 +16,18 @@ namespace ConfigurableMaps.Maker
 
         static CMBeachMaker()
         {
+#if DEBUG
+            Log.Warning("CMBeachMaker Prefix");
+#endif
             CMBeachMaker.CoastWidthRange = new FloatRange(20f, 60f);
         }
 
         public static TerrainDef BeachTerrainAt(IntVec3 loc, Map map, BiomeDef biome)
         {
-            //
+#if TRACE
+            Log.Warning("CMBeachMaker.BeachTerrainAt Prefix");
+#endif
+            /*/
             // Coast Level
             //
             float adjustment = 0.0f;
@@ -53,15 +59,21 @@ namespace ConfigurableMaps.Maker
             if (value >= (1f + adjustment))
             {
                 return null;
-            }
+            }*/
             return (biome != BiomeDefOf.SeaIce ? TerrainDefOf.Sand : TerrainDefOf.Ice);
         }
         public static void Cleanup()
         {
+#if TRACE
+            Log.Warning("CMBeachMaker.Cleanup Prefix");
+#endif
             CMBeachMaker.beachNoise = null;
         }
         public static void Init(Map map)
         {
+#if TRACE
+            Log.Warning("CMBeachMaker.Init Prefix");
+#endif
             Rot4 rot4 = Find.World.CoastDirectionAt(map.Tile);
             if (!rot4.IsValid)
             {

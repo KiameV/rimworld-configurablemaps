@@ -25,12 +25,17 @@ namespace ConfigurableMaps.Maker
             // Coast Level
             //
             float adjustment = 0.0f;
-            if (TerrainSettings.coastLevel < 1) { }
-            else if (TerrainSettings.coastLevel < 2) { adjustment = 0.5f; }
-            else if (TerrainSettings.coastLevel < 3) { adjustment = 1.0f; }
-            else if (TerrainSettings.coastLevel < 4) { adjustment = 1.5f; }
-            else if (TerrainSettings.coastLevel < 5) { adjustment = 2.0f; }
-            else if (TerrainSettings.coastLevel < 6) { adjustment = 2.5f; }
+            float v = TerrainSettings.coastLevel;
+            if (v < 0 || v > 7)
+            {
+                v = Rand.Value * 7;
+            }
+            if (v < 1) { }
+            else if (v < 2) { adjustment = 0.5f; }
+            else if (v < 3) { adjustment = 1.0f; }
+            else if (v < 4) { adjustment = 1.5f; }
+            else if (v < 5) { adjustment = 2.0f; }
+            else if (v < 6) { adjustment = 2.5f; }
             else { adjustment = 3.0f; }
             if (CMBeachMaker.beachNoise == null)
             {

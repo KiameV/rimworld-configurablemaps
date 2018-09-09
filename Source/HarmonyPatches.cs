@@ -49,18 +49,17 @@ namespace ConfigurableMaps
     {
         public static bool Prefix()
         {
-            if (TerrainSettings.chunksLevel < 0 || TerrainSettings.chunksLevel > 3)
+            float v = TerrainSettings.chunksLevel;
+            if (v < 0 || v > 3)
             {
-                float v = (int)(Rand.Value) * 3;
-                Log.Warning(TerrainSettings.chunksLevel + " is an invalid chunk level. Setting to " + v);
-                TerrainSettings.chunksLevel = v;
+                v = Rand.Value * 3;
             }
 
-            if (TerrainSettings.chunksLevel <= 0)
+            if (v < 1)
             {
                 return false;
             }
-            if (TerrainSettings.chunksLevel < 2 && 
+            if (v < 2 && 
                 Rand.Value < 0.5f)
             {
                 return false;
@@ -124,33 +123,37 @@ namespace ConfigurableMaps
 
         public static void UpdateBiomeStatsPerUserSettings()
         {
-            if (ThingsSettings.animalDensityLevel > 4)
+            Init();
+
+            float v = ThingsSettings.animalDensityLevel;
+            if (v > 4)
             {
-                ThingsSettings.animalDensityLevel = (Rand.Value) * 4;
+                v = Rand.Value * 4;
             }
-            float animalModifier = 1;
-            if (ThingsSettings.animalDensityLevel < 1) { animalModifier = 0.5f; }
-            else if (ThingsSettings.animalDensityLevel < 2) { }
-            else if (ThingsSettings.animalDensityLevel < 3) { animalModifier = 2; }
+            float animalModifier;
+            if (v < 1) { animalModifier = 0.5f; }
+            else if (v < 2) { animalModifier = 1; }
+            else if (v < 3) { animalModifier = 2; }
             else { animalModifier = 4; }
-            
-            if (ThingsSettings.plantDensityLevel > 4)
+
+            v = ThingsSettings.plantDensityLevel;
+            if (v > 4)
             {
-                ThingsSettings.plantDensityLevel = (Rand.Value) * 4;
+                v = Rand.Value * 4;
             }
-            float plantModifier = 1;
-            if (ThingsSettings.plantDensityLevel < 1) { plantModifier = 0.5f; }
-            else if (ThingsSettings.plantDensityLevel < 2) { }
-            else if (ThingsSettings.plantDensityLevel < 3) { plantModifier = 2; }
+            float plantModifier;
+            if (v < 1) { plantModifier = 0.5f; }
+            else if (v < 2) { plantModifier = 1; }
+            else if (v < 3) { plantModifier = 2; }
             else { plantModifier = 4; }
 
-            BiomeOriginalValues v;
+            BiomeOriginalValues orig;
             foreach (BiomeDef def in DefDatabase<BiomeDef>.AllDefs)
             {
-                if (BiomeStats.TryGetValue(def, out v))
+                if (BiomeStats.TryGetValue(def, out orig))
                 {
-                    def.animalDensity = v.AnimalDensity * animalModifier;
-                    def.plantDensity = v.PlantDensity * plantModifier;
+                    def.animalDensity = orig.AnimalDensity * animalModifier;
+                    def.plantDensity = orig.PlantDensity * plantModifier;
                 }
             }
             /*BiomeDefOf.AridShrubland.animalDensity = 1.3f * animalModifier;
@@ -280,16 +283,14 @@ namespace ConfigurableMaps
                                  where (!BaseGenUtility.IsCheapWallStuff(wallStuff) ? false : (!notVeryFlammable ? true : wallStuff.BaseFlammability < 0.5f))
                                  select wallStuff).RandomElement<ThingDef>();
             Map map = BaseGen.globalSettings.map;
-            if (ThingsSettings.stoneType < 0)
+            float v = ThingsSettings.stoneType;
+            if (v < 0 || v > 3)
             {
-                if (ThingsSettings.stoneType > 3)
-                {
-                    ThingsSettings.stoneType = (Rand.Value) * 3;
-                }
+                v = Rand.Value * 3;
             }
             if (map == null || wallType.defName.Contains("Steel")
-              || ThingsSettings.stoneType < 1
-              || (ThingsSettings.stoneType < 2 && Rand.Value < 0.33))
+              || v < 1
+              || (v < 2 && Rand.Value < 0.33))
             {
                 __result = wallType;
                 return false;
@@ -316,10 +317,15 @@ namespace ConfigurableMaps
             if (countPer10kCells > 3.95)
             {
                 float min = countPer10kCells;
-                if (TerrainSettings.oreLevel < 1) { min = 0; }
-                else if (TerrainSettings.oreLevel < 2) { min = min / 2; }
-                else if (TerrainSettings.oreLevel < 3) { }
-                else if (TerrainSettings.oreLevel < 4) { min = min * 2; }
+                float v = TerrainSettings.oreLevel;
+                if (v < 0 || v > 5)
+                {
+                    v = (Rand.Value) * 5;
+                }
+                if (v < 1) { min = 0; }
+                else if (v < 2) { min = min / 2; }
+                else if (v < 3) { }
+                else if (v < 4) { min = min * 2; }
                 else { min = min * 4; }
                 float max = min;
                 countPer10kCells = Rand.Range(min, max);
@@ -331,13 +337,18 @@ namespace ConfigurableMaps
             {
                 float min = 2;
                 float max = 4;
-                if (ThingsSettings.ruinsLevel < 1) { min = 0; max = 0; }
-                else if (ThingsSettings.ruinsLevel < 2) { min = 0; max = 1; }
-                else if (ThingsSettings.ruinsLevel < 3) { min = 1; max = 2; }
-                else if (ThingsSettings.ruinsLevel < 4) { min = 2; max = 4; }
-                else if (ThingsSettings.ruinsLevel < 5) { min = 4; max = 8; }
-                else if (ThingsSettings.ruinsLevel < 6) { min = 8; max = 16; }
-                else if (ThingsSettings.ruinsLevel < 7) { min = 16; max = 32; }
+                float v = ThingsSettings.ruinsLevel;
+                if (v < 0 || v > 8)
+                {
+                    v = (Rand.Value) * 8;
+                }
+                if (v < 1) { min = 0; max = 0; }
+                else if (v < 2) { min = 0; max = 1; }
+                else if (v < 3) { min = 1; max = 2; }
+                else if (v < 4) { min = 2; max = 4; }
+                else if (v < 5) { min = 4; max = 8; }
+                else if (v < 6) { min = 8; max = 16; }
+                else if (v < 7) { min = 16; max = 32; }
                 else { min = 32; max = 64; }
                 countPer10kCells = Rand.Range(min, max);
             }
@@ -348,10 +359,15 @@ namespace ConfigurableMaps
             {
                 float min = 0.7f;
                 float max = 1;
-                if (TerrainSettings.geysersLevel < 1) { min = 0; max = 0; }
-                else if (TerrainSettings.geysersLevel < 2) { min = 0.35f; max = 0.5f; }
-                else if (TerrainSettings.geysersLevel < 3) { min = 0.7f; max = 1; }
-                else if (TerrainSettings.geysersLevel < 4) { min = 1.4f; max = 2; }
+                float v = TerrainSettings.geysersLevel;
+                if (v < 0 || v > 5)
+                {
+                    v = (Rand.Value) * 5;
+                }
+                if (v < 1) { min = 0; max = 0; }
+                else if (v < 2) { min = 0.35f; max = 0.5f; }
+                else if (v < 3) { min = 0.7f; max = 1; }
+                else if (v < 4) { min = 1.4f; max = 2; }
                 else { min = 2.8f; max = 4; }
                 countPer10kCells = Rand.Range(min, max);
             }
@@ -362,13 +378,18 @@ namespace ConfigurableMaps
             {
                 float min = 0.12f;
                 float max = 0.24f;
-                if (ThingsSettings.shrinesLevel < 1) { min = 0; max = 0; }
-                else if (ThingsSettings.shrinesLevel < 2) { min = 0; max = 0.06f; }
-                else if (ThingsSettings.shrinesLevel < 3) { min = 0.06f; max = 0.12f; }
-                else if (ThingsSettings.shrinesLevel < 4) { min = 0.12f; max = 0.24f; }
-                else if (ThingsSettings.shrinesLevel < 5) { min = 0.24f; max = 0.48f; }
-                else if (ThingsSettings.shrinesLevel < 6) { min = 0.48f; max = 0.96f; }
-                else if (ThingsSettings.shrinesLevel < 7) { min = 0.96f; max = 1.92f; }
+                float v = ThingsSettings.shrinesLevel;
+                if (v < 0 || v > 8)
+                {
+                    v = Rand.Value * 8;
+                }
+                if (v < 1) { min = 0; max = 0; }
+                else if (v < 2) { min = 0; max = 0.06f; }
+                else if (v < 3) { min = 0.06f; max = 0.12f; }
+                else if (v < 4) { min = 0.12f; max = 0.24f; }
+                else if (v < 5) { min = 0.24f; max = 0.48f; }
+                else if (v < 6) { min = 0.48f; max = 0.96f; }
+                else if (v < 7) { min = 0.96f; max = 1.92f; }
                 else { min = 1.92f; max = 3.84f; }
                 countPer10kCells = Rand.Range(min, max);
             }
@@ -423,18 +444,28 @@ namespace ConfigurableMaps
             //
             // TerrainPatchMakers
             //
-            float adjustment = 0.0f;
-            if (TerrainSettings.waterLevel < 1) { adjustment = 0.75f; }
-            else if (TerrainSettings.waterLevel < 2) { adjustment = 0.33f; }
-            else if (TerrainSettings.waterLevel < 3) { }
-            else if (TerrainSettings.waterLevel < 4) { adjustment = -0.25f; }
+            float adjustment;
+            float v = TerrainSettings.waterLevel;
+            if (v < 0 || v > 5)
+            {
+                v = Rand.Value * 5;
+            }
+            if (v < 1) { adjustment = 0.75f; }
+            else if (v < 2) { adjustment = 0.33f; }
+            else if (v < 3) { adjustment = 0.0f; }
+            else if (v < 4) { adjustment = -0.25f; }
             else { adjustment = -0.5f; }
-            float richSoil = 0.0f;
 
-            if (TerrainSettings.fertilityLevel < 1) { richSoil = -0.06f; }
-            else if (TerrainSettings.fertilityLevel < 2) { richSoil = -0.03f; }
-            else if (TerrainSettings.fertilityLevel < 3) { }
-            else if (TerrainSettings.fertilityLevel < 4) { richSoil = 0.03f; }
+            float richSoil;
+            v = TerrainSettings.fertilityLevel;
+            if (v < 0 || v > 5)
+            {
+                v = Rand.Value * 5;
+            }
+            if (v < 1) { richSoil = -0.06f; }
+            else if (v < 2) { richSoil = -0.03f; }
+            else if (v < 3) { richSoil = 0.0f; }
+            else if (v < 4) { richSoil = 0.03f; }
             else { richSoil = 0.06f; }
             for (int i = 0; i < threshes.Count; i++)
             {
@@ -492,33 +523,23 @@ namespace ConfigurableMaps
             switch (map.TileInfo.hilliness)
             {
                 case Hilliness.Flat:
-                    {
-                        elevationFactorFlat = MapGenTuning.ElevationFactorFlat;
-                        elevationScale = 0.1f;
-                        break;
-                    }
+                    elevationFactorFlat = MapGenTuning.ElevationFactorFlat;
+                    elevationScale = 0.1f;
+                    break;
                 case Hilliness.SmallHills:
-                    {
-                        elevationFactorFlat = MapGenTuning.ElevationFactorSmallHills;
-                        elevationScale = 0.3f;
-                        break;
-                    }
+                    elevationFactorFlat = MapGenTuning.ElevationFactorSmallHills;
+                    elevationScale = 0.3f;
+                    break;
                 case Hilliness.LargeHills:
-                    {
-                        elevationFactorFlat = MapGenTuning.ElevationFactorLargeHills;
-                        elevationScale = 0.6f;
-                        break;
-                    }
+                    elevationFactorFlat = MapGenTuning.ElevationFactorLargeHills;
+                    elevationScale = 0.6f;
+                    break;
                 case Hilliness.Mountainous:
-                    {
-                        elevationFactorFlat = MapGenTuning.ElevationFactorMountains;
-                        break;
-                    }
+                    elevationFactorFlat = MapGenTuning.ElevationFactorMountains;
+                    break;
                 case Hilliness.Impassable:
-                    {
-                        elevationFactorFlat = MapGenTuning.ElevationFactorImpassableMountains;
-                        break;
-                    }
+                    elevationFactorFlat = MapGenTuning.ElevationFactorImpassableMountains;
+                    break;
             }
 
             if (TerrainSettings.mountainLevel < 1)

@@ -17,28 +17,28 @@ namespace ConfigurableMaps.Settings
 
         public override void DoSettingsWindowContents(Rect inRect)
         {
-            Util.Init();
             TerrainSettings.DoWindowContents(inRect);
         }
     }
 
     public class TerrainSettings : ModSettings
     {
-        public static float coastLevel = 0.5f;
-        public static float geysersLevel = 2.5f;
-        public static float chunksLevel = 2.5f;
         public static float oreLevel = 2.5f;
-        public static float fertilityLevel = 2.5f;
-        public static float waterLevel = 2.5f;
-        public static float mountainLevel = 2.5f;
+        public static float geysersLevel = 1f;
+        public static float chunksLevel = 1f;
+        public static float mountainLevel = 2f;
+        public static float waterLevel = 2f;
+        public static float fertilityLevel = 2f;
+        public static float coastLevel = 2f;
+
         public static bool disallowIslands = false;
         public static bool allowFakeOres = true;
 
-        public static void DoWindowContents(Rect canvas)
+        public static void DoWindowContents(Rect inRect)
         {
             Listing_Standard list = new Listing_Standard();
-            list.ColumnWidth = canvas.width;
-            list.Begin(canvas);
+            list.ColumnWidth = inRect.width;
+            list.Begin(inRect);
             // ----------------- //
             // -- Ore Density -- //
             // ----------------- //

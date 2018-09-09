@@ -13,6 +13,7 @@ using Verse.Noise;
 
 namespace ConfigurableMaps
 {
+    [StaticConstructorOnStartup]
     public class HarmonyPatches
     {
         public static bool detectedFertileFields = false;
@@ -38,7 +39,9 @@ namespace ConfigurableMaps
     {
         static void Prefix()
         {
+#if DEBUG
             Log.Warning("Patch_Game_InitNewGame Prefix");
+#endif
             Util.Init();
             Util.UpdateBiomeStatsPerUserSettings();
         }
@@ -123,6 +126,9 @@ namespace ConfigurableMaps
 
         public static void UpdateBiomeStatsPerUserSettings()
         {
+#if DEBUG
+            Log.Warning("Begin UpdateBiomeStatsPerUserSettings");
+#endif
             Init();
 
             float v = ThingsSettings.animalDensityLevel;
@@ -150,85 +156,28 @@ namespace ConfigurableMaps
             BiomeOriginalValues orig;
             foreach (BiomeDef def in DefDatabase<BiomeDef>.AllDefs)
             {
+#if DEBUG
+                Log.Message("    " + def.defName);
+#endif
                 if (BiomeStats.TryGetValue(def, out orig))
                 {
+#if DEBUG
+                    Log.Message("        Animal Density: Orig [" + orig.AnimalDensity + "]   New [" + (orig.AnimalDensity * animalModifier) + "]");
+                    Log.Message("        Plant Density: Orig [" + orig.PlantDensity + "]   New [" + (orig.PlantDensity * plantModifier) + "]");
+#endif
                     def.animalDensity = orig.AnimalDensity * animalModifier;
                     def.plantDensity = orig.PlantDensity * plantModifier;
                 }
+#if DEBUG
+                else
+                {
+                    Log.Error("Not Found");
+                }
+#endif
             }
-            /*BiomeDefOf.AridShrubland.animalDensity = 1.3f * animalModifier;
-            BiomeDefOf.AridShrubland.plantDensity = 0.16f * plantModifier;
-            BiomeDefOf.BorealForest.animalDensity = 1.9f * animalModifier;
-            BiomeDefOf.BorealForest.plantDensity = 0.3f * plantModifier;
-            BiomeDef.Named("ColdBog").animalDensity = 0.8f * animalModifier;
-            BiomeDef.Named("ColdBog").plantDensity = 0.52f * plantModifier;
-            BiomeDefOf.Desert.animalDensity = 0.25f * animalModifier;
-            BiomeDefOf.Desert.plantDensity = 0.05f * plantModifier;
-            BiomeDef.Named("ExtremeDesert").animalDensity = 0.05f * animalModifier;
-            BiomeDef.Named("ExtremeDesert").plantDensity = 0.002f * plantModifier;
-            BiomeDefOf.IceSheet.animalDensity = 0.1f * animalModifier;
-            BiomeDefOf.IceSheet.plantDensity = 0f * plantModifier;
-            BiomeDefOf.SeaIce.animalDensity = 0.05f * animalModifier;
-            BiomeDefOf.SeaIce.plantDensity = 0f * plantModifier;
-            BiomeDefOf.TemperateForest.animalDensity = 2.8f * animalModifier;
-            BiomeDefOf.TemperateForest.plantDensity = 0.55f * plantModifier;
-            BiomeDef.Named("TemperateSwamp").animalDensity = 2.8f * animalModifier;
-            BiomeDef.Named("TemperateSwamp").plantDensity = 0.55f * plantModifier;
-            BiomeDefOf.TropicalRainforest.animalDensity = 4.0f * animalModifier;
-            BiomeDefOf.TropicalRainforest.plantDensity = 0.85f * plantModifier;
-            BiomeDef.Named("TropicalSwamp").animalDensity = 4.0f * animalModifier;
-            BiomeDef.Named("TropicalSwamp").plantDensity = 0.85f * plantModifier;
-            BiomeDefOf.Tundra.animalDensity = 0.8f * animalModifier;
-            BiomeDefOf.Tundra.plantDensity = 0.14f * plantModifier;
-            List<BiomeDef> Biomes = DefDatabase<BiomeDef>.AllDefsListForReading;
-            for (int i = Biomes.Count - 1; i >= 0; i--)
-            {
-                if (Biomes[i].defName.Contains("BorealArchi"))
-                {
-                    Biomes[i].animalDensity = 1.9f * animalModifier;
-                    Biomes[i].plantDensity = 0.3f * plantModifier;
-                }
-                if (Biomes[i].defName.Contains("DesertArchi"))
-                {
-                    Biomes[i].animalDensity = 1.3f * animalModifier;
-                    Biomes[i].plantDensity = 0.16f * plantModifier;
-                }
-                if (Biomes[i].defName.Contains("TemperateArchi"))
-                {
-                    Biomes[i].animalDensity = 2.8f * animalModifier;
-                    Biomes[i].plantDensity = 0.55f * plantModifier;
-                }
-                if (Biomes[i].defName.Contains("TropicalArchi"))
-                {
-                    Biomes[i].animalDensity = 4.0f * animalModifier;
-                    Biomes[i].plantDensity = 0.85f * plantModifier;
-                }
-                if (Biomes[i].defName.Contains("TundraArchi"))
-                {
-                    Biomes[i].animalDensity = 0.8f * animalModifier;
-                    Biomes[i].plantDensity = 0.14f * plantModifier;
-                }
-                if (Biomes[i].defName.Contains("ColdBogArchi"))
-                {
-                    Biomes[i].animalDensity = 0.8f * animalModifier;
-                    Biomes[i].plantDensity = 0.52f * plantModifier;
-                }
-                if (Biomes[i].defName.Contains("TemperateSwampArchi"))
-                {
-                    Biomes[i].animalDensity = 2.8f * animalModifier;
-                    Biomes[i].plantDensity = 0.55f * plantModifier;
-                }
-                if (Biomes[i].defName.Contains("TropicalSwampArchi"))
-                {
-                    Biomes[i].animalDensity = 4.0f * animalModifier;
-                    Biomes[i].plantDensity = 0.85f * plantModifier;
-                }
-                if (Biomes[i].defName == "Cave")
-                {
-                    Biomes[i].animalDensity = 3.0f * animalModifier;
-                    Biomes[i].plantDensity = 0f * plantModifier;
-                }
-            }*/
+#if DEBUG
+            Log.Warning("End UpdateBiomeStatsPerUserSettings");
+#endif
         }
     }
 
@@ -615,7 +564,7 @@ namespace ConfigurableMaps
         }
     }
 
-    
+
     [HarmonyPatch(typeof(World), "NaturalRockTypesIn", null)]
     public static class World_NaturalRockTypesIn
     {
@@ -738,7 +687,7 @@ namespace ConfigurableMaps
         }
     }
 
-    [HarmonyPatch(typeof(GenStep_ScatterLumpsMineable), "ScatterAt", null)]
+    /*[HarmonyPatch(typeof(GenStep_ScatterLumpsMineable), "ScatterAt", null)]
     public static class GenStep_ScatterLumpsMineable_ScatterAt
     {
         public static bool Prefix()
@@ -757,5 +706,5 @@ namespace ConfigurableMaps
             }
             return true;
         }
-    }
+    }*/
 }

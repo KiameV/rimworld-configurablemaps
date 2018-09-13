@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+
+	<RFR.FewerRuinsTerrain>Configurable Maps - Ajustes del terreno</RFR.FewerRuinsTerrain>
+	<RFR.FewerRuinsThings>Configurable Maps - Ajustes de las "cosas"</RFR.FewerRuinsThings>
+	<RFR.FewerRuinsWorld>Configurable Maps - Ajustes del mapa mundial</RFR.FewerRuinsWorld>
+	
+	<RFR.ruinsLevel>Densidad de ruinas en nuevos mapas:</RFR.ruinsLevel>
+
+	<RFR.RuinsNone>¡Ni una sola ruina! Un paisaje inmaculado.</RFR.RuinsNone>
+	<RFR.RuinsVeryLow>Muy baja densidad. Pocas ruinas, si es que las hay.</RFR.RuinsVeryLow>
+	<RFR.RuinsLow>Baja densidad de ruinas.</RFR.RuinsLow>
+	<RFR.RuinsNormal>Normal. (Densidad por defecto.)</RFR.RuinsNormal>
+	<RFR.RuinsHigh>Alta densidad de ruinas.</RFR.RuinsHigh>
+	<RFR.RuinsVeryHigh>Muy alta densidad.</RFR.RuinsVeryHigh>
+	<RFR.RuinsExtreme>Densidad extremadamente alta.</RFR.RuinsExtreme>
+	<RFR.RuinsInsane>Una densidad demencialmente alta. Posiblemente sea más "interior" que "exterior".</RFR.RuinsInsane>
+	<RFR.RuinsRandom>ALEATORIO. Cada vez que se crea un mapa, se selecciona un ajuste al azar.</RFR.RuinsRandom>
+	
+	<RFR.shrinesLevel>Densidad de "Santuarios antiguos" en nuevos mapas:</RFR.shrinesLevel>
+
+	<RFR.ShrinesNone>Absolutamente ningún santuario.</RFR.ShrinesNone>
+	<RFR.ShrinesVeryLow>Muy baja densidad. Pocos santuarios. Tal vez ni uno.</RFR.ShrinesVeryLow>
+	<RFR.ShrinesLow>Baja densidad de santuarios.</RFR.ShrinesLow>
+	<RFR.ShrinesNormal>Normal. (Densidad por defecto.)</RFR.ShrinesNormal>
+	<RFR.ShrinesHigh>Alta densidad de santuarios.</RFR.ShrinesHigh>
+	<RFR.ShrinesVeryHigh>Muy alta densidad.</RFR.ShrinesVeryHigh>
+	<RFR.ShrinesExtreme>Densidad extremadamente alta.</RFR.ShrinesExtreme>
+	<RFR.ShrinesInsane>Una densidad demencialmente alta. ¡"Peligros antiguos" por todas partes!</RFR.ShrinesInsane>
+	<RFR.ShrinesRandom>ALEATORIO. Cada vez que se crea un mapa, se selecciona un ajuste al azar.</RFR.ShrinesRandom>
+
+	<RFR.stoneType>Piedras utilizadas en santuarios y ruinas:</RFR.stoneType>
+	
+	<RFR.StoneVanilla>Las ruinas de piedra se construirán con tipos de piedra al azar. Este es el comportamiento por defecto.</RFR.StoneVanilla>
+	<RFR.StoneMixed>La mayoría de las ruinas de piedra se construirán con tipos de piedra "locales" (las disponibles en el mapa).</RFR.StoneMixed>
+	<RFR.StoneLocal>Todas las ruinas de piedra se construirán con tipos de piedra disponibles localmente.</RFR.StoneLocal>
+	<RFR.StoneRandom>ALEATORIO. Cada vez que se crea un mapa, se selecciona un ajuste al azar.</RFR.StoneRandom>
+
+	<RFR.animalDensityLevel>Densidad Animal en nuevos mapas:</RFR.animalDensityLevel>
+
+	<RFR.AnimalDensitySparse>Escasa. Relativamente pocos animales.</RFR.AnimalDensitySparse>
+	<RFR.AnimalDensityNormal>Normal. (Densidad por defecto.)</RFR.AnimalDensityNormal>
+	<RFR.AnimalDensityDense>Densa. Más vida animal de lo habitual.</RFR.AnimalDensityDense>
+	<RFR.AnimalDensityExtreme>Extrema. Rebosante de vida.</RFR.AnimalDensityExtreme>
+	<RFR.AnimalDensityRandom>ALEATORIO. Cada vez que se crea un mapa, se selecciona un ajuste al azar.</RFR.AnimalDensityRandom>
+
+	<RFR.plantDensityLevel>Densidad de Plantas en nuevos mapas:</RFR.plantDensityLevel>
+
+	<RFR.PlantDensitySparse>Escasa. Relativamente pocas plantas.</RFR.PlantDensitySparse>
+	<RFR.PlantDensityNormal>Normal. (Densidad por defecto.)</RFR.PlantDensityNormal>
+	<RFR.PlantDensityDense>Densa. Más vida vegetal de lo habitual.</RFR.PlantDensityDense>
+	<RFR.PlantDensityExtreme>Extrema. Rebosante de vida.</RFR.PlantDensityExtreme>
+	<RFR.PlantDensityRandom>ALEATORIO. Cada vez que se crea un mapa, se selecciona un ajuste al azar.</RFR.PlantDensityRandom>
+	
+	<RFR.oreLevel>Densidad de menas de mineral en nuevos mapas:</RFR.oreLevel>
+
+	<RFR.OreNone>No hay ningún mineral. Esto, obviamente, hace que el juego sea más difícil.</RFR.OreNone>
+	<RFR.OreLow>Baja densidad de mineral. (La mitad que la normal.)</RFR.OreLow>
+	<RFR.OreNormal>Normal. (Densidad por defecto.)</RFR.OreNormal>
+	<RFR.OreHigh>Alta densidad de mineral. (Dos veces la normal.)</RFR.OreHigh>
+	<RFR.OreVeryHigh>Densidad de mineral muy alta. (Cuatro veces la normal.)</RFR.OreVeryHigh>
+	<RFR.OreRandom>ALEATORIO. Cada vez que se crea un mapa, se selecciona un ajuste al azar.</RFR.OreRandom>
+	
+	<RFR.geysersLevel>Densidad de géiseres en nuevos mapas:</RFR.geysersLevel>
+
+	<RFR.GeysersNone>No hay ningún géiser. ¡Nada de energía geotérmica para usted!</RFR.GeysersNone>
+	<RFR.GeysersLow>Baja densidad de géiseres. (La mitad que la normal.)</RFR.GeysersLow>
+	<RFR.GeysersNormal>Normal. (Densidad por defecto.)</RFR.GeysersNormal>
+	<RFR.GeysersHigh>Alta densidad de géiseres. (Dos veces la normal.)</RFR.GeysersHigh>
+	<RFR.GeysersVeryHigh>Muy alta densidad de géiseres. (Cuatro veces la normal.)</RFR.GeysersVeryHigh>
+	<RFR.GeysersRandom>ALEATORIO. Cada vez que se crea un mapa, se selecciona un ajuste al azar.</RFR.GeysersRandom>
+
+	<RFR.chunksLevel>Densidad de trozos de piedra en nuevos mapas:</RFR.chunksLevel>
+
+	<RFR.ChunksNone>No hay ningún trozo de piedra. ¡Si quieres piedra, tendrás que minarla!</RFR.ChunksNone>
+	<RFR.ChunksLow>Baja densidad de trozos. (La mitad que la normal.)</RFR.ChunksLow>
+	<RFR.ChunksNormal>Normal. (Densidad por defecto.)</RFR.ChunksNormal>
+	<RFR.ChunksRandom>ALEATORIO. Cada vez que se crea un mapa, se selecciona un ajuste al azar.</RFR.ChunksRandom>
+
+	<RFR.mountainLevel>Densidad de montañas en nuevos mapas:</RFR.mountainLevel>
+
+	<RFR.MountainVeryLow>Muy baja. Los mapas llanos tendrán pocas (si las hay) colinas. Los mapas montañosos tendrán grandes espacios abiertos.</RFR.MountainVeryLow>
+	<RFR.MountainLow>Baja densidad de montañas.</RFR.MountainLow>
+	<RFR.MountainNormal>Densidad de montañas normal. (Densidad por defecto.)</RFR.MountainNormal>
+	<RFR.MountainHigh>Alta densidad de montañas.</RFR.MountainHigh>
+	<RFR.MountainVeryHigh>Muy alta densidad de montañas.</RFR.MountainVeryHigh>
+	<RFR.MountainInsane>Extremo. Los mapas llanos se parecerán mucho a los mapas montañosos por defecto. Los mapas montañosos pueden ser casi herméticos.</RFR.MountainInsane>
+	<RFR.MountainRandom>ALEATORIO. Cada vez que se crea un mapa, se selecciona un ajuste al azar.</RFR.MountainRandom>
+
+	<RFR.waterLevel>Densidad acuática en nuevos mapas:</RFR.waterLevel>
+
+	<RFR.WaterVeryLow>Muy baja densidad acuática. Los lagos y pantanos serán muy pequeños.</RFR.WaterVeryLow>
+	<RFR.WaterLow>Baja densidad acuática.</RFR.WaterLow>
+	<RFR.WaterNormal>Densidad acuática normal. (Densidad por defecto.)</RFR.WaterNormal>
+	<RFR.WaterHigh>Alta densidad actuatica.</RFR.WaterHigh>
+	<RFR.WaterVeryHigh>Densidad acuática muy alta. Es muy probable que los mapas incluyan grandes lagos o pantanos.</RFR.WaterVeryHigh>
+	<RFR.WaterRandom>ALEATORIO. Cada vez que se crea un mapa, se selecciona un ajuste al azar.</RFR.WaterRandom>
+
+	<RFR.fertilityLevel>Tierra fertil en nuevos mapas:</RFR.fertilityLevel>
+
+	<RFR.FertilityNone>Muy baja cantidad de tierra fértil.</RFR.FertilityNone>
+	<RFR.FertilityLow>Baja cantidad de tierra fértil.</RFR.FertilityLow>
+	<RFR.FertilityNormal>Normal. (Cantidad de tierra fértil por defecto.)</RFR.FertilityNormal>
+	<RFR.FertilityHigh>Alta cantidad de tierra fértil.</RFR.FertilityHigh>
+	<RFR.FertilityVeryHigh>Muy alta cantidad de tierra fértil.</RFR.FertilityVeryHigh>
+	<RFR.FertilityRandom>ALEATORIO. Cada vez que se crea un mapa, se selecciona un ajuste al azar.</RFR.FertilityRandom>
+
+	<RFR.coastLevel>Nivel del océano en mapas costeros:</RFR.coastLevel>
+	
+	<RFR.CoastNormal>Por defecto. Una franja de océano y un poco de arena en un borde del mapa.</RFR.CoastNormal>
+	<RFR.CoastHigh1>Un poco alto. Una franja más grande de océano y arena.</RFR.CoastHigh1>
+	<RFR.CoastHigh2>Alto. Una franja mucho más grande de océano y arena que la de por defecto.</RFR.CoastHigh2>
+	<RFR.CoastVeryHigh1>Muy alto. Más océano y mucha playa.</RFR.CoastVeryHigh1>
+	<RFR.CoastVeryHigh2>Todavía más alto. Aún más océano. Aún más arena. Un terreno aún más inútil.</RFR.CoastVeryHigh2>
+	<RFR.CoastVeryHigh3>Extremadamente alto. Gran parte del mapa lo conformará el agua del océano y bancos de arena.</RFR.CoastVeryHigh3>
+	<RFR.CoastInsane>Demencialmente alto. ¡Buena suerte encontrando tierra seca!</RFR.CoastInsane>
+	<RFR.CoastRandom>ALEATORIO. Cada vez que se crea un mapa, se selecciona un ajuste al azar.</RFR.CoastRandom>
+	
+	<RFR.DisallowIslands>Islas "Peñón" no permitidas</RFR.DisallowIslands>
+	<RFR.DisallowIslandsTip>Si se selecciona esta opción, no aparecerán formaciones rocosas en los océanos, lagos o pantanos. Tenga en cuenta que la combinación de esta opción con un nivel de agua alto puede reducir seriamente la cantidad de piedra incluso en los mapas montañosos.</RFR.DisallowIslandsTip>
+
+	<RFR.stoneMin>Cantidad mínima de tipos de piedra por baldosa (Por defecto = 2):</RFR.stoneMin>
+	<RFR.stoneMax>Cantidad máxima de tipos de piedra por baldosa (Por defecto = 3):</RFR.stoneMax>
+
+	<RFR.stoneNotes>Si establece un número máximo de tipos de piedra inferior al mínimo, el error se corregirá automáticamente y el máximo se reajustará para que sea igual al mínimo.</RFR.stoneNotes>
+
+	<RFR.graniteCommonality>Presencia de granito en el mapa mundial:</RFR.graniteCommonality>
+	<RFR.limestoneCommonality>Presencia de caliza en el mapa mundial:</RFR.limestoneCommonality>
+	<RFR.marbleCommonality>Presencia de marmol en el mapa mundial:</RFR.marbleCommonality>
+	<RFR.sandstoneCommonality>Presencia de arenisca en el mapa mundial:</RFR.sandstoneCommonality>
+	<RFR.slateCommonality>Presencia de pizarra en el mapa mundial:</RFR.slateCommonality>
+	<RFR.extraStoneCommonality>Relative commonality of mod-added stones (if any) on the world map:</RFR.extraStoneCommonality>
+	
+	<RFR.Rare>Rara</RFR.Rare>
+	<RFR.Average>Infrecuente</RFR.Average>
+	<RFR.Common>Frecuente</RFR.Common>
+
+	<RFR.AllowFakeOres>Permitir minerales "falsos"</RFR.AllowFakeOres>
+	<RFR.AllowFakeOresTip>Si este ajuste está desactivado, el acero compactado, el plastiacero y la maquinaria no aparecerán en los mapas. Esto, por supuesto, hará que el juego sea más difícil, pero permitirá crear mapas más naturales, si se desea jugar en un mundo que parece verdaderamente virgen de asentamientos previos.</RFR.AllowFakeOresTip>
+	
+</LanguageData>

@@ -589,100 +589,126 @@ namespace ConfigurableMaps
         [HarmonyPriority(Priority.High)]
         public static bool Prefix(int tile, ref List<ThingDef> __result)
         {
-#if DEBUG
-            Log.Warning("World_NaturalRockTypesIn Prefix");
-#endif
-            if (HarmonyPatches.detectedCuprosStones)
+            List<StonePercentChance> list = GetStoneTypes();
+            if (list.Count == 0)
             {
+                Log.Warning("No rocks selected. Will use base game's logic.");
                 return true;
             }
+
+            int min = 0;
+
             Rand.PushState();
-            Rand.Seed = tile;
-            List<ThingDef> list = (
-                from d in DefDatabase<ThingDef>.AllDefs
-                where (d.category != ThingCategory.Building || !d.building.isNaturalRock ? false : !d.building.isResourceRock)
-                select d).ToList<ThingDef>();
-            int count = Rand.RangeInclusive((int)WorldSettings.stoneMin, (int)WorldSettings.stoneMax);
-            if (count > list.Count)
+            try
             {
-                count = list.Count;
+                Rand.Seed = tile;
+                int rockTypesInTile = Rand.RangeInclusive((int)WorldSettings.stoneMin, (int)WorldSettings.stoneMax);
+                if (rockTypesInTile > list.Count)
+                {
+                    rockTypesInTile = list.Count;
+                }
+
+                if (__result == null)
+                    __result = new List<ThingDef>(rockTypesInTile);
+                
+                for (int i = 0; i < rockTypesInTile; ++i)
+                {
+                    int rand = Rand.RangeInclusive(min, GetMax(list));
+                    int start = 0;
+                    for (int j = 0; j < list.Count; ++j)
+                    {
+                        if ((list[j].Within(rand, start) && !__result.Contains(list[j].Def)) || 
+                            j == list.Count - 1)
+                        {
+                            __result.Add(list[j].Def);
+                            list.RemoveAt(j);
+                            break;
+                        }
+                        start += list[j].Chance;
+                    }
+                }
             }
-            List<ThingDef> thingDefs = new List<ThingDef>();
-            for (int i = 0; i < count; i++)
+            finally
             {
-                ThingDef thingDef = list.RandomElement<ThingDef>();
-                if (thingDef.defName == "Granite")
-                {
-                    if (WorldSettings.graniteCommonality < 1)
-                    {
-                        if (Rand.Value < 0.90) { i--; continue; }
-                    }
-                    if (WorldSettings.graniteCommonality < 2)
-                    {
-                        if (Rand.Value < 0.45) { i--; continue; }
-                    }
-                }
-                else if (thingDef.defName == "Limestone")
-                {
-                    if (WorldSettings.limestoneCommonality < 1)
-                    {
-                        if (Rand.Value < 0.90) { i--; continue; }
-                    }
-                    if (WorldSettings.limestoneCommonality < 2)
-                    {
-                        if (Rand.Value < 0.45) { i--; continue; }
-                    }
-                }
-                else if (thingDef.defName == "Marble")
-                {
-                    if (WorldSettings.marbleCommonality < 1)
-                    {
-                        if (Rand.Value < 0.90) { i--; continue; }
-                    }
-                    if (WorldSettings.marbleCommonality < 2)
-                    {
-                        if (Rand.Value < 0.45) { i--; continue; }
-                    }
-                }
-                else if (thingDef.defName == "Sandstone")
-                {
-                    if (WorldSettings.sandstoneCommonality < 1)
-                    {
-                        if (Rand.Value < 0.90) { i--; continue; }
-                    }
-                    if (WorldSettings.sandstoneCommonality < 2)
-                    {
-                        if (Rand.Value < 0.45) { i--; continue; }
-                    }
-                }
-                else if (thingDef.defName == "Slate")
-                {
-                    if (WorldSettings.slateCommonality < 1)
-                    {
-                        if (Rand.Value < 0.90) { i--; continue; }
-                    }
-                    if (WorldSettings.slateCommonality < 2)
-                    {
-                        if (Rand.Value < 0.45) { i--; continue; }
-                    }
-                }
-                else
-                {
-                    if (WorldSettings.extraStoneCommonality < 1)
-                    {
-                        if (Rand.Value < 0.90) { i--; continue; }
-                    }
-                    if (WorldSettings.extraStoneCommonality < 2)
-                    {
-                        if (Rand.Value < 0.45) { i--; continue; }
-                    }
-                }
-                list.Remove(thingDef);
-                thingDefs.Add(thingDef);
+                Rand.PopState();
             }
-            Rand.PopState();
-            __result = thingDefs;
             return false;
+        }
+
+        private static int GetMax(List<StonePercentChance> l)
+        {
+            int max = 0;
+            foreach(StonePercentChance s in l)
+            {
+                max += s.Chance;
+            }
+            return max;
+        }
+
+        private struct StonePercentChance
+        {
+            public readonly int Chance;
+            public readonly ThingDef Def;
+            public StonePercentChance(int c, ThingDef d)
+            {
+                this.Chance = c;
+                this.Def = d;
+            }
+            public bool Within(int i, int start)
+            {
+                return i <= start + this.Chance;
+            }
+        }
+
+        private static List<StonePercentChance> GetStoneTypes()
+        {
+            List<StonePercentChance> l = new List<StonePercentChance>();
+            foreach (ThingDef d in DefDatabase<ThingDef>.AllDefs)
+            {
+                if (d.category == ThingCategory.Building &&
+                    d.building != null &&
+                    d.building.isNaturalRock &&
+                    !d.building.isResourceRock &&
+                    !d.IsSmoothed)
+                {
+                    if (d.defName == "Granite")
+                    {
+                        AddStoneType(l, WorldSettings.graniteCommonality, d);
+                    }
+                    else if (d.defName == "Limestone")
+                    {
+                        AddStoneType(l, WorldSettings.limestoneCommonality, d);
+                    }
+                    else if (d.defName == "Marble")
+                    {
+                        AddStoneType(l, WorldSettings.marbleCommonality, d);
+                    }
+                    else if (d.defName == "Sandstone")
+                    {
+                        AddStoneType(l, WorldSettings.sandstoneCommonality, d);
+                    }
+                    else if (d.defName == "Slate")
+                    {
+                        AddStoneType(l, WorldSettings.slateCommonality, d);
+                    }
+                    else if (WorldSettings.extraStoneCommonality > 0)
+                    {
+                        AddStoneType(l, WorldSettings.extraStoneCommonality, d);
+                    }
+                }
+            }
+            return l;
+        }
+
+        private static void AddStoneType(List<StonePercentChance> l, float chance, ThingDef d)
+        {
+            if (chance > 0)
+            {
+                int c = (int)chance;
+                if (c < 1)
+                    c = 1;
+                l.Add(new StonePercentChance(c, d));
+            }
         }
     }
 

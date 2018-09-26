@@ -72,6 +72,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BiomeUtil.cs" />
     <Compile Include="HarmonyPatches.cs" />
     <Compile Include="Maker\BeachMaker.cs" />
     <Compile Include="Maker\GenStep.cs" />
@@ -80,6 +81,7 @@
     <Compile Include="Settings\World.cs" />
     <Compile Include="Settings\Terrain.cs" />
     <Compile Include="Settings\Things.cs" />
+    <Compile Include="WorldComp.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

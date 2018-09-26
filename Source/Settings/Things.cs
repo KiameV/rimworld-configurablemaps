@@ -17,14 +17,14 @@ namespace ConfigurableMaps.Settings
 
         public override void DoSettingsWindowContents(Rect canvas)
         {
-            Util.Init();
+            BiomeUtil.Init();
             ThingsSettings.DoWindowContents(canvas);
         }
 
         public override void WriteSettings()
         {
             base.WriteSettings();
-            Util.UpdateBiomeStatsPerUserSettings();
+            BiomeUtil.UpdateBiomeStatsPerUserSettings();
         }
     }
 

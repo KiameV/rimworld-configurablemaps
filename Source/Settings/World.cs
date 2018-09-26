@@ -18,7 +18,7 @@ namespace ConfigurableMaps.Settings
 
         public override void DoSettingsWindowContents(Rect inRect)
         {
-            Util.Init();
+            BiomeUtil.Init();
             WorldSettings.DoWindowContents(inRect);
         }
     }

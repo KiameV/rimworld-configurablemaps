@@ -213,22 +213,17 @@ namespace ConfigurableMaps
             //
             if (countPer10kCells > 1.95 && countPer10kCells < 3.85)
             {
-                float min = 2;
-                float max = 4;
                 float v = ThingsSettings.ruinsLevel;
                 if (v < 0 || v > 8)
                 {
                     v = (Rand.Value) * 8;
                 }
-                if (v < 1) { min = 0; max = 0; }
-                else if (v < 2) { min = 0; max = 1; }
-                else if (v < 3) { min = 1; max = 2; }
-                else if (v < 4) { min = 2; max = 4; }
-                else if (v < 5) { min = 4; max = 8; }
-                else if (v < 6) { min = 8; max = 16; }
-                else if (v < 7) { min = 16; max = 32; }
-                else { min = 32; max = 64; }
-                countPer10kCells = Rand.Range(min, max);
+                if (v < 1)
+                {
+                    v = 0;
+                }
+                
+                countPer10kCells = Rand.Range(v, v * 2);
             }
             //
             // Geysers

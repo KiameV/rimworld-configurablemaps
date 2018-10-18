@@ -32,7 +32,7 @@ namespace ConfigurableMaps.Settings
     {
         public static float animalDensityLevel = 1.5f;
         public static float plantDensityLevel = 1.5f;
-        public static float ruinsLevel = 1.5f;
+        public static float ruinsLevel = 1.75f;
         public static float shrinesLevel = 1.5f;
         public static float stoneType = 0.5f;
 
@@ -45,18 +45,18 @@ namespace ConfigurableMaps.Settings
             // -- Density of Ruins -- //
             // ---------------------- //
             list.Gap();
-            if (ruinsLevel < 1) { list.Label("RFR.ruinsLevel".Translate() + "  " + "RFR.RuinsNone".Translate()); }
-            else if (ruinsLevel < 2) { list.Label("RFR.ruinsLevel".Translate() + "  " + "RFR.RuinsVeryLow".Translate()); }
-            else if (ruinsLevel < 3) { list.Label("RFR.ruinsLevel".Translate() + "  " + "RFR.RuinsLow".Translate()); }
-            else if (ruinsLevel < 4)
+            if (ruinsLevel < 0.5) { list.Label("RFR.ruinsLevel".Translate() + "  " + "RFR.RuinsNone".Translate()); }
+            else if (ruinsLevel < 1) { list.Label("RFR.ruinsLevel".Translate() + "  " + "RFR.RuinsVeryLow".Translate()); }
+            else if (ruinsLevel < 1.5) { list.Label("RFR.ruinsLevel".Translate() + "  " + "RFR.RuinsLow".Translate()); }
+            else if (ruinsLevel < 2)
             {
                 GUI.contentColor = Color.yellow;
                 list.Label("RFR.ruinsLevel".Translate() + "  " + "RFR.RuinsNormal".Translate());
                 GUI.contentColor = Color.white;
             }
-            else if (ruinsLevel < 5) { list.Label("RFR.ruinsLevel".Translate() + "  " + "RFR.RuinsHigh".Translate()); }
-            else if (ruinsLevel < 6) { list.Label("RFR.ruinsLevel".Translate() + "  " + "RFR.RuinsVeryHigh".Translate()); }
-            else if (ruinsLevel < 7) { list.Label("RFR.ruinsLevel".Translate() + "  " + "RFR.RuinsExtreme".Translate()); }
+            else if (ruinsLevel < 3) { list.Label("RFR.ruinsLevel".Translate() + "  " + "RFR.RuinsHigh".Translate()); }
+            else if (ruinsLevel < 4.5) { list.Label("RFR.ruinsLevel".Translate() + "  " + "RFR.RuinsVeryHigh".Translate()); }
+            else if (ruinsLevel < 6) { list.Label("RFR.ruinsLevel".Translate() + "  " + "RFR.RuinsExtreme".Translate()); }
             else if (ruinsLevel < 8) { list.Label("RFR.ruinsLevel".Translate() + "  " + "RFR.RuinsInsane".Translate()); }
             else
             {
@@ -160,7 +160,7 @@ namespace ConfigurableMaps.Settings
             base.ExposeData();
             Scribe_Values.Look(ref animalDensityLevel, "animalDensityLevel", 1.5f);
             Scribe_Values.Look(ref plantDensityLevel, "plantDensityLevel", 1.5f);
-            Scribe_Values.Look(ref ruinsLevel, "ruinsLevel", 1.5f);
+            Scribe_Values.Look(ref ruinsLevel, "ruinsLevel", 1.75f);
             Scribe_Values.Look(ref shrinesLevel, "shrinesLevel", 1.5f);
             Scribe_Values.Look(ref stoneType, "stoneType", 0.5f);
         }

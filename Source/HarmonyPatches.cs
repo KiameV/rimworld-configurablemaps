@@ -649,7 +649,7 @@ namespace ConfigurableMaps
         }
     }
 
-    /*[HarmonyPatch(typeof(GenStep_ScatterLumpsMineable), "ScatterAt", null)]
+    [HarmonyPatch(typeof(GenStep_ScatterLumpsMineable), "ScatterAt", null)]
     public static class GenStep_ScatterLumpsMineable_ScatterAt
     {
         public static bool Prefix()
@@ -658,15 +658,15 @@ namespace ConfigurableMaps
             {
                 ThingDefOf.MineableSteel.building.mineableScatterCommonality = 1.0f;
                 ThingDef.Named("MineablePlasteel").building.mineableScatterCommonality = 0.05f;
-                ThingDef.Named("MineableComponents").building.mineableScatterCommonality = 1.0f;
+				ThingDefOf.MineableComponentsIndustrial.building.mineableScatterCommonality = 1.0f;
             }
             else
             {
                 ThingDefOf.MineableSteel.building.mineableScatterCommonality = 0f;
                 ThingDef.Named("MineablePlasteel").building.mineableScatterCommonality = 0f;
-                ThingDef.Named("MineableComponents").building.mineableScatterCommonality = 0f;
+                ThingDefOf.MineableComponentsIndustrial.building.mineableScatterCommonality = 0f;
             }
             return true;
         }
-    }*/
+    }
 }

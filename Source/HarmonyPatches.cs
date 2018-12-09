@@ -13,15 +13,15 @@ using Verse.Noise;
 
 namespace ConfigurableMaps
 {
-    [StaticConstructorOnStartup]
+	[StaticConstructorOnStartup]
     public class HarmonyPatches
-    {
-        public static bool detectedFertileFields = false;
+	{
+		public static bool detectedFertileFields = false;
         public static bool detectedCuprosStones = false;
 
         static HarmonyPatches()
         {
-            HarmonyInstance harmony = HarmonyInstance.Create("com.configurablemaps.rimworld.mod");
+			HarmonyInstance harmony = HarmonyInstance.Create("com.configurablemaps.rimworld.mod");
             harmony.PatchAll(Assembly.GetExecutingAssembly());
             if (ModsConfig.ActiveModsInLoadOrder.Any(mod => mod.Name.Contains("[RF] Fertile Fields")))
             {
@@ -652,21 +652,50 @@ namespace ConfigurableMaps
     [HarmonyPatch(typeof(GenStep_ScatterLumpsMineable), "ScatterAt", null)]
     public static class GenStep_ScatterLumpsMineable_ScatterAt
     {
-        public static bool Prefix()
+		private static float originalPlasteelCommonality = -1;
+		private static float originalSteelCommonality = -1;
+		private static float originalComponentsIndustrialCommonality = -1;
+
+		[HarmonyPriority(Priority.First)]
+        public static void Prefix()
         {
+			ThingDef plasteel = ThingDef.Named("MineablePlasteel");
+			ThingDef steel = ThingDefOf.MineableSteel;
+			ThingDef comp = ThingDefOf.MineableComponentsIndustrial;
+
+			if (originalPlasteelCommonality == -1)
+			{
+				originalPlasteelCommonality = plasteel.building.mineableScatterCommonality;
+				originalSteelCommonality = steel.building.mineableScatterCommonality;
+				originalComponentsIndustrialCommonality = comp.building.mineableScatterCommonality;
+			}
+
             if (TerrainSettings.allowFakeOres)
             {
-                ThingDefOf.MineableSteel.building.mineableScatterCommonality = 1.0f;
-                ThingDef.Named("MineablePlasteel").building.mineableScatterCommonality = 0.05f;
-				ThingDefOf.MineableComponentsIndustrial.building.mineableScatterCommonality = 1.0f;
+                steel.building.mineableScatterCommonality = originalSteelCommonality;
+                plasteel.building.mineableScatterCommonality = originalPlasteelCommonality;
+				comp.building.mineableScatterCommonality = originalComponentsIndustrialCommonality;
             }
             else
             {
-                ThingDefOf.MineableSteel.building.mineableScatterCommonality = 0f;
-                ThingDef.Named("MineablePlasteel").building.mineableScatterCommonality = 0f;
-                ThingDefOf.MineableComponentsIndustrial.building.mineableScatterCommonality = 0f;
+                steel.building.mineableScatterCommonality = 0f;
+                plasteel.building.mineableScatterCommonality = 0f;
+                comp.building.mineableScatterCommonality = 0f;
             }
-            return true;
         }
+
+		[HarmonyPriority(Priority.Last)]
+		public static void Postfix()
+		{
+			if (!TerrainSettings.allowFakeOres)
+			{
+				ThingDefOf.MineableSteel.building.mineableScatterCommonality = originalSteelCommonality;
+				ThingDef.Named("MineablePlasteel").building.mineableScatterCommonality = originalPlasteelCommonality;
+				ThingDefOf.MineableComponentsIndustrial.building.mineableScatterCommonality = originalComponentsIndustrialCommonality;
+			}
+			originalPlasteelCommonality = -1;
+			originalSteelCommonality = -1;
+			originalComponentsIndustrialCommonality = -1;
+		}
     }
 }

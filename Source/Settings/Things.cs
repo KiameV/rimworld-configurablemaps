@@ -30,10 +30,10 @@ namespace ConfigurableMaps.Settings
 
     public class ThingsSettings : ModSettings
     {
-        public static float animalDensityLevel = 1.5f;
-        public static float plantDensityLevel = 1.5f;
-        public static float ruinsLevel = 1.75f;
-        public static float shrinesLevel = 1.5f;
+        public static float animalDensityLevel = 1f;
+        public static float plantDensityLevel = 1f;
+        public static float ruinsLevel = 1f;
+        public static float shrinesLevel = 1f;
         public static float stoneType = 0.5f;
 
         public static void DoWindowContents(Rect canvas)

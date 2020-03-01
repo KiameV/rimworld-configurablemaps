@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ModMetaData>
 
-	<name>[KV] Configurable Maps - 1.0</name>
+	<name>[KV] Configurable Maps - 1.1</name>
 	<author>Rainbeau Flambe (original) &amp; Kiame Vivacity</author>
 	<url>https://ludeon.com/forums/index.php?topic=44428.0</url>
-	<targetVersion>1.0.0</targetVersion>
+	<supportedVersions>
+		<li>1.0</li>
+		<li>1.1</li>
+	</supportedVersions>
+	<packageId>configurablemaps.kv.rw</packageId>
 	<description>
 "Configurable Maps" provides you with a number of configuration options that you can use to tailor the way your maps generate. Simply visit "Mod Settings" from the game's "Options" menu. You'll find three different sets of options for the mod.
 

@@ -499,7 +499,7 @@ namespace ConfigurableMaps
     public static class World_NaturalRockTypesIn
     {
         [HarmonyPriority(Priority.High)]
-        public static bool Prefix(int tile, ref List<ThingDef> __result)
+        public static bool Prefix(int tile, ref IEnumerable<ThingDef> __result)
         {
             List<StonePercentChance> list = GetStoneTypes();
             if (list.Count == 0)
@@ -532,7 +532,7 @@ namespace ConfigurableMaps
                         if ((list[j].Within(rand, start) && !__result.Contains(list[j].Def)) || 
                             j == list.Count - 1)
                         {
-                            __result.Add(list[j].Def);
+                            __result.AddItem(list[j].Def);
                             list.RemoveAt(j);
                             break;
                         }

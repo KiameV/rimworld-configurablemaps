@@ -498,47 +498,33 @@ namespace ConfigurableMaps
     [HarmonyPatch(typeof(World), "NaturalRockTypesIn", null)]
     public static class World_NaturalRockTypesIn
     {
-        [HarmonyPriority(Priority.High)]
+        [HarmonyPriority(Priority.First)]
         public static bool Prefix(int tile, ref IEnumerable<ThingDef> __result)
         {
-            List<StonePercentChance> list = GetStoneTypes();
-            if (list.Count == 0)
+            List<StonePercentChance> possible = GetStoneTypes();
+            if (possible.Count == 0)
             {
                 Log.Warning("No rocks selected. Will use base game's logic.");
                 return true;
             }
 
-            int min = 0;
-
             Rand.PushState();
+            Rand.Seed = tile;
             try
             {
-                Rand.Seed = tile;
                 int rockTypesInTile = Rand.RangeInclusive((int)WorldSettings.stoneMin, (int)WorldSettings.stoneMax);
-                if (rockTypesInTile > list.Count)
+                if (rockTypesInTile > possible.Count)
+                    rockTypesInTile = possible.Count;
+                var result = new List<ThingDef>(rockTypesInTile);
+                int i = 0;
+                while (i < 50 && result.Count < rockTypesInTile && possible.Count > 0)
                 {
-                    rockTypesInTile = list.Count;
+                    var s = RandomWeightedSelect(possible);
+                    result.Add(s.Def);
+                    possible.Remove(s);
+                    ++i;
                 }
-
-                if (__result == null)
-                    __result = new List<ThingDef>(rockTypesInTile);
-                
-                for (int i = 0; i < rockTypesInTile; ++i)
-                {
-                    int rand = Rand.RangeInclusive(min, GetMax(list));
-                    int start = 0;
-                    for (int j = 0; j < list.Count; ++j)
-                    {
-                        if ((list[j].Within(rand, start) && !__result.Contains(list[j].Def)) || 
-                            j == list.Count - 1)
-                        {
-                            __result.AddItem(list[j].Def);
-                            list.RemoveAt(j);
-                            break;
-                        }
-                        start += list[j].Chance;
-                    }
-                }
+                __result = result;
             }
             finally
             {
@@ -547,66 +533,63 @@ namespace ConfigurableMaps
             return false;
         }
 
-        private static int GetMax(List<StonePercentChance> l)
+        private static StonePercentChance RandomWeightedSelect(List<StonePercentChance> possible)
         {
-            int max = 0;
-            foreach(StonePercentChance s in l)
+            float totalWeight = 0;
+            foreach (var st in possible)
+                totalWeight += st.Chance;
+            float r = Rand.RangeInclusive(0, (int)totalWeight);
+            StonePercentChance p = possible[0];
+            while (r > 0)
             {
-                max += s.Chance;
+                for (int i = 0; i < possible.Count && r > 0; ++i)
+                {
+                    p = possible[i];
+                    r -= p.Chance;
+                }
             }
-            return max;
+            return p;
         }
 
         private struct StonePercentChance
         {
-            public readonly int Chance;
+            public readonly float Chance;
             public readonly ThingDef Def;
-            public StonePercentChance(int c, ThingDef d)
+            public StonePercentChance(float Chance, ThingDef d)
             {
-                this.Chance = c;
+                this.Chance = Chance;
                 this.Def = d;
-            }
-            public bool Within(int i, int start)
-            {
-                return i <= start + this.Chance;
             }
         }
 
         private static List<StonePercentChance> GetStoneTypes()
         {
             List<StonePercentChance> l = new List<StonePercentChance>();
-            foreach (ThingDef d in DefDatabase<ThingDef>.AllDefs)
+            foreach (ThingDef d in DefDatabase<ThingDef>.AllDefs.Where((ThingDef td) => td.IsNonResourceNaturalRock).ToList())
             {
-                if (d.category == ThingCategory.Building &&
-                    d.building != null &&
-                    d.building.isNaturalRock &&
-                    !d.building.isResourceRock &&
-                    !d.IsSmoothed)
+                if (d.defName == "Granite")
                 {
-                    if (d.defName == "Granite")
-                    {
-                        AddStoneType(l, WorldSettings.graniteCommonality, d);
-                    }
-                    else if (d.defName == "Limestone")
-                    {
-                        AddStoneType(l, WorldSettings.limestoneCommonality, d);
-                    }
-                    else if (d.defName == "Marble")
-                    {
-                        AddStoneType(l, WorldSettings.marbleCommonality, d);
-                    }
-                    else if (d.defName == "Sandstone")
-                    {
-                        AddStoneType(l, WorldSettings.sandstoneCommonality, d);
-                    }
-                    else if (d.defName == "Slate")
-                    {
-                        AddStoneType(l, WorldSettings.slateCommonality, d);
-                    }
-                    else if (WorldSettings.extraStoneCommonality > 0)
-                    {
-                        AddStoneType(l, WorldSettings.extraStoneCommonality, d);
-                    }
+                    AddStoneType(l, WorldSettings.graniteCommonality, d);
+                }
+                else if (d.defName == "Limestone")
+                {
+                    AddStoneType(l, WorldSettings.limestoneCommonality, d);
+                }
+                else if (d.defName == "Marble")
+                {
+                    AddStoneType(l, WorldSettings.marbleCommonality, d);
+                }
+                else if (d.defName == "Sandstone")
+                {
+                    AddStoneType(l, WorldSettings.sandstoneCommonality, d);
+                }
+                else if (d.defName == "Slate")
+                {
+                    AddStoneType(l, WorldSettings.slateCommonality, d);
+                }
+                else if (WorldSettings.extraStoneCommonality > 0)
+                {
+                    AddStoneType(l, WorldSettings.extraStoneCommonality, d);
                 }
             }
             return l;
@@ -614,13 +597,11 @@ namespace ConfigurableMaps
 
         private static void AddStoneType(List<StonePercentChance> l, float chance, ThingDef d)
         {
-            if (chance > 0)
-            {
-                int c = (int)chance;
-                if (c < 1)
-                    c = 1;
-                l.Add(new StonePercentChance(c, d));
-            }
+            if (chance < 0)
+                chance = 0;
+            else if (chance > 100)
+                chance = 100;
+            l.Add(new StonePercentChance(chance, d));
         }
     }
 

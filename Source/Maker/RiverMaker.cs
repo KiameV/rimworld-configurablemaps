@@ -9,7 +9,7 @@ using Verse.Noise;
 
 namespace ConfigurableMaps.Maker
 {
-    internal class CMRiverMaker
+    /*internal class CMRiverMaker
     {
         private ModuleBase generator;
         private ModuleBase coordinateX;
@@ -151,5 +151,5 @@ namespace ConfigurableMaps.Maker
             Vector3 vector3 = new Vector3(this.coordinateX.GetValue(loc), 0f, this.coordinateZ.GetValue(loc));
             return vector3;
         }
-    }
+    }*/
 }

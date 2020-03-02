@@ -5,7 +5,7 @@ using Verse.Noise;
 
 namespace ConfigurableMaps.Maker
 {
-    internal static class CMBeachMaker
+    /*internal static class CMBeachMaker
     {
         private const float PerlinFrequency = 0.03f;
         private const float MaxForDeepWater = 0.1f;
@@ -27,7 +27,7 @@ namespace ConfigurableMaps.Maker
 #if TRACE
             Log.Warning("CMBeachMaker.BeachTerrainAt Prefix");
 #endif
-            /*/
+            // *
             // Coast Level
             //
             float adjustment = 0.0f;
@@ -59,7 +59,7 @@ namespace ConfigurableMaps.Maker
             if (value >= (1f + adjustment))
             {
                 return null;
-            }*/
+            }* /
             return (biome != BiomeDefOf.SeaIce ? TerrainDefOf.Sand : TerrainDefOf.Ice);
         }
         public static void Cleanup()
@@ -107,5 +107,5 @@ namespace ConfigurableMaps.Maker
             CMBeachMaker.beachNoise = new Add(perlin, distFromAxi);
             NoiseDebugUI.StoreNoiseRender(CMBeachMaker.beachNoise, "beachNoise");
         }
-    }
+    }*/
 }

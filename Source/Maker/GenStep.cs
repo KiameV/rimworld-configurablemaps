@@ -9,6 +9,7 @@ using Verse;
 
 namespace ConfigurableMaps.Maker
 {
+    /*
     public class CMGenStep_Terrain : GenStep
     {
         public CMGenStep_Terrain() { }
@@ -309,7 +310,7 @@ namespace ConfigurableMaps.Maker
             }
             if (map.Biome.defName.Contains("Archipelago"))
             {
-                /*/
+                // *
                 // Coast Level (for Islands)
                 //
                 float adjustment = 0.0f;
@@ -356,7 +357,7 @@ namespace ConfigurableMaps.Maker
                             }
                         }
                     }
-                }*/
+                }* /
                 if (elevation > 0.65f && elevation <= 0.69f)
                 {
                     return TerrainDefOf.Gravel;
@@ -420,7 +421,7 @@ namespace ConfigurableMaps.Maker
                 if (terrainDefA != null)
                 {
                     return terrainDefA;
-                }*/
+                }* /
                 return null;// borderTerrainH;
             }
             TerrainDef terrainDef = null;
@@ -559,5 +560,5 @@ namespace ConfigurableMaps.Maker
             public float bestDistance;
             public IntVec3 bestNode;
         }
-    }
+    }*/
 }

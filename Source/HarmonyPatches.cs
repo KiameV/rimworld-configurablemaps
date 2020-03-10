@@ -208,7 +208,7 @@ namespace ConfigurableMaps
                 float max = min;
                 countPer10kCells = Rand.Range(min, max);
             }
-            //
+            /*/
             // Ruins
             //
             if (countPer10kCells > 1.95 && countPer10kCells < 3.85)
@@ -225,7 +225,7 @@ namespace ConfigurableMaps
                 
                 countPer10kCells = Rand.Range(v, v * 2);
             }
-            //
+            /*/
             // Geysers
             //
             if (countPer10kCells > 0.65 && countPer10kCells < 1.05)
@@ -244,7 +244,7 @@ namespace ConfigurableMaps
                 else { min = 2.8f; max = 4; }
                 countPer10kCells = Rand.Range(min, max);
             }
-            //
+            /*/
             // Shrines
             //
             if (countPer10kCells > 0.10 && countPer10kCells < 0.30)
@@ -265,7 +265,7 @@ namespace ConfigurableMaps
                 else if (v < 7) { min = 0.96f; max = 1.92f; }
                 else { min = 1.92f; max = 3.84f; }
                 countPer10kCells = Rand.Range(min, max);
-            }
+            }*/
             int num = Mathf.RoundToInt(10000f / countPer10kCells);
             __result = Mathf.RoundToInt((float)(mapSize * mapSize) / (float)num);
             return false;
@@ -637,31 +637,31 @@ namespace ConfigurableMaps
 		private static float originalSteelCommonality = -1;
 		private static float originalComponentsIndustrialCommonality = -1;
 
-		[HarmonyPriority(Priority.First)]
+        [HarmonyPriority(Priority.First)]
         public static void Prefix()
         {
 			ThingDef plasteel = ThingDef.Named("MineablePlasteel");
 			ThingDef steel = ThingDefOf.MineableSteel;
-			ThingDef comp = ThingDefOf.MineableComponentsIndustrial;
+			ThingDef compInd = ThingDefOf.MineableComponentsIndustrial;
 
 			if (originalPlasteelCommonality == -1)
 			{
 				originalPlasteelCommonality = plasteel.building.mineableScatterCommonality;
 				originalSteelCommonality = steel.building.mineableScatterCommonality;
-				originalComponentsIndustrialCommonality = comp.building.mineableScatterCommonality;
-			}
+				originalComponentsIndustrialCommonality = compInd.building.mineableScatterCommonality;
+            }
 
             if (TerrainSettings.allowFakeOres)
             {
                 steel.building.mineableScatterCommonality = originalSteelCommonality;
                 plasteel.building.mineableScatterCommonality = originalPlasteelCommonality;
-				comp.building.mineableScatterCommonality = originalComponentsIndustrialCommonality;
+				compInd.building.mineableScatterCommonality = originalComponentsIndustrialCommonality;
             }
             else
             {
                 steel.building.mineableScatterCommonality = 0f;
                 plasteel.building.mineableScatterCommonality = 0f;
-                comp.building.mineableScatterCommonality = 0f;
+                compInd.building.mineableScatterCommonality = 0f;
             }
         }
 

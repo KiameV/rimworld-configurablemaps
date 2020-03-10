@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using RimWorld;
+using System.Collections.Generic;
+using UnityEngine;
 using Verse;
 
 namespace ConfigurableMaps.Settings
@@ -188,8 +190,8 @@ namespace ConfigurableMaps.Settings
             }
             coastLevel = list.Slider(coastLevel, 0, 8);*/
             list.Gap();
-            list.CheckboxLabeled("RFR.DisallowIslands".Translate(), ref disallowIslands, "RFR.DisallowIslandsTip".Translate());
-            list.Gap();
+            //list.CheckboxLabeled("RFR.DisallowIslands".Translate(), ref disallowIslands, "RFR.DisallowIslandsTip".Translate());
+            //list.Gap();
             list.CheckboxLabeled("RFR.AllowFakeOres".Translate(), ref allowFakeOres, "RFR.AllowFakeOresTip".Translate());
             list.End();
         }

@@ -23,6 +23,7 @@ namespace ConfigurableMaps
         {
 			var harmony = new Harmony("com.configurablemaps.rimworld.mod");
             harmony.PatchAll(Assembly.GetExecutingAssembly());
+            LongEventHandler.QueueLongEvent(new Action(Init), "LibraryStartup", false, null);
             if (ModsConfig.ActiveModsInLoadOrder.Any(mod => mod.Name.Contains("[RF] Fertile Fields")))
             {
                 detectedFertileFields = true;
@@ -30,6 +31,45 @@ namespace ConfigurableMaps
             if (ModsConfig.ActiveModsInLoadOrder.Any(mod => mod.Name.Contains("Cupro's Stones")))
             {
                 detectedCuprosStones = true;
+            }
+        }
+
+        private static void Init()
+        {
+            foreach (var step in DefDatabase<GenStepDef>.AllDefsListForReading)
+            {
+                if (step.defName == "ScatterRuinsSimple")
+                {
+                    float v = ThingsSettings.ruinsLevel;
+                    if (v < 0 || v > 8)
+                        v = Rand.Value * 8;
+                    if (v < 1)
+                        v = 0;
+                    if (step.genStep is GenStep_ScatterRuinsSimple s)
+                        s.countPer10kCellsRange = new FloatRange(v, v * 2);
+                    else
+                        Log.Warning("Failed to apply ScatterRuinsSimple");
+                }
+                else if (step.defName == "ScatterShrines")
+                {
+                    float min, max, v = ThingsSettings.shrinesLevel;
+                    if (v < 0 || v > 8)
+                    {
+                        v = Rand.Value * 8;
+                    }
+                    if (v < 1) { min = 0; max = 0; }
+                    else if (v < 2) { min = 0; max = 0.06f; }
+                    else if (v < 3) { min = 0.06f; max = 0.12f; }
+                    else if (v < 4) { min = 0.12f; max = 0.24f; }
+                    else if (v < 5) { min = 0.24f; max = 0.48f; }
+                    else if (v < 6) { min = 0.48f; max = 0.96f; }
+                    else if (v < 7) { min = 0.96f; max = 1.92f; }
+                    else { min = 1.92f; max = 3.84f; }
+                    if (step.genStep is GenStep_ScatterShrines s)
+                        s.countPer10kCellsRange = new FloatRange(min, max);
+                    else
+                        Log.Warning("Failed to apply ScatterShrines");
+                }
             }
         }
     }

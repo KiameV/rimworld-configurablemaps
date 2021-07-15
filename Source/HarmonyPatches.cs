@@ -23,7 +23,7 @@ namespace ConfigurableMaps
         {
 			var harmony = new Harmony("com.configurablemaps.rimworld.mod");
             harmony.PatchAll(Assembly.GetExecutingAssembly());
-            LongEventHandler.QueueLongEvent(new Action(Init), "LibraryStartup", false, null);
+            LongEventHandler.QueueLongEvent(new Action(UpdateDefs), "LibraryStartup", false, null);
             if (ModsConfig.ActiveModsInLoadOrder.Any(mod => mod.Name.Contains("[RF] Fertile Fields")))
             {
                 detectedFertileFields = true;
@@ -34,12 +34,14 @@ namespace ConfigurableMaps
             }
         }
 
-        private static void Init()
+        internal static void UpdateDefs()
         {
+            Log.Message("Updating Defs");
             foreach (var step in DefDatabase<GenStepDef>.AllDefsListForReading)
             {
                 if (step.defName == "ScatterRuinsSimple")
                 {
+                    Log.Message("   ScatterRuinsSimple");
                     float v = ThingsSettings.ruinsLevel;
                     if (v < 0 || v > 8)
                         v = Rand.Value * 8;
@@ -52,6 +54,7 @@ namespace ConfigurableMaps
                 }
                 else if (step.defName == "ScatterShrines")
                 {
+                    Log.Message("   ScatterShrines");
                     float min, max, v = ThingsSettings.shrinesLevel;
                     if (v < 0 || v > 8)
                     {

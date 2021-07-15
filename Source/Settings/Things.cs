@@ -163,6 +163,11 @@ namespace ConfigurableMaps.Settings
             Scribe_Values.Look(ref ruinsLevel, "ruinsLevel", 1.75f);
             Scribe_Values.Look(ref shrinesLevel, "shrinesLevel", 1.5f);
             Scribe_Values.Look(ref stoneType, "stoneType", 0.5f);
+
+            if (Scribe.mode == LoadSaveMode.Saving)
+            {
+                HarmonyPatches.UpdateDefs();
+            }
         }
     }
 }

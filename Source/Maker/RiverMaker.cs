@@ -17,7 +17,7 @@ namespace ConfigurableMaps.Maker
             else if (riverDef.widthOnMap > 7) { fordability = 0.1f; }
             else if (riverDef.widthOnMap > 5) { fordability = 0.15f; }
             else { fordability = 0.2f; }*/
-
+/*
             float surfaceLevel = riverDef.widthOnMap * 0.5f;
 
             if (TerrainSettings.waterLevel < 0 ||
@@ -47,7 +47,7 @@ namespace ConfigurableMaps.Maker
                 //this.fordability = this.fordability * 0.8f;
             }
 
-            this.surfaceLevelFI.SetValue(this, surfaceLevel);
+            this.surfaceLevelFI.SetValue(this, surfaceLevel);*/
         }
     }
 }

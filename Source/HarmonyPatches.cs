@@ -13,7 +13,7 @@ using Verse.Noise;
 
 namespace ConfigurableMaps
 {
-	[StaticConstructorOnStartup]
+/*	[StaticConstructorOnStartup]
     public class HarmonyPatches
 	{
 		public static bool detectedFertileFields = false;
@@ -182,7 +182,7 @@ namespace ConfigurableMaps
             }
             return false;
         }
-    }*/
+    }* /
 
     [HarmonyPatch(typeof(BaseGenUtility), "RandomCheapWallStuff", new Type[] { typeof(TechLevel), typeof(bool) })]
     public static class BaseGenUtility_RandomCheapWallStuff
@@ -251,7 +251,7 @@ namespace ConfigurableMaps
                 float max = min;
                 countPer10kCells = Rand.Range(min, max);
             }
-            /*/
+            /* /
             // Ruins
             //
             if (countPer10kCells > 1.95 && countPer10kCells < 3.85)
@@ -268,7 +268,7 @@ namespace ConfigurableMaps
                 
                 countPer10kCells = Rand.Range(v, v * 2);
             }
-            /*/
+            /* /
             // Geysers
             //
             if (countPer10kCells > 0.65 && countPer10kCells < 1.05)
@@ -287,7 +287,7 @@ namespace ConfigurableMaps
                 else { min = 2.8f; max = 4; }
                 countPer10kCells = Rand.Range(min, max);
             }
-            /*/
+            /* /
             // Shrines
             //
             if (countPer10kCells > 0.10 && countPer10kCells < 0.30)
@@ -308,7 +308,7 @@ namespace ConfigurableMaps
                 else if (v < 7) { min = 0.96f; max = 1.92f; }
                 else { min = 1.92f; max = 3.84f; }
                 countPer10kCells = Rand.Range(min, max);
-            }*/
+            }* /
             int num = Mathf.RoundToInt(10000f / countPer10kCells);
             __result = Mathf.RoundToInt((float)(mapSize * mapSize) / (float)num);
             return false;
@@ -721,5 +721,5 @@ namespace ConfigurableMaps
 			originalSteelCommonality = -1;
 			originalComponentsIndustrialCommonality = -1;
 		}
-    }
+    }*/
 }

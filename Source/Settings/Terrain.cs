@@ -5,7 +5,7 @@ using Verse;
 
 namespace ConfigurableMaps.Settings
 {
-    public class TerrainSettingsController : Mod
+   /* public class TerrainSettingsController : Mod
     {
         public TerrainSettingsController(ModContentPack content) : base(content)
         {
@@ -166,7 +166,7 @@ namespace ConfigurableMaps.Settings
                 GUI.contentColor = Color.white;
             }
             fertilityLevel = list.Slider(fertilityLevel, 0, 6);
-            /*/ ----------------- //
+            /* / ----------------- //
             // -- Coast Level -- //
             // ----------------- //
             list.Gap();
@@ -188,7 +188,7 @@ namespace ConfigurableMaps.Settings
                 list.Label("RFR.coastLevel".Translate() + "  " + "RFR.CoastRandom".Translate());
                 GUI.contentColor = Color.white;
             }
-            coastLevel = list.Slider(coastLevel, 0, 8);*/
+            coastLevel = list.Slider(coastLevel, 0, 8);* /
             list.Gap();
             //list.CheckboxLabeled("RFR.DisallowIslands".Translate(), ref disallowIslands, "RFR.DisallowIslandsTip".Translate());
             //list.Gap();
@@ -209,5 +209,5 @@ namespace ConfigurableMaps.Settings
             Scribe_Values.Look(ref disallowIslands, "disallowIslands", false);
             Scribe_Values.Look(ref allowFakeOres, "allowFakeOres", true);
         }
-    }
+    }*/
 }

@@ -25,7 +25,7 @@ namespace ConfigurableMaps
 #if DEBUG
             Log.Warning("Begin UpdateBiomeStatsPerUserSettings");
 #endif
-            Init();
+          /*  Init();
 
             float v = ThingsSettings.animalDensityLevel;
             if (v > 4)
@@ -70,7 +70,7 @@ namespace ConfigurableMaps
                     Log.Error("Not Found");
                 }
 #endif
-            }
+            }*/
 #if DEBUG
             Log.Warning("End UpdateBiomeStatsPerUserSettings");
 #endif

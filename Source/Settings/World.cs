@@ -3,7 +3,7 @@ using UnityEngine;
 using Verse;
 
 namespace ConfigurableMaps.Settings
-{
+{/*
     public class WorldSettingsController : Mod
     {
         public WorldSettingsController(ModContentPack content) : base(content)
@@ -102,5 +102,5 @@ namespace ConfigurableMaps.Settings
             Scribe_Values.Look(ref slateCommonality, "slateCommonality", 50f);
             Scribe_Values.Look(ref extraStoneCommonality, "extraStoneCommonality", 50f);
         }
-    }
+    }*/
 }

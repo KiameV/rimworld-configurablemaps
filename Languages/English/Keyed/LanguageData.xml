@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
+	<!-- For versions 1.3 and newer -->
+	<ConfigurableMaps>Configurable Maps</ConfigurableMaps>
+	
+	<CM.WorldSettings>World Settings</CM.WorldSettings>
+	<CM.StoneTypes>Number of Different Stone Types for each Map Tile</CM.StoneTypes>
+	<CM.StoneCommonality>Chance that a stone type will appear on a map (0-100). Relative to each other.</CM.StoneCommonality>
+	
+	<CM.Default>Default</CM.Default>
+
+	<!-- Left for legacy support -->
+	<!-- For versions 1.2 and older -->
 
 	<RFR.FewerRuinsTerrain>Configurable Maps - Terrain Settings</RFR.FewerRuinsTerrain>
 	<RFR.FewerRuinsThings>Configurable Maps - "Things" Settings</RFR.FewerRuinsThings>

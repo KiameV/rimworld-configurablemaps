@@ -3,7 +3,7 @@ using Verse;
 
 namespace ConfigurableMaps.Settings
 {
-    public class ThingsSettingsController : Mod
+  /*  public class ThingsSettingsController : Mod
     {
         public ThingsSettingsController(ModContentPack content) : base(content)
         {
@@ -169,5 +169,5 @@ namespace ConfigurableMaps.Settings
                 HarmonyPatches.UpdateDefs();
             }
         }
-    }
+    }*/
 }

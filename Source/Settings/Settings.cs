@@ -26,7 +26,13 @@ namespace ConfigurableMaps.Settings
         }
     }
 
-    public class WorldSettings : IExposable
+    public interface IWindow
+    {
+        string Name{ get; }
+        void DoWindowContents(Rect inRect);
+    }
+
+    public class WorldSettings : IExposable, IWindow
     {
         const int DEFAULT_MIN_STONE = 2;
         const int DEFAULT_MAX_STONE = 3;
@@ -49,36 +55,40 @@ namespace ConfigurableMaps.Settings
             BuildBuffers();
         }
 
+        public string Name => "CM.WorldSettings".Translate();
+
         public void DoWindowContents(Rect rect)
         {
-            lastY = rect.y;
-            Widgets.Label(new Rect(rect.x, lastY, rect.width, 28), "CM.StoneTypes".Translate());
-            lastY += 30;
-            WindowUtil.DrawIntInput(rect.x, ref lastY, "min".Translate().CapitalizeFirst(), v => StoneMin = v, ref buffers[0], DEFAULT_MIN_STONE);
-            WindowUtil.DrawIntInput(rect.x, ref lastY, "max".Translate().CapitalizeFirst(), v => StoneMax = v, ref buffers[1], DEFAULT_MAX_STONE);
+            float y = rect.y;
+            Widgets.Label(new Rect(rect.x, y, rect.width, 28), "CM.StoneTypes".Translate());
+            y += 30;
+            WindowUtil.DrawIntInput(rect.x, ref y, "min".Translate().CapitalizeFirst(), v => StoneMin = v, ref buffers[0], DEFAULT_MIN_STONE);
+            WindowUtil.DrawIntInput(rect.x, ref y, "max".Translate().CapitalizeFirst(), v => StoneMax = v, ref buffers[1], DEFAULT_MAX_STONE);
             if (StoneMin < 1)
                 StoneMin = 1;
             if (StoneMax < StoneMin)
                 StoneMax = StoneMin;
 
-            lastY += 20;
+            y += 20;
 
-            Widgets.Label(new Rect(rect.x, lastY, rect.width, 28), "CM.StoneCommonality".Translate());
-            lastY += 30;
+            Widgets.Label(new Rect(rect.x, y, rect.width, 28), "CM.StoneCommonality".Translate());
+            y += 30;
 
-            Widgets.Label(new Rect(rect.x, lastY, 100, 28), "Randomize".Translate());
-            Widgets.Checkbox(new Vector2(rect.x + 110, lastY - 2), ref CommonalityRandom);
-            lastY += 30;
+            Widgets.Label(new Rect(rect.x, y, 100, 28), "Randomize".Translate());
+            Widgets.Checkbox(new Vector2(rect.x + 110, y - 2), ref CommonalityRandom);
+            y += 30;
 
             if (!CommonalityRandom)
             {
-                Widgets.BeginScrollView
+                Widgets.BeginScrollView(new Rect(rect.x, y, rect.width, rect.height - y), ref scroll, new Rect(0, 0, rect.width - rect.x - 16, lastY));
+                lastY = 0;
                 WindowUtil.DrawInputWithSlider(rect.x, ref lastY, "CM.Granite".Translate(), 0f, 100f, v => CommonalityGranite = v, ref buffers[2], DEFAULT_COMMONALITY);
                 WindowUtil.DrawInputWithSlider(rect.x, ref lastY, "CM.Limestone".Translate(), 0f, 100f, v => CommonalityLimestone = v, ref buffers[3], DEFAULT_COMMONALITY);
                 WindowUtil.DrawInputWithSlider(rect.x, ref lastY, "CM.Marble".Translate(), 0f, 100f, v => CommonalityMarble = v, ref buffers[4], DEFAULT_COMMONALITY);
                 WindowUtil.DrawInputWithSlider(rect.x, ref lastY, "CM.Sandstone".Translate(), 0f, 100f, v => CommonalitySandstone = v, ref buffers[5], DEFAULT_COMMONALITY);
                 WindowUtil.DrawInputWithSlider(rect.x, ref lastY, "CM.Slate".Translate(), 0f, 100f, v => CommonalitySlate = v, ref buffers[6], DEFAULT_COMMONALITY);
                 // TODO Extra Stone Types
+                Widgets.EndScrollView();
             }
         }
 
@@ -113,18 +123,131 @@ namespace ConfigurableMaps.Settings
         }
     }
 
+    public class Randomizable<T>
+    {
+        public T Value, Min, Max, Default;
+        public bool Randomize = false;
+        public Randomizable(T value, T min, T max, T d)
+        {
+            this.Value = value;
+            this.Min = min;
+            this.Max = max;
+            this.Default = d;
+        }
+    }
+
+    public class MapSettings : IExposable, IWindow
+    {
+        const float DEFAULT_MULTIPLIER = 1f;
+        // Terrain
+        public static Randomizable<float> OreLevel = new Randomizable<float>(1, 0, 10, DEFAULT_MULTIPLIER); // GenStep_RocksFromGrid.Generate - genStep_ScatterLumpsMineable.countPer10kCellsRange = new FloatRange(num3, num3);
+        public static Randomizable<float> GeysersLevel = new Randomizable<float>(1, 0, 10, DEFAULT_MULTIPLIER);
+        public static Randomizable<float> ChunksLevel = new Randomizable<float>(1, 0, 10, DEFAULT_MULTIPLIER);
+        public static Randomizable<float> MountainLevel = new Randomizable<float>(1, 0, 10, DEFAULT_MULTIPLIER);
+        public static Randomizable<float> WaterLevel = new Randomizable<float>(1, 0, 10, DEFAULT_MULTIPLIER);
+        public static Randomizable<float> FertilityLevel = new Randomizable<float>(1, 0, 10, DEFAULT_MULTIPLIER);
+
+        public static bool allowFakeOres = true;
+
+        // Things
+        public static Randomizable<float> AnimalDensityLevel = new Randomizable<float>(1, 0, 10, DEFAULT_MULTIPLIER);
+        public static Randomizable<float> PlantDensityLevel = new Randomizable<float>(1, 0, 10, DEFAULT_MULTIPLIER);
+        public static Randomizable<float> RuinsLevel = new Randomizable<float>(1, 0, 10, DEFAULT_MULTIPLIER);
+        public static Randomizable<float> ShrinesLevel = new Randomizable<float>(1, 0, 10, DEFAULT_MULTIPLIER);
+        public static Randomizable<float> MiscWallStoneType = new Randomizable<float>(1, 0, 10, DEFAULT_MULTIPLIER);
+
+        private Vector2 terrainScroll = Vector2.zero, thingsScroll = Vector2.zero;
+        private float lastYTerrain = 0, lastYThings;
+        private string[] buffersTerrain = new string[6], buffersThings = new string[5];
+
+        public MapSettings()
+        {
+            BuildBuffers();
+        }
+
+        public string Name => "CM.MapSettings".Translate();
+
+        public void DoWindowContents(Rect rect)
+        {
+
+            float y = rect.y;
+            float half = rect.width * 0.5f;
+            float width = half - 5f;
+            Widgets.Label(new Rect(rect.x, y, width, 28), "CM.TerrainTypeMultipliers".Translate());
+            Widgets.Label(new Rect(half, y, width, 28), "CM.ThingTypeMultipliers".Translate());
+            y += 30;
+
+            // Terrain
+            Widgets.BeginScrollView(new Rect(rect.x, y, width, rect.height - y), ref terrainScroll, new Rect(0, 0, width - 16, lastYTerrain));
+            lastYTerrain = 0;
+            WindowUtil.DrawInputRandomizableWithSlider(rect.x, ref lastYTerrain, "CM.OreLevel".Translate(), 0f, 10f, v => OreLevel.Value = v, ref buffersTerrain[0], ref OreLevel.Randomize, DEFAULT_MULTIPLIER);
+            WindowUtil.DrawInputRandomizableWithSlider(rect.x, ref lastYTerrain, "CM.GeysersLevel".Translate(), 0f, 10f, v => GeysersLevel.Value = v, ref buffersTerrain[1], ref GeysersLevel.Randomize, DEFAULT_MULTIPLIER);
+            WindowUtil.DrawInputRandomizableWithSlider(rect.x, ref lastYTerrain, "CM.ChunksLevel".Translate(), 0f, 10f, v => ChunksLevel.Value = v, ref buffersTerrain[2], ref ChunksLevel.Randomize, DEFAULT_MULTIPLIER);
+            WindowUtil.DrawInputRandomizableWithSlider(rect.x, ref lastYTerrain, "CM.MountainLevel".Translate(), 0f, 10f, v => MountainLevel.Value = v, ref buffersTerrain[3], ref MountainLevel.Randomize, DEFAULT_MULTIPLIER);
+            WindowUtil.DrawInputRandomizableWithSlider(rect.x, ref lastYTerrain, "CM.WaterLevel".Translate(), 0f, 10f, v => WaterLevel.Value = v, ref buffersTerrain[4], ref WaterLevel.Randomize, DEFAULT_MULTIPLIER);
+            WindowUtil.DrawInputRandomizableWithSlider(rect.x, ref lastYTerrain, "CM.FertilityLevel".Translate(), 0f, 10f, v => FertilityLevel.Value = v, ref buffersTerrain[5], ref FertilityLevel.Randomize, DEFAULT_MULTIPLIER);
+            Widgets.EndScrollView();
+
+            // Things
+            Widgets.BeginScrollView(new Rect(half, y, width, rect.height - y), ref thingsScroll, new Rect(0, 0, width - 16, lastYThings));
+            lastYThings = 0;
+            WindowUtil.DrawInputRandomizableWithSlider(rect.x, ref lastYThings, "CM.AnimalDensityLevel".Translate(), 0f, 10f, v => AnimalDensityLevel.Value = v, ref buffersThings[0], ref AnimalDensityLevel.Randomize, DEFAULT_MULTIPLIER);
+            WindowUtil.DrawInputRandomizableWithSlider(rect.x, ref lastYThings, "CM.PlantDensityLevel".Translate(), 0f, 10f, v => PlantDensityLevel.Value = v, ref buffersThings[1], ref PlantDensityLevel.Randomize, DEFAULT_MULTIPLIER);
+            WindowUtil.DrawInputRandomizableWithSlider(rect.x, ref lastYThings, "CM.RuinsLevel".Translate(), 0f, 10f, v => RuinsLevel.Value = v, ref buffersThings[2], ref RuinsLevel.Randomize, DEFAULT_MULTIPLIER);
+            WindowUtil.DrawInputRandomizableWithSlider(rect.x, ref lastYThings, "CM.ShrinesLevel".Translate(), 0f, 10f, v => ShrinesLevel.Value = v, ref buffersThings[3], ref ShrinesLevel.Randomize, DEFAULT_MULTIPLIER);
+            WindowUtil.DrawInputRandomizableWithSlider(rect.x, ref lastYThings, "CM.MiscWallStoneType".Translate(), 0f, 10f, v => MiscWallStoneType.Value = v, ref buffersThings[4], ref MiscWallStoneType.Randomize, DEFAULT_MULTIPLIER);
+            Widgets.EndScrollView();
+        }
+
+        public void ExposeData()
+        {
+            Scribe_Values.Look(ref OreLevel.Value, "OreLevel", DEFAULT_MULTIPLIER);
+            Scribe_Values.Look(ref GeysersLevel.Value, "GeysersLevel", DEFAULT_MULTIPLIER);
+            Scribe_Values.Look(ref ChunksLevel.Value, "ChunksLevel", DEFAULT_MULTIPLIER);
+            Scribe_Values.Look(ref MountainLevel.Value, "MountainLevel", DEFAULT_MULTIPLIER);
+            Scribe_Values.Look(ref WaterLevel.Value, "WaterLevel", DEFAULT_MULTIPLIER);
+            Scribe_Values.Look(ref FertilityLevel.Value, "FertilityLevel", DEFAULT_MULTIPLIER);
+
+            BuildBuffers();
+        }
+
+        private void BuildBuffers()
+        {
+            buffersTerrain[0] = OreLevel.Value.ToString("0.00");
+            buffersTerrain[1] = GeysersLevel.Value.ToString("0.00");
+            buffersTerrain[2] = ChunksLevel.Value.ToString("0.00");
+            buffersTerrain[3] = MountainLevel.Value.ToString("0.00");
+            buffersTerrain[4] = WaterLevel.Value.ToString("0.00");
+            buffersTerrain[5] = FertilityLevel.Value.ToString("0.00");
+
+            buffersThings[0] = AnimalDensityLevel.Value.ToString("0.00");
+            buffersThings[1] = PlantDensityLevel.Value.ToString("0.00");
+            buffersThings[2] = RuinsLevel.Value.ToString("0.00");
+            buffersThings[3] = ShrinesLevel.Value.ToString("0.00");
+            buffersThings[4] = MiscWallStoneType.Value.ToString("0.00");
+        }
+    }
+
     public class Settings : ModSettings
     {
         public static WorldSettings WorldSettings;
-        // public static float animalDensityLevel = 1f;
-        // public static float plantDensityLevel = 1f;
-        // public static float ruinsLevel = 1f;
-        // public static float shrinesLevel = 1f;
-        // public static float stoneType = 0.5f;
+        public static MapSettings MapSettings;
+
+        private static IWindow selectedSetting;
 
         public static void DoWindowContents(Rect rect)
         {
-            WorldSettings.DoWindowContents(rect);
+            if (Widgets.ButtonText(new Rect(rect.x, rect.y, 300, 28), selectedSetting?.Name ?? "WorldChooseButton".Translate()))
+            {
+                List<FloatMenuOption> l = new List<FloatMenuOption>()
+                {
+                    new FloatMenuOption(WorldSettings.Name, () => selectedSetting = WorldSettings),
+                    new FloatMenuOption(MapSettings.Name, () => selectedSetting = MapSettings)
+                };
+                Find.WindowStack.Add(new FloatMenu(l));
+            }
+            rect.y += 30f;
+            selectedSetting?.DoWindowContents(rect);
             /*Listing_Standard list = new Listing_Standard();
             list.ColumnWidth = canvas.width;
             list.Begin(canvas);
@@ -245,7 +368,10 @@ namespace ConfigurableMaps.Settings
         public override void ExposeData()
         {
             if (WorldSettings == null)
+            {
                 WorldSettings = new WorldSettings();
+                MapSettings = new MapSettings();
+            }
 
             base.ExposeData();
             Scribe_Deep.Look(ref WorldSettings, "worldSettings");

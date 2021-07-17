@@ -6,8 +6,19 @@
 	<CM.WorldSettings>World Settings</CM.WorldSettings>
 	<CM.StoneTypes>Number of Different Stone Types for each Map Tile</CM.StoneTypes>
 	<CM.StoneCommonality>Chance that a stone type will appear on a map (0-100). Relative to each other.</CM.StoneCommonality>
+	<CM.Granite>Granite</CM.Granite>
+	<CM.Limestone>Limestone</CM.Limestone>
+	<CM.Marble>Marble</CM.Marble>
+	<CM.Sandstone>Sandstone</CM.Sandstone>
+	<CM.Slate>Slate</CM.Slate>
 	
 	<CM.Default>Default</CM.Default>
+	<CM.Random>Random</CM.Random>
+	
+	<CM.TerrainTypeMultipliers>Terrain Multiplier (1.0 means 100%)</CM.TerrainTypeMultipliers>
+	<CM.ThingTypeMultipliers>Things Multiplier (1.0 means 100%)</CM.ThingTypeMultipliers>
+	
+	<CM.chunksLevel>Stone Chunk Density</CM.chunksLevel>
 
 	<!-- Left for legacy support -->
 	<!-- For versions 1.2 and older -->

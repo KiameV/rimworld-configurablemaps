@@ -86,18 +86,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BiomeUtil.cs" />
+    <Compile Include="DefsUtil.cs" />
     <Compile Include="HarmonyPatches.cs" />
-    <Compile Include="Maker\BeachMaker.cs" />
-    <Compile Include="Maker\GenStep.cs" />
-    <Compile Include="Maker\RiverMaker.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Settings\MapSettings.cs" />
     <Compile Include="Settings\Settings.cs" />
-    <Compile Include="Settings\World.cs" />
-    <Compile Include="Settings\Terrain.cs" />
-    <Compile Include="Settings\Things.cs" />
+    <Compile Include="Settings\WorldSettings.cs" />
     <Compile Include="WindowUtil.cs" />
-    <Compile Include="WorldComp.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

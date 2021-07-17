@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using Verse;
 
@@ -9,92 +7,97 @@ namespace ConfigurableMaps
     public static class WindowUtil
     {
         public delegate void OnChange<T>(T t);
-        public static void DrawFloatInput(float x, ref float y, string label, OnChange<float> onChange, ref string valueBuffer, float defaultValue = 0)
+        public static void DrawFloatInput(float x, ref float y, FieldValue<float> fv)
         {
-            valueBuffer = DrawLabeledInput(x, y, label, valueBuffer, out float nextX);
-            if (float.TryParse(valueBuffer, out float f) && f > 0)
-                onChange(f);
-            if (defaultValue != 0 && Widgets.ButtonText(new Rect(nextX, y, 100, 28), "CM.Default".Translate()))
+            fv.Buffer = DrawLabeledInput(x, y, fv.Label, fv.Buffer, out float nextX);
+            if (float.TryParse(fv.Buffer, out float f) && f > 0)
+                fv.OnChange(f);
+            if (fv.Default != 0 && Widgets.ButtonText(new Rect(nextX, y, 100, 28), "CM.Default".Translate()))
             {
-                onChange(defaultValue);
+                fv.OnChange(fv.Default);
+                fv.UpdateBuffer();
             }
             y += 40;
         }
-        public static void DrawRandomizableFloatInput(float x, ref float y, string label, OnChange<float> onChange, ref string valueBuffer, ref bool randomize, float defaultValue = 0)
+        public static void DrawRandomizableFloatInput(float x, ref float y, RandomizableFieldValue<float> fv)
         {
-            if (randomize)
+            if (fv.GetRandomizableValue())
             {
-                DrawLabel(x, y, 150, label);
+                DrawLabel(x, y, 150, fv.Label);
             }
             else
             {
-                valueBuffer = DrawLabeledInput(x, y, label, valueBuffer, out float nextX);
-                if (float.TryParse(valueBuffer, out float f) && f > 0)
-                    onChange(f);
-                if (defaultValue != 0 && Widgets.ButtonText(new Rect(nextX, y, 100, 28), "CM.Default".Translate()))
+                fv.Buffer = DrawLabeledInput(x, y, fv.Label, fv.Buffer, out float nextX);
+                if (float.TryParse(fv.Buffer, out float f) && f > 0)
+                    fv.OnChange(f);
+                if (fv.Default != 0 && Widgets.ButtonText(new Rect(nextX, y, 100, 28), "CM.Default".Translate()))
                 {
-                    onChange(defaultValue);
+                    fv.OnChange(fv.Default);
+                    fv.UpdateBuffer();
                 }
             }
             y += 30;
             Widgets.Label(new Rect(x, y, 100, 28), "Randomize".Translate());
-            Widgets.Checkbox(new Vector2(x + 110, y - 2), ref randomize);
+            var r = fv.GetRandomizableValue();
+            Widgets.Checkbox(new Vector2(x + 110, y - 2), ref r);
+            fv.OnRandomizableChange(r);
             y += 30;
         }
 
-        public static void DrawInputWithSlider(float x, ref float y, string label, float min, float max, OnChange<float> onChange, ref string valueBuffer, float defaultValue = 0)
+        public static void DrawInputWithSlider(float x, ref float y, FieldValue<float> fv)
         {
-            DrawFloatInput(x, ref y, label, onChange, ref valueBuffer, defaultValue);
+            DrawFloatInput(x, ref y, fv);
             y += 10;
 
-            if (!float.TryParse(valueBuffer, out float orig))
+            if (!float.TryParse(fv.Buffer, out float orig))
                 orig = 0;
 
-            var result = Widgets.HorizontalSlider(new Rect(x, y, 300, 20), orig, min, max, false, null, min.ToString("0.0"), max.ToString("0.0"));
+            var result = Widgets.HorizontalSlider(new Rect(x, y, 300, 20), orig, fv.Min, fv.Max, false, null, fv.Min.ToString("0.0"), fv.Max.ToString("0.0"));
             if (orig != result && Math.Abs(orig-result) > 0.001) {
-                onChange(result);
-                valueBuffer = result.ToString("0.00");
+                fv.OnChange(result);
+                fv.UpdateBuffer();
             }
             y += 40;
         }
 
-        public static void DrawInputRandomizableWithSlider(float x, ref float y, string label, float min, float max, OnChange<float> onChange, ref string valueBuffer, ref bool randomize, float defaultValue = 0)
+        public static void DrawInputRandomizableWithSlider(float x, ref float y, RandomizableFieldValue<float> fv)
         {
-            DrawRandomizableFloatInput(x, ref y, label, onChange, ref valueBuffer, ref randomize, defaultValue);
+            DrawRandomizableFloatInput(x, ref y, fv);
             y += 10;
 
-            if (!float.TryParse(valueBuffer, out float orig))
+            if (!float.TryParse(fv.Buffer, out float orig))
                 orig = 0;
 
-            if (!randomize)
+            if (!fv.GetRandomizableValue())
             {
-                var result = Widgets.HorizontalSlider(new Rect(x, y, 300, 20), orig, min, max, false, null, min.ToString("0.0"), max.ToString("0.0"));
+                var result = Widgets.HorizontalSlider(new Rect(x, y, 300, 20), orig, fv.Min, fv.Max, false, null, fv.Min.ToString("0.0"), fv.Max.ToString("0.0"));
                 if (orig != result && Math.Abs(orig - result) > 0.001)
                 {
-                    onChange(result);
-                    valueBuffer = result.ToString("0.00");
+                    fv.OnChange(result);
+                    fv.UpdateBuffer();
                 }
                 y += 40;
             }
         }
 
-        public static void DrawIntInput(float x, ref float y, string label, OnChange<int> onChange, ref string valueBuffer, int defaultValue)
+        public static void DrawIntInput(float x, ref float y, FieldValue<int> fv)
         {
-            valueBuffer = DrawLabeledInput(x, y, label, valueBuffer, out float nextX);
-            if (Double.TryParse(valueBuffer, out double d) && d > 0)
-                onChange((int)d);
-            if (defaultValue != 0 && Widgets.ButtonText(new Rect(nextX, y, 100, 28), "CM.Default".Translate()))
+            fv.Buffer = DrawLabeledInput(x, y, fv.Label, fv.Buffer, out float nextX);
+            if (Double.TryParse(fv.Buffer, out double d) && d > 0)
+                fv.OnChange((int)d);
+            if (fv.Default != 0 && Widgets.ButtonText(new Rect(nextX, y, 100, 28), "CM.Default".Translate()))
             {
-                onChange(defaultValue);
+                fv.OnChange(fv.Default);
+                fv.UpdateBuffer();
             }
             y += 40;
         }
 
-        public static bool DrawBoolInput(float x, ref float y, float width, string label, bool value, OnChange<bool> onChange, float buttonWidth = 60f)
+        public static bool DrawBoolInput(float x, ref float y, string label, bool value, OnChange<bool> onChange, float buttonWidth = 100f)
         {
             DrawLabel(x, y, 240, label);
 
-            if (Widgets.ButtonText(new Rect(width - buttonWidth, y, buttonWidth, 32), value.ToString()))
+            if (Widgets.ButtonText(new Rect(240, y, buttonWidth, 32), value.ToString().ToString()))
             {
                 value = !value;
                 onChange(value);

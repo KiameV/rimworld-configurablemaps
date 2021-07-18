@@ -5,6 +5,11 @@ using static ConfigurableMaps.WindowUtil;
 
 namespace ConfigurableMaps
 {
+    public static class Consts
+    {
+        public const float DEFAULT_MULTIPLIER = 1f;
+    }
+
     public class SettingsController : Mod
     {
         public SettingsController(ModContentPack content) : base(content)
@@ -19,7 +24,7 @@ namespace ConfigurableMaps
 
         public override void DoSettingsWindowContents(Rect inRect)
         {
-            Settings.DoWindowContents(inRect);
+            base.GetSettings<Settings>().DoWindowContents(inRect);
         }
     }
 
@@ -30,8 +35,8 @@ namespace ConfigurableMaps
 
         private enum ToShow { None, World, Map }
         private static ToShow toShow = ToShow.None;
-        private static WSFieldValues wsFieldValues;
-        private static MSFieldValues msFieldValues;
+        private WSFieldValues wsFieldValues;
+        private MSFieldValues msFieldValues;
 
         public static WorldSettings WorldSettings;
         public static MapSettings MapSettings;
@@ -41,7 +46,7 @@ namespace ConfigurableMaps
             return r.Next(min, max) * 0.01f;
         }
 
-        public static void DoWindowContents(Rect rect)
+        public void DoWindowContents(Rect rect)
         {
             if (WorldSettings == null)
                 WorldSettings = new WorldSettings();
@@ -60,25 +65,24 @@ namespace ConfigurableMaps
             {
                 List<FloatMenuOption> l = new List<FloatMenuOption>()
                 {
-                    new FloatMenuOption(WorldSettings.Name, () =>
-                    {
-                        toShow = ToShow.World;
-                        if (wsFieldValues == null)
-                            wsFieldValues = WorldSettings.GetFieldValues();
-                    }),
-                    new FloatMenuOption(MapSettings.Name, () => {
-                        toShow = ToShow.Map;
-                        if (msFieldValues == null)
-                            msFieldValues = MapSettings.GetFieldValues();
-                    })
+                    new FloatMenuOption(WorldSettings.Name, () => { toShow = ToShow.World; }),
+                    new FloatMenuOption(MapSettings.Name, () => { toShow = ToShow.Map; })
                 };
                 Find.WindowStack.Add(new FloatMenu(l));
             }
             rect.y += 30f;
             if (toShow == ToShow.World)
+            {
+                if (wsFieldValues == null)
+                    wsFieldValues = WorldSettings.GetFieldValues();
                 WorldSettings.DoWindowContents(rect, wsFieldValues);
+            }
             else if (toShow == ToShow.Map)
+            {
+                if (msFieldValues == null)
+                    msFieldValues = MapSettings.GetFieldValues();
                 MapSettings.DoWindowContents(rect, msFieldValues);
+            }
         }
 
         public override void ExposeData()
@@ -126,10 +130,20 @@ namespace ConfigurableMaps
     {
         public OnChange<bool> OnRandomizableChange;
         public GetValue<bool> GetRandomizableValue;
-        public RandomizableFieldValue(string label, OnChange<T> onChange, GetValue<T> getValue, T min, T max, T d, OnChange<bool>  onRandomizableChange, GetValue<bool> getRandomizableValue) : base(label, onChange, getValue, min, max, d)
+        public RandomizableFieldValue(string label, OnChange<T> onChange, GetValue<T> getValue, T min, T max, T d, OnChange<bool>  onRandomizableChange, GetValue<bool> getRandomizableValue) 
+            : base(label, onChange, getValue, min, max, d)
         {
             this.OnRandomizableChange = onRandomizableChange;
             this.GetRandomizableValue = getRandomizableValue;
+        }
+    }
+
+    public class RandomizableMultiplierFieldValue : RandomizableFieldValue<float>
+    {
+        public RandomizableMultiplierFieldValue(string label, RandomizableMultiplier rm, float min = 0, float max = 4, float d = Consts.DEFAULT_MULTIPLIER) : 
+            base(label, rm.SetMultiplier, rm.GetMultiplier, min, max, d, rm.SetIsRandom, rm.GetIsRandom)
+        {
+            // Empty
         }
     }
 
@@ -142,5 +156,24 @@ namespace ConfigurableMaps
     {
         void DoWindowContents(Rect inRect, T t);
         T GetFieldValues();
+    }
+
+    public class RandomizableMultiplier : IExposable
+    {
+        public float Multiplier = Consts.DEFAULT_MULTIPLIER;
+        public bool IsRandom = false;
+
+        public RandomizableMultiplier() { }
+
+        public void ExposeData()
+        {
+            Scribe_Values.Look(ref this.Multiplier, "multiplier", Consts.DEFAULT_MULTIPLIER);
+            Scribe_Values.Look(ref this.IsRandom, "isRandom", false);
+        }
+        
+        public float GetMultiplier() => this.Multiplier;
+        public void SetMultiplier(float v) => this.Multiplier = v;
+        public bool GetIsRandom() => this.IsRandom;
+        public void SetIsRandom(bool b) => this.IsRandom = b;
     }
 }

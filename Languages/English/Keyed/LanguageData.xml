@@ -19,6 +19,17 @@
 	<CM.ThingTypeMultipliers>Things Multiplier (1.0 means 100%)</CM.ThingTypeMultipliers>
 	
 	<CM.chunksLevel>Stone Chunk Density</CM.chunksLevel>
+	
+	<CM.Rare>Rare</CM.Rare>
+	<CM.Uncommon>Uncommon</CM.Uncommon>
+	<!-- <CM.Normal>Normal</CM.Normal> PlanetPopulation_Normal -->
+	<CM.Common>Common</CM.Common>
+	<CM.Abundant>Abundant</CM.Abundant>
+	
+	<!-- <CM.VeryLow>Very Low</CM.VeryLow> PlanetPopulation_Low -->
+	<!-- <CM.Low>Low</CM.Low> PowerConsumptionLow -->
+	<!-- <CM.High>High</CM.High> PowerConsumptionHigh -->
+	<!-- <CM.VeryHigh>Very High</CM.VeryHigh> PsychicDroneLevel_BadExtreme -->
 
 	<!-- Left for legacy support -->
 	<!-- For versions 1.2 and older -->

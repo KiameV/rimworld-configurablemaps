@@ -91,6 +91,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings\MapSettings.cs" />
     <Compile Include="Settings\Settings.cs" />
+    <Compile Include="Settings\SettingsWindow.cs" />
     <Compile Include="Settings\WorldSettings.cs" />
     <Compile Include="WindowUtil.cs" />
   </ItemGroup>

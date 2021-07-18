@@ -9,13 +9,16 @@ namespace ConfigurableMaps
     {
         private static readonly List<Pair<BiomeDef, BiomeOriginalValues>> BiomeDefs = new List<Pair<BiomeDef, BiomeOriginalValues>>();
         private static readonly List<Pair<GenStep_Scatterer, ScattererValues>> Scatterers = new List<Pair<GenStep_Scatterer, ScattererValues>>();
+        private static readonly List<Pair<ThingDef, float>> Minability = new List<Pair<ThingDef, float>>();
 
         public static void Update(Random r)
         {
-            var animalMultiplier = MapSettings.IsAnimalDensityMultiplierRandom ? Settings.GetRandomMultiplier(r) : MapSettings.AnimalDensityMultiplier;
-            var plantMultiplier = MapSettings.IsPlantDensityMultiplierRandom ? Settings.GetRandomMultiplier(r) : MapSettings.PlantDensityMultiplier;
+            var animalMultiplier = MapSettings.AnimalDensity.IsRandom ? Settings.GetRandomMultiplier(r) : MapSettings.AnimalDensity.Multiplier;
+            var plantMultiplier = MapSettings.PlantDensity.IsRandom ? Settings.GetRandomMultiplier(r) : MapSettings.PlantDensity.Multiplier;
             float m;
+            ThingDef td;
 
+            // Biome
             BiomeDefs.Clear();
             foreach (BiomeDef def in DefDatabase<BiomeDef>.AllDefs)
             {
@@ -25,25 +28,50 @@ namespace ConfigurableMaps
             }
 
             Scatterers.Clear();
-            GenStepDef gsDef = DefDatabase<GenStepDef>.GetNamed("ScatterRuinsSimple", false);
-            if (gsDef?.genStep is GenStep_Scatterer rs)
+            // Ruins
+            UpdateGenStepScatterer("ScatterRuinsSimple", MapSettings.Ruins, Scatterers, r);
+            // Shrines
+            UpdateGenStepScatterer("ScatterShrines", MapSettings.Shrines, Scatterers, r);
+            // Cave Hives
+            UpdateGenStepScatterer("CaveHives", MapSettings.CaveHives, Scatterers, r);
+            // SteamGeysers
+            UpdateGenStepScatterer("SteamGeysers", MapSettings.Geysers, Scatterers, r);
+
+            // Minable
+            Minability.Clear();
+            td = DefDatabase<ThingDef>.GetNamed("MineablePlasteel", false);
+            if (td != null)
             {
-                m = MapSettings.IsRuinsMultiplierRandom ? Settings.GetRandomMultiplier(r) : MapSettings.RuinsMultiplier;
+                m = MapSettings.MinablePlasteel.IsRandom ? Settings.GetRandomMultiplier(r) : MapSettings.MinablePlasteel.Multiplier;
+                Minability.Add(new Pair<ThingDef, float>(td, td.building.mineableScatterCommonality));
+                td.building.mineableScatterCommonality *= m;
+            }
+            else
+                Log.Warning("[Configurable Maps] unable to patch MineablePlasteel.");
+
+
+            td = ThingDefOf.MineableSteel;
+            m = MapSettings.MinableSteel.IsRandom ? Settings.GetRandomMultiplier(r) : MapSettings.MinableSteel.Multiplier;
+            Minability.Add(new Pair<ThingDef, float>(td, td.building.mineableScatterCommonality));
+            td.building.mineableScatterCommonality *= m;
+
+            td = ThingDefOf.MineableComponentsIndustrial;
+            m = MapSettings.MinableComponentsIndustrial.IsRandom ? Settings.GetRandomMultiplier(r) : MapSettings.MinableComponentsIndustrial.Multiplier;
+            Minability.Add(new Pair<ThingDef, float>(td, td.building.mineableScatterCommonality));
+            td.building.mineableScatterCommonality *= m;
+        }
+
+        private static void UpdateGenStepScatterer(string genStepDefName, RandomizableMultiplier ruins, List<Pair<GenStep_Scatterer, ScattererValues>> scatterers, Random r)
+        {
+            GenStepDef d = DefDatabase<GenStepDef>.GetNamed(genStepDefName, false);
+            if (d?.genStep is GenStep_Scatterer rs)
+            {
+                float m = MapSettings.Ruins.IsRandom ? Settings.GetRandomMultiplier(r) : MapSettings.Ruins.Multiplier;
                 Scatterers.Add(new Pair<GenStep_Scatterer, ScattererValues>(rs, new ScattererValues(rs.countPer10kCellsRange)));
                 rs.countPer10kCellsRange *= m;
             }
             else
-                Log.Warning("[Configurable Maps] unable to patch ScatterRuinsSimple, genStep was not a GenStep_Scatterer.");
-
-            gsDef = DefDatabase<GenStepDef>.GetNamed("ScatterShrines", false);
-            if (gsDef?.genStep is GenStep_Scatterer ss)
-            {
-                m = MapSettings.IsShrinesMultiplierRandom ? Settings.GetRandomMultiplier(r) : MapSettings.ShrinesMultiplier;
-                Scatterers.Add(new Pair<GenStep_Scatterer, ScattererValues>(ss, new ScattererValues(ss.countPer10kCellsRange)));
-                ss.countPer10kCellsRange *= m;
-            }
-            else
-                Log.Warning("[Configurable Maps] unable to patch ScatterShrines, genStep was not a GenStep_Scatterer.");
+                Log.Warning($"[Configurable Maps] unable to patch {genStepDefName}");
         }
 
         public static void Restore()
@@ -60,6 +88,12 @@ namespace ConfigurableMaps
                 p.First.countPer10kCellsRange = p.Second.CountPer10kCellsRange;
             }
             Scatterers.Clear();
+
+            foreach (var p in Minability)
+            {
+                p.First.building.mineableScatterCommonality = p.Second;
+            }
+            Minability.Clear();
         }
 
         private struct BiomeOriginalValues

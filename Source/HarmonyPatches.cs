@@ -31,6 +31,60 @@ namespace ConfigurableMaps
         }
     }
 
+    [HarmonyPatch(typeof(Page_CreateWorldParams), "DoWindowContents")]
+    public static class Patch_Page_CreateWorldParams_DoWindowContents
+    {
+        static void Postfix(Rect rect)
+        {
+            float y = rect.y + rect.height - 78f;
+            Text.Font = GameFont.Small;
+            string label = "RFC.FactionControlName".Translate();
+            if (Widgets.ButtonText(new Rect(0, y, 150, 32), label))
+            {
+                OpenSettingsWindow();
+            }
+        }
+
+        public static void OpenSettingsWindow()
+        {
+            Find.WindowStack.TryRemove(typeof(EditWindow_Log));
+            if (!Find.WindowStack.TryRemove(typeof(SettingsWindow)))
+            {
+                Find.WindowStack.Add(new SettingsWindow());
+            }
+        }
+    }
+
+
+    [HarmonyPatch(typeof(MainMenuDrawer), "DoMainMenuControls")]
+    static class Patch_MainMenuDrawer_DoMainMenuControls
+    {
+        static void Postfix(Rect rect, bool anyMapFiles)
+        {
+            if (Current.ProgramState == ProgramState.Entry)
+            {
+                Text.Font = GameFont.Small;
+                float y = ((rect.yMax + rect.yMin) / 2.0f) - 8.5f + 40;
+                float x = Math.Max(0, rect.xMax - 598);
+                //float x = Math.Max(0, rect.xMax - 915);
+                Rect r = new Rect(x, y, 140, 45);
+                if (Widgets.ButtonText(r, "ConfigurableMaps".Translate(), true, false, true))
+                {
+                    Find.WindowStack.Add(new SettingsWindow());
+                }
+            }
+        }
+    }
+
+    // CommonMapGenerator.xml
+    // def: Caves - GenStep_Caves
+    // def: RocksFromGrid - GenStep_RocksFromGrid
+    // def: RocksFromGrid_NoMinerals - GenStep_RocksFromGrid
+    // def: Terrain - GenStep_Terrain
+    // def: CavesTerrain - GenStep_CavesTerrain
+    // def: Roads - GenStep_Roads
+    // def: RockChunks - GenStep_RockChunks
+
     [HarmonyPatch(typeof(MapGenerator), "GenerateMap")]
     public class MapGenerator_Generate
     {
@@ -41,9 +95,9 @@ namespace ConfigurableMaps
             DefsUtil.Update(r);
 
             GenStep_RockChunks_GrowLowRockFormationFrom.ChunkLevel = MapSettings.ChunkLevel;
-            if (MapSettings.ChunkLevel == ChunkLevel.Random)
+            if (MapSettings.ChunkLevel == ChunkLevelEnum.Random)
             {
-                GenStep_RockChunks_GrowLowRockFormationFrom.ChunkLevel = (ChunkLevel)r.Next(0, Enum.GetNames(typeof(ChunkLevel)).Length - 1);
+                GenStep_RockChunks_GrowLowRockFormationFrom.ChunkLevel = (ChunkLevelEnum)r.Next(0, Enum.GetNames(typeof(ChunkLevelEnum)).Length - 1);
             }
         }
         public static void Postfix()
@@ -79,328 +133,141 @@ namespace ConfigurableMaps
     [HarmonyPatch(typeof(GenStep_RockChunks), "GrowLowRockFormationFrom", null)]
     public static class GenStep_RockChunks_GrowLowRockFormationFrom
     {
-        public static ChunkLevel ChunkLevel = ChunkLevel.Normal;
+        public static ChunkLevelEnum ChunkLevel = ChunkLevelEnum.Normal;
         public static bool Prefix()
         {
-            if (ChunkLevel == ChunkLevel.None)
+            if (ChunkLevel == ChunkLevelEnum.None)
                 return false;
-            if (ChunkLevel == ChunkLevel.Low)
+            if (ChunkLevel == ChunkLevelEnum.Low)
                 return Rand.Value < 0.5f;
             return true;
         }
     }
-}
 
-/* 
-
-
-    /*[HarmonyPatch(typeof(GenStep_Plants), "Generate", null)]
-    public static class GenStep_Plants_Generate
+    [HarmonyPatch(typeof(TerrainThreshold), "TerrainAtValue", null)]
+    public static class TerrainThreshold_TerrainAtValue
     {
-        public static bool Prefix(Map map)
+        public static bool Prefix(List<TerrainThreshold> threshes, float val, ref TerrainDef __result)
         {
-            if (ThingsSettings.animalDensityLevel < 0 ||
-                ThingsSettings.plantDensityLevel < 0)
-            {
-                Util.UpdateBiomeStatsPerUserSettings();
-            }
-            return true;
-        }
-    }
+            // val is fertility
 
-    [HarmonyPatch(typeof(GenPlantReproduction), "TryFindReproductionDestination", null)]
-    public static class GenPlantReproduction_TryFindReproductionDestination
-    {
-        public static bool Prefix(Map map)
-        {
-            if ((Controller_Things.animalDensityLevel < 0) || (Controller_Things.plantDensityLevel < 0))
+            var orig = __result;
+            __result = null;
+            if (threshes[0].min < -900)
             {
-                SetBiodensity.SetBiodensityLevels();
-            }
-            return true;
-        }
-    }*/
+                //
+                // TerrainsByFertility
+                // 
+                float mod = 0.87f;
+                switch(MapSettings.Fertility)
+                {
+                    case FertilityLevelEnum.Rare:
+                        mod += 0.3f;
+                        break;
+                    case FertilityLevelEnum.Uncommon:
+                        mod += 0.15f;
+                        break;
+                    case FertilityLevelEnum.Common:
+                        mod += -0.15f;
+                        break;
+                    case FertilityLevelEnum.Abundant:
+                        mod += -0.3f;
+                        break;
+                }
+                if (threshes[0].terrain.defName == "Soil")
+                {
+                    if (val >= -999f && val < mod)
+                        __result = TerrainDef.Named("Soil");
+                    else if (val >= mod && val < 999f)
+                        __result = TerrainDef.Named("SoilRich");
+                }
+                else if (threshes[0].terrain.defName == "Sand" && (threshes[0].max < 0.5f))
+                {
+                    mod += 0.03f;
+                    if (val >= -999f && val < 0.45f)
+                        __result = TerrainDef.Named("Sand");
+                    else if (val >= 0.45f && val < mod)
+                        __result = TerrainDef.Named("Soil");
+                    else if (val >= mod && val < 999f)
+                        __result = TerrainDef.Named("SoilRich");
+                }
+                else
+                    return true;
 
-/*[HarmonyPatch(typeof(GenStep_ScatterRuinsSimple), "ScatterAt", null)]
-public static class GenStep_ScatterRuinsSimple_ScatterAt
-{
-    public static bool Prefix(IntVec3 c, Map map)
-    {
-#if DEBUG
-        Log.Warning("GenStep_ScatterRuinsSimple_ScatterAt Prefix");
-#endif
-        BaseGen.globalSettings.map = map;
-        ThingDef thingDef = BaseGenUtility.RandomCheapWallStuff(null, true);
-        if (Rand.Value < 0.9f)
-        {
-            int sizeX = Rand.Range(5, 11);
-            int sizeZ = Rand.Range(5, 11);
-            CellRect cellRect = new CellRect(c.x, c.z, sizeX, sizeZ);
-            CellRect cellRect1 = cellRect.ClipInsideMap(map);
-            MethodInfo locationCheck = typeof(GenStep_ScatterRuinsSimple).GetMethod("CanPlaceAncientBuildingInRange", BindingFlags.NonPublic | BindingFlags.Instance);
-            bool b = (bool)locationCheck.Invoke(new GenStep_ScatterRuinsSimple(), new object[] { cellRect1, map });
-            if (b.Equals(true))
-            {
-                BaseGen.symbolStack.Push("ancientRuins", cellRect1);
-                BaseGen.Generate();
-            }
-        }
-        else
-        {
-            bool flag = Rand.Bool;
-            int randomInRange = Rand.Range(3, 11);
-            CellRect cellRect2 = new CellRect(c.x, c.z, (!flag ? 1 : randomInRange), (!flag ? randomInRange : 1));
-            MethodInfo locationCheck = typeof(GenStep_ScatterRuinsSimple).GetMethod("CanPlaceAncientBuildingInRange", BindingFlags.NonPublic | BindingFlags.Instance);
-            bool b = (bool)locationCheck.Invoke(new GenStep_ScatterRuinsSimple(), new object[] { cellRect2.ExpandedBy(1), map });
-            if (b.Equals(true))
-            {
-                typeof(GenStep_ScatterRuinsSimple).GetMethod("MakeLongWall", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(new GenStep_ScatterRuinsSimple(), new object[] { c, map, randomInRange, flag, thingDef });
-            }
-        }
-        return false;
-    }
-}* /
-
-[HarmonyPatch(typeof(BaseGenUtility), "RandomCheapWallStuff", new Type[] { typeof(TechLevel), typeof(bool) })]
-public static class BaseGenUtility_RandomCheapWallStuff
-{
-    public static bool Prefix(TechLevel techLevel, ref ThingDef __result, bool notVeryFlammable = false)
-    {
-#if DEBUG
-        Log.Warning("BaseGenUtility_RandomCheapWallStuff Prefix");
-#endif
-        if (techLevel.IsNeolithicOrWorse())
-        {
-            __result = ThingDefOf.WoodLog;
-            return false;
-        }
-        ThingDef wallType = (from wallStuff in DefDatabase<ThingDef>.AllDefsListForReading
-                             where (!BaseGenUtility.IsCheapWallStuff(wallStuff) ? false : (!notVeryFlammable ? true : wallStuff.BaseFlammability < 0.5f))
-                             select wallStuff).RandomElement<ThingDef>();
-        Map map = BaseGen.globalSettings.map;
-        float v = ThingsSettings.stoneType;
-        if (v < 0 || v > 3)
-        {
-            v = Rand.Value * 3;
-        }
-        if (map == null || wallType.defName.Contains("Steel")
-          || v < 1
-          || (v < 2 && Rand.Value < 0.33))
-        {
-            __result = wallType;
-            return false;
-        }
-        ThingDef rockType = Find.World.NaturalRockTypesIn(map.Tile).RandomElement<ThingDef>();
-        wallType = ThingDef.Named("Blocks" + rockType.defName);
-        __result = wallType;
-        return false;
-    }
-}
-
-[HarmonyPatch(typeof(GenStep_Scatterer), "CountFromPer10kCells", null)]
-public static class GenStep_Scatterer_CountFromPer10kCells
-{
-    public static bool Prefix(float countPer10kCells, Map map, ref int __result, int mapSize = -1)
-    {
-#if DEBUG
-        Log.Warning("GenStep_Scatterer_CountFromPer10kCells Prefix");
-#endif
-        if (mapSize < 0)
-        {
-            mapSize = map.Size.x;
-        }
-        //
-        // Ore
-        //
-        if (countPer10kCells > 3.95)
-        {
-            float min = countPer10kCells;
-            float v = TerrainSettings.oreLevel;
-            if (v < 0 || v > 5)
-            {
-                v = (Rand.Value) * 5;
-            }
-            if (v < 1) { min = 0; }
-            else if (v < 2) { min *= 0.5f; }
-            else if (v < 3) { }
-            else if (v < 4) { min *= 2; }
-            else { min *= 4; }
-            float max = min;
-            countPer10kCells = Rand.Range(min, max);
-        }
-        /* /
-        // Ruins
-        //
-        if (countPer10kCells > 1.95 && countPer10kCells < 3.85)
-        {
-            float v = ThingsSettings.ruinsLevel;
-            if (v < 0 || v > 8)
-            {
-                v = Rand.Value * 8;
-            }
-            if (v < 1)
-            {
-                v = 0;
+                if (__result == null)
+                {
+                    __result = orig;
+                    return true;
+                }
+                return false;
             }
 
-            countPer10kCells = Rand.Range(v, v * 2);
-        }
-        /* /
-        // Geysers
-        //
-        if (countPer10kCells > 0.65 && countPer10kCells < 1.05)
-        {
-            float min = 0.7f;
-            float max = 1;
-            float v = TerrainSettings.geysersLevel;
-            if (v < 0 || v > 5)
-            {
-                v = (Rand.Value) * 5;
-            }
-            if (v < 1) { min = 0; max = 0; }
-            else if (v < 2) { min = 0.35f; max = 0.5f; }
-            else if (v < 3) { min = 0.7f; max = 1; }
-            else if (v < 4) { min = 1.4f; max = 2; }
-            else { min = 2.8f; max = 4; }
-            countPer10kCells = Rand.Range(min, max);
-        }
-        /* /
-        // Shrines
-        //
-        if (countPer10kCells > 0.10 && countPer10kCells < 0.30)
-        {
-            float min = 0.12f;
-            float max = 0.24f;
-            float v = ThingsSettings.shrinesLevel;
-            if (v < 0 || v > 8)
-            {
-                v = Rand.Value * 8;
-            }
-            if (v < 1) { min = 0; max = 0; }
-            else if (v < 2) { min = 0; max = 0.06f; }
-            else if (v < 3) { min = 0.06f; max = 0.12f; }
-            else if (v < 4) { min = 0.12f; max = 0.24f; }
-            else if (v < 5) { min = 0.24f; max = 0.48f; }
-            else if (v < 6) { min = 0.48f; max = 0.96f; }
-            else if (v < 7) { min = 0.96f; max = 1.92f; }
-            else { min = 1.92f; max = 3.84f; }
-            countPer10kCells = Rand.Range(min, max);
-        }* /
-        int num = Mathf.RoundToInt(10000f / countPer10kCells);
-        __result = Mathf.RoundToInt((float)(mapSize * mapSize) / (float)num);
-        return false;
-    }
-}
-
-[HarmonyPatch(typeof(TerrainThreshold), "TerrainAtValue", null)]
-public static class TerrainThreshold_TerrainAtValue
-{
-    public static bool Prefix(List<TerrainThreshold> threshes, float val, ref TerrainDef __result)
-    {
-#if TRACE
-        Log.Warning("TerrainAtValue Prefix");
-#endif
-        __result = null;
-        if (threshes[0].min < -900)
-        {
+            /*/
+            // TerrainPatchMakers
             //
-            // TerrainsByFertility
-            // 
-            float mod = 0.0f;
-            if (TerrainSettings.fertilityLevel < 1) { mod = 0.30f; }
-            else if (TerrainSettings.fertilityLevel < 2) { mod = 0.15f; }
-            else if (TerrainSettings.fertilityLevel < 3) { }
-            else if (TerrainSettings.fertilityLevel < 4) { mod = -0.15f; }
-            else { mod = -0.30f; }
-            if (threshes[0].terrain.defName == "Soil")
+            float adjustment;
+            float v = TerrainSettings.waterLevel;
+            if (v < 0 || v > 5)
             {
-                float val1 = 0.87f + mod;
-                if (val >= -999f && val < val1) { __result = TerrainDef.Named("Soil"); }
-                else if (val >= val1 && val < 999f) { __result = TerrainDef.Named("SoilRich"); }
+                v = Rand.Value * 5;
             }
-            else if (threshes[0].terrain.defName == "Sand" && (threshes[0].max < 0.5f))
-            {
-                float val1 = 0.90f + mod;
-                if (val >= -999f && val < 0.45f) { __result = TerrainDef.Named("Sand"); }
-                else if (val >= 0.45f && val < val1) { __result = TerrainDef.Named("Soil"); }
-                else if (val >= val1 && val < 999f) { __result = TerrainDef.Named("SoilRich"); }
-            }
-            else
-            {
-                for (int i = 0; i < threshes.Count; i++)
-                {
-                    if (threshes[i].min <= val && threshes[i].max > val)
-                    {
-                        __result = threshes[i].terrain;
-                    }
-                }
-            }
-            return false;
-        }
-        //
-        // TerrainPatchMakers
-        //
-        float adjustment;
-        float v = TerrainSettings.waterLevel;
-        if (v < 0 || v > 5)
-        {
-            v = Rand.Value * 5;
-        }
-        if (v < 1) { adjustment = 0.75f; }
-        else if (v < 2) { adjustment = 0.33f; }
-        else if (v < 3) { adjustment = 0.0f; }
-        else if (v < 4) { adjustment = -0.25f; }
-        else { adjustment = -0.5f; }
+            if (v < 1) { adjustment = 0.75f; }
+            else if (v < 2) { adjustment = 0.33f; }
+            else if (v < 3) { adjustment = 0.0f; }
+            else if (v < 4) { adjustment = -0.25f; }
+            else { adjustment = -0.5f; }
 
-        float richSoil;
-        v = TerrainSettings.fertilityLevel;
-        if (v < 0 || v > 5)
-        {
-            v = Rand.Value * 5;
-        }
-        if (v < 1) { richSoil = -0.06f; }
-        else if (v < 2) { richSoil = -0.03f; }
-        else if (v < 3) { richSoil = 0.0f; }
-        else if (v < 4) { richSoil = 0.03f; }
-        else { richSoil = 0.06f; }
-        for (int i = 0; i < threshes.Count; i++)
-        {
-            if (threshes[0].terrain.defName == "SoilRich")
+            float richSoil;
+            v = TerrainSettings.fertilityLevel;
+            if (v < 0 || v > 5)
             {
-                if (i == 0)
+                v = Rand.Value * 5;
+            }
+            if (v < 1) { richSoil = -0.06f; }
+            else if (v < 2) { richSoil = -0.03f; }
+            else if (v < 3) { richSoil = 0.0f; }
+            else if (v < 4) { richSoil = 0.03f; }
+            else { richSoil = 0.06f; }
+            for (int i = 0; i < threshes.Count; i++)
+            {
+                if (threshes[0].terrain.defName == "SoilRich")
                 {
-                    if ((threshes[i].min + adjustment) <= val && (threshes[i].max + adjustment + richSoil) > val)
+                    if (i == 0)
                     {
-                        __result = threshes[i].terrain;
+                        if ((threshes[i].min + adjustment) <= fertility && (threshes[i].max + adjustment + richSoil) > fertility)
+                        {
+                            __result = threshes[i].terrain;
+                        }
                     }
-                }
-                if (i == 1)
-                {
-                    if ((threshes[i].min + adjustment + richSoil) <= val && (threshes[i].max + adjustment) > val)
+                    if (i == 1)
                     {
-                        __result = threshes[i].terrain;
+                        if ((threshes[i].min + adjustment + richSoil) <= fertility && (threshes[i].max + adjustment) > fertility)
+                        {
+                            __result = threshes[i].terrain;
+                        }
+                    }
+                    else
+                    {
+                        if ((threshes[i].min + adjustment) <= fertility && (threshes[i].max + adjustment) > fertility)
+                        {
+                            __result = threshes[i].terrain;
+                        }
                     }
                 }
                 else
                 {
-                    if ((threshes[i].min + adjustment) <= val && (threshes[i].max + adjustment) > val)
+                    if ((threshes[i].min + adjustment) <= fertility && (threshes[i].max + adjustment) > fertility)
                     {
                         __result = threshes[i].terrain;
                     }
                 }
             }
-            else
-            {
-                if ((threshes[i].min + adjustment) <= val && (threshes[i].max + adjustment) > val)
-                {
-                    __result = threshes[i].terrain;
-                }
-            }
+            return false;*/
+            return true;
         }
-        return false;
     }
 }
-
+/*
 [HarmonyPatch(typeof(GenStep_ElevationFertility), "Generate", null)]
 public static class GenStep_ElevationFertility_Generate
 {

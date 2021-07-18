@@ -11,152 +11,184 @@ namespace ConfigurableMaps
         public RandomizableFieldValue<float>[] ThingsFieldValues;
     }
 
-    public enum ChunkLevel
+    public enum ChunkLevelEnum
     {
         None,
         Low,
         Normal,
-        Random,
+        Random
+    }
+
+    public enum FertilityLevelEnum
+    {
+        Rare,
+        Uncommon,
+        Normal,
+        Common,
+        Abundant,
+        Random
     }
 
     public class MapSettings : IExposable, IWindow<MSFieldValues>
     {
-        const float DEFAULT_MULTIPLIER = 1f;
         // Terrain
-        // TODO public static bool allowFakeOres = true;
-        public static ChunkLevel ChunkLevel;
-        public static float OreMultiplier;
-        public static bool IsOreMultiplierRandom;
-        public static float GeysersMultiplier;
-        public static bool IsGeysersMultiplierRandom;
-        public static float MountainMultiplier;
-        public static bool IsMountainMultiplierRandom;
-        public static float WaterMultiplier;
-        public static bool IsWaterMultiplierRandom;
-        public static float FertilityMultiplier;
-        public static bool IsFertilityMultiplierRandom;
+        public static ChunkLevelEnum ChunkLevel = ChunkLevelEnum.Normal;
+        public static FertilityLevelEnum Fertility = FertilityLevelEnum.Normal;
+
+        public static RandomizableMultiplier Ore;
+        public static RandomizableMultiplier MinableSteel;
+        public static RandomizableMultiplier MinablePlasteel;
+        public static RandomizableMultiplier MinableComponentsIndustrial;
+        public static RandomizableMultiplier Geysers;
+        public static RandomizableMultiplier Mountain;
+        public static RandomizableMultiplier Water;
 
         // coast level
         // caves
 
         // Things
-        public static bool AreWallsMadeFromLocal;
-        public static float AnimalDensityMultiplier;
-        public static bool IsAnimalDensityMultiplierRandom;
-        public static float PlantDensityMultiplier;
-        public static bool IsPlantDensityMultiplierRandom;
-        public static float RuinsMultiplier;
-        public static bool IsRuinsMultiplierRandom;
-        public static float ShrinesMultiplier;
-        public static bool IsShrinesMultiplierRandom;
+        public static bool AreWallsMadeFromLocal = false;
+        public static RandomizableMultiplier AnimalDensity;
+        public static RandomizableMultiplier PlantDensity;
+        public static RandomizableMultiplier CaveHives;
+        public static RandomizableMultiplier Ruins;
+        public static RandomizableMultiplier Shrines;
 
         private Vector2 terrainScroll = Vector2.zero, thingsScroll = Vector2.zero;
         private float lastYTerrain = 0, lastYThings;
 
         public string Name => "CM.MapSettings".Translate();
 
+        private void Initialize()
+        {
+            if (Ore == null)
+            {
+                Ore = new RandomizableMultiplier();
+                MinableSteel = new RandomizableMultiplier();
+                MinablePlasteel = new RandomizableMultiplier();
+                MinableComponentsIndustrial = new RandomizableMultiplier();
+                Geysers = new RandomizableMultiplier();
+                Mountain = new RandomizableMultiplier();
+                Water = new RandomizableMultiplier();
+                AnimalDensity = new RandomizableMultiplier();
+                PlantDensity = new RandomizableMultiplier();
+                CaveHives = new RandomizableMultiplier();
+                Ruins = new RandomizableMultiplier();
+                Shrines = new RandomizableMultiplier();
+            }
+        }
+
         public void DoWindowContents(Rect rect, MSFieldValues fv)
         {
-            float y = rect.y;
             float half = rect.width * 0.5f;
-            float width = half - 5f;
-            Widgets.Label(new Rect(rect.x, y, width, 28), "CM.TerrainTypeMultipliers".Translate());
-            Widgets.Label(new Rect(half, y, width, 28), "CM.ThingTypeMultipliers".Translate());
-            y += 30;
+            float width = half - 10f;
+            float innerWidth = width - 16;
+            float baseY = rect.y + 5;
 
             // Terrain
-            Widgets.BeginScrollView(new Rect(rect.x, y, width, rect.height - y), ref terrainScroll, new Rect(0, 0, width - 16, lastYTerrain));
+            float y = baseY;
+            Widgets.BeginScrollView(new Rect(rect.x, y, innerWidth, rect.height - y), ref terrainScroll, new Rect(0, 0, width - 16, lastYTerrain));
             lastYTerrain = 0;
-            DrawChunksSelection(ref lastYTerrain, width);
+            WindowUtil.DrawEnumSelection(0, ref lastYTerrain, "CM.chunksLevel", ChunkLevel, GetChunkLevelLabel, e => ChunkLevel = e);
+            WindowUtil.DrawEnumSelection(0, ref lastYTerrain, "CM.fertilityLevel", Fertility, GetFertilityLabel, e => Fertility = e);
+            lastYTerrain += 5;
+            Widgets.Label(new Rect(rect.x, lastYTerrain, innerWidth, 28), "CM.TerrainTypeMultipliers".Translate());
+            lastYTerrain += 30;
             foreach (var v in fv.TerrainFieldValues)
                 WindowUtil.DrawInputRandomizableWithSlider(0, ref lastYTerrain, v);
             Widgets.EndScrollView();
 
             // Things
+            y = baseY;
+            WindowUtil.DrawBoolInput(half, ref y, "CM.WallsMadeFromLocal", AreWallsMadeFromLocal, v => AreWallsMadeFromLocal = v);
+            y += 5;
+            Widgets.Label(new Rect(half, y, width, 28), "CM.ThingTypeMultipliers".Translate());
+            y += 30;
             Widgets.BeginScrollView(new Rect(half, y, width, rect.height - y), ref thingsScroll, new Rect(0, 0, width - 16, lastYThings));
             lastYThings = 0;
-            WindowUtil.DrawBoolInput(0, ref lastYThings, "CM.WallsMadeFromLocal", AreWallsMadeFromLocal, v => AreWallsMadeFromLocal = v);
             foreach (var v in fv.ThingsFieldValues)
                 WindowUtil.DrawInputRandomizableWithSlider(0, ref lastYThings, v);
             Widgets.EndScrollView();
         }
 
-        private void DrawChunksSelection(ref float lastYTerrain, float width)
+        private string GetChunkLevelLabel(ChunkLevelEnum e)
         {
-            Widgets.Label(new Rect(0, lastYTerrain, 150, 28), "CM.chunksLevel".Translate());
-            if (Widgets.ButtonText(new Rect(160, lastYTerrain, 100, 28), GetChunkLevelLabel(ChunkLevel)))
+            switch (e)
             {
-                List<FloatMenuOption> l = new List<FloatMenuOption>(4)
-                {
-                    new FloatMenuOption(GetChunkLevelLabel(ChunkLevel.None), () => ChunkLevel = ChunkLevel.None),
-                    new FloatMenuOption(GetChunkLevelLabel(ChunkLevel.Low), () => ChunkLevel = ChunkLevel.Low),
-                    new FloatMenuOption(GetChunkLevelLabel(ChunkLevel.Normal), () => ChunkLevel = ChunkLevel.Normal),
-                    new FloatMenuOption(GetChunkLevelLabel(ChunkLevel.Random), () => ChunkLevel = ChunkLevel.Random),
-                };
-                Find.WindowStack.Add(new FloatMenu(l));
+                case ChunkLevelEnum.None:
+                    return "None".Translate();
+                case ChunkLevelEnum.Low:
+                    return "StoragePriorityLow".Translate().CapitalizeFirst();
+                case ChunkLevelEnum.Normal:
+                    return "StoragePriorityNormal".Translate().CapitalizeFirst();
             }
-            lastYTerrain += 35;
+            return "CM.Random".Translate();
         }
 
-        private string GetChunkLevelLabel(ChunkLevel c)
+        private string GetFertilityLabel(FertilityLevelEnum e)
         {
-            switch (c)
+            switch (e)
             {
-                case ChunkLevel.None:
-                    return "None".Translate();
-                case ChunkLevel.Low:
-                    return "StoragePriorityLow".Translate().CapitalizeFirst();
-                case ChunkLevel.Normal:
+                case FertilityLevelEnum.Rare:
+                    return "PlanetPopulation_Low".Translate().CapitalizeFirst();
+                case FertilityLevelEnum.Uncommon:
+                    return "PowerConsumptionLow".Translate().CapitalizeFirst();
+                case FertilityLevelEnum.Normal:
                     return "StoragePriorityNormal".Translate().CapitalizeFirst();
+                case FertilityLevelEnum.Common:
+                    return "PowerConsumptionHigh".Translate().CapitalizeFirst();
+                case FertilityLevelEnum.Abundant:
+                    return "PsychicDroneLevel_BadExtreme".Translate().CapitalizeFirst();
             }
             return "CM.Random".Translate();
         }
 
         public void ExposeData()
         {
-            Scribe_Values.Look(ref ChunkLevel, "CM.ChunkLevel", ChunkLevel.Normal);
+            Initialize();
+            Scribe_Values.Look(ref ChunkLevel, "ChunkLevel", ChunkLevelEnum.Normal);
+            Scribe_Values.Look(ref Fertility, "Fertility", FertilityLevelEnum.Normal);
+            Scribe_Values.Look(ref AreWallsMadeFromLocal, "AreWallsMadeFromLocal", false);
 
-            Scribe_Values.Look(ref OreMultiplier, "CM.OreMultiplier", DEFAULT_MULTIPLIER);
-            Scribe_Values.Look(ref IsOreMultiplierRandom, "CM.IsOreMultiplierRandom", false);
-            Scribe_Values.Look(ref GeysersMultiplier, "CM.GeysersMultiplier", DEFAULT_MULTIPLIER);
-            Scribe_Values.Look(ref IsGeysersMultiplierRandom, "CM.IsGeysersMultiplierRandom", false);
-            Scribe_Values.Look(ref MountainMultiplier, "CM.MountainMultiplier", DEFAULT_MULTIPLIER);
-            Scribe_Values.Look(ref IsMountainMultiplierRandom, "CM.IsMountainMultiplierRandom", false);
-            Scribe_Values.Look(ref WaterMultiplier, "CM.WaterMultiplier", DEFAULT_MULTIPLIER);
-            Scribe_Values.Look(ref IsWaterMultiplierRandom, "CM.IsWaterMultiplierRandom", false);
-            Scribe_Values.Look(ref FertilityMultiplier, "CM.FertilityMultiplier", DEFAULT_MULTIPLIER);
-            Scribe_Values.Look(ref IsFertilityMultiplierRandom, "CM.IsFertilityMultiplierRandom", false);
+            Scribe_Deep.Look(ref Ore, "Ore");
+            Scribe_Deep.Look(ref MinableSteel, "MinableSteel");
+            Scribe_Deep.Look(ref MinablePlasteel, "MinablePlasteel");
+            Scribe_Deep.Look(ref MinableComponentsIndustrial, "MinableComponentsIndustrial");
+            Scribe_Deep.Look(ref Geysers, "Geysers");
+            Scribe_Deep.Look(ref Mountain, "Mountain");
+            Scribe_Deep.Look(ref Water, "Water");
 
-            Scribe_Values.Look(ref AnimalDensityMultiplier, "CM.AnimalDensityMultiplier", DEFAULT_MULTIPLIER);
-            Scribe_Values.Look(ref IsAnimalDensityMultiplierRandom, "CM.IsAnimalDensityMultiplierRandom", false);
-            Scribe_Values.Look(ref PlantDensityMultiplier, "CM.PlantDensityMultiplier", DEFAULT_MULTIPLIER);
-            Scribe_Values.Look(ref IsPlantDensityMultiplierRandom, "CM.IsPlantDensityMultiplierRandom", false);
-            Scribe_Values.Look(ref RuinsMultiplier, "CM.RuinsMultiplier", DEFAULT_MULTIPLIER);
-            Scribe_Values.Look(ref IsRuinsMultiplierRandom, "CM.IsRuinsMultiplierRandom", false);
-            Scribe_Values.Look(ref ShrinesMultiplier, "CM.ShrinesMultiplier", DEFAULT_MULTIPLIER);
-            Scribe_Values.Look(ref IsShrinesMultiplierRandom, "CM.IsShrinesMultiplierRandom", false);
-            Scribe_Values.Look(ref AreWallsMadeFromLocal, "CM.AreWallsMadeFromLocal", false);
+            Scribe_Deep.Look(ref AnimalDensity, "AnimalDensity");
+            Scribe_Deep.Look(ref PlantDensity, "PlantDensity");
+            Scribe_Deep.Look(ref CaveHives, "CaveHives");
+            Scribe_Deep.Look(ref Ruins, "Ruins");
+            Scribe_Deep.Look(ref Shrines, "Shrines");
         }
 
         public MSFieldValues GetFieldValues()
         {
+            Initialize();
             return new MSFieldValues()
             {
-                TerrainFieldValues = new RandomizableFieldValue<float>[5]
+                TerrainFieldValues = new RandomizableFieldValue<float>[7]
                 {
-                    new RandomizableFieldValue<float>("CM.OreMultiplier".Translate(), v => OreMultiplier = v, () => OreMultiplier, 0, 4, DEFAULT_MULTIPLIER, b => IsOreMultiplierRandom = b, () => IsOreMultiplierRandom),
-                    new RandomizableFieldValue<float>("CM.GeysersMultiplier".Translate(), v => GeysersMultiplier = v, () => GeysersMultiplier, 0, 4, DEFAULT_MULTIPLIER, b => IsGeysersMultiplierRandom = b, () => IsGeysersMultiplierRandom),
-                    new RandomizableFieldValue<float>("CM.MountainMultiplier".Translate(), v => MountainMultiplier = v, () => MountainMultiplier, 0, 4, DEFAULT_MULTIPLIER, b => IsMountainMultiplierRandom = b, () => IsMountainMultiplierRandom),
-                    new RandomizableFieldValue<float>("CM.WaterMultiplier".Translate(), v => WaterMultiplier = v, () => WaterMultiplier, 0, 4, DEFAULT_MULTIPLIER, b => IsWaterMultiplierRandom = b, () => IsWaterMultiplierRandom),
-                    new RandomizableFieldValue<float>("CM.FertilityMultiplier".Translate(), v => FertilityMultiplier = v, () => FertilityMultiplier, 0, 4, DEFAULT_MULTIPLIER, b => IsFertilityMultiplierRandom = b, () => IsFertilityMultiplierRandom),
+                    new RandomizableMultiplierFieldValue("CM.Ore".Translate(), Ore),
+                    new RandomizableMultiplierFieldValue("CM.MinableSteel".Translate(), MinableSteel),
+                    new RandomizableMultiplierFieldValue("CM.MinablePlasteel".Translate(), MinablePlasteel),
+                    new RandomizableMultiplierFieldValue("CM.MinableComponentsIndustrial".Translate(), MinableComponentsIndustrial),
+                    new RandomizableMultiplierFieldValue("CM.Geysers".Translate(), Geysers),
+                    new RandomizableMultiplierFieldValue("CM.Mountain".Translate(), Mountain),
+                    new RandomizableMultiplierFieldValue("CM.Water".Translate(), Water),
                 },
-                ThingsFieldValues = new RandomizableFieldValue<float>[4]
+                ThingsFieldValues = new RandomizableFieldValue<float>[5]
                 {
-                    new RandomizableFieldValue<float>("CM.AnimalDensityMultiplier".Translate(), v => AnimalDensityMultiplier = v, () => AnimalDensityMultiplier, 0, 4, DEFAULT_MULTIPLIER, b => IsAnimalDensityMultiplierRandom = b, () => IsAnimalDensityMultiplierRandom),
-                    new RandomizableFieldValue<float>("CM.PlantDensityMultiplier".Translate(), v => PlantDensityMultiplier = v, () => PlantDensityMultiplier, 0, 4, DEFAULT_MULTIPLIER, b => IsPlantDensityMultiplierRandom = b, () => IsPlantDensityMultiplierRandom),
-                    new RandomizableFieldValue<float>("CM.RuinsMultiplier".Translate(), v => RuinsMultiplier = v, () => RuinsMultiplier, 0, 4, DEFAULT_MULTIPLIER, b => IsRuinsMultiplierRandom = b, () => IsRuinsMultiplierRandom),
-                    new RandomizableFieldValue<float>("CM.ShrinesMultiplier".Translate(), v => ShrinesMultiplier = v, () => ShrinesMultiplier, 0, 4, DEFAULT_MULTIPLIER, b => IsShrinesMultiplierRandom = b, () => IsShrinesMultiplierRandom),
+                    new RandomizableMultiplierFieldValue("CM.AnimalDensity".Translate(), AnimalDensity),
+                    new RandomizableMultiplierFieldValue("CM.PlantDensity".Translate(), PlantDensity),
+                    new RandomizableMultiplierFieldValue("CM.CaveHives".Translate(), CaveHives),
+                    new RandomizableMultiplierFieldValue("CM.Ruins".Translate(), Ruins),
+                    new RandomizableMultiplierFieldValue("CM.Shrines".Translate(), Shrines),
                 },
+                // new RandomizableMultiplierFieldValue("CM.".Translate(), v => .Multiplier = v, () => .Multiplier, 0, 4, DEFAULT_MULTIPLIER, b => .IsRandom = b, () => .IsRandom),
             };
         }
     }

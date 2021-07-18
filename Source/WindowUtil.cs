@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using Verse;
 
@@ -93,11 +94,14 @@ namespace ConfigurableMaps
             y += 40;
         }
 
-        public static bool DrawBoolInput(float x, ref float y, string label, bool value, OnChange<bool> onChange, float buttonWidth = 100f)
+        public static bool DrawBoolInput(float x, ref float y, string label, bool value, OnChange<bool> onChange, string tip = "", float buttonWidth = 100f)
         {
             DrawLabel(x, y, 240, label);
-
-            if (Widgets.ButtonText(new Rect(240, y, buttonWidth, 32), value.ToString().ToString()))
+            if (tip != "")
+            {
+                TooltipHandler.TipRegion(new Rect(x, y, 240 + buttonWidth, 32), tip);
+            }
+            if (Widgets.ButtonText(new Rect(x + 240, y, buttonWidth, 32), value.ToString().ToString()))
             {
                 value = !value;
                 onChange(value);
@@ -106,7 +110,7 @@ namespace ConfigurableMaps
             return value;
         }
 
-        public static String DrawLabeledInput(float x, float y, string label, string buffer, out float nextX)
+        public static string DrawLabeledInput(float x, float y, string label, string buffer, out float nextX)
         {
             DrawLabel(x, y, 150, label);
             var s = Widgets.TextField(new Rect(x + 160, y, 60, 32), buffer);
@@ -134,6 +138,36 @@ namespace ConfigurableMaps
             Widgets.Label(new Rect(x, y + 2, width, 30), label);
 
             Text.Font = GameFont.Small;
+        }
+
+        public delegate string GetLabel<E>(E e) where E : System.Enum;
+        public static void DrawEnumSelection<E>(float x, ref float y, string label, E value, GetLabel<E> getLabel, OnChange<E> onChange) where E : System.Enum
+        {
+
+            Widgets.Label(new Rect(x, y, 150, 28), label.Translate());
+            if (Widgets.ButtonText(new Rect(160, y, 100, 28), getLabel(value)))
+            {
+                E e;
+                var values = typeof(E).GetEnumValues();
+                List<FloatMenuOption> l = new List<FloatMenuOption>(values.Length);
+                for (int i = 0; i < values.Length; ++i)
+                {
+                    e = (E)values.GetValue(i);
+                    l.Add(new enumFloatMenu<E>(getLabel(e), onChange, e));
+                };
+                Find.WindowStack.Add(new FloatMenu(l));
+            }
+            y += 35;
+        }
+        private class enumFloatMenu<E> : FloatMenuOption where E : System.Enum
+        {
+            E e;
+
+            public enumFloatMenu(string label, OnChange<E> onChange, E e) : base(label, null)
+            {
+                this.e = e;
+                base.action = () => onChange(this.e);
+            }
         }
     }
 }

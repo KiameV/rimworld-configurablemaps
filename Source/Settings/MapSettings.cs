@@ -7,8 +7,11 @@ namespace ConfigurableMaps
 {
     public class MSFieldValues
     {
-        public FieldValue<float> TerrainFertility;
-        public RandomizableFieldValue<float>[] TerrainFieldValues;
+        public RandomizableFieldValue<float> TerrainFertility;
+        public RandomizableFieldValue<float> TerrainWaterLevel;
+        public RandomizableFieldValue<float> TerrainMountainLevel;
+        public RandomizableFieldValue<float> TerrainGeyserLevel;
+        public RandomizableFieldValue<float>[] TerrainOre;
         public RandomizableFieldValue<float>[] ThingsFieldValues;
     }
 
@@ -20,39 +23,20 @@ namespace ConfigurableMaps
         Random
     }
 
-    public enum FertilityLevelEnum
-    {
-        Rare,
-        Uncommon,
-        Normal,
-        Common,
-        Abundant,
-        Random
-    }
-
-    public enum WaterLevelEnum
-    {
-        VeryLow,
-        Low,
-        Normal,
-        High,
-        VeryHigh,
-        Random
-    }
-
     public class MapSettings : IExposable, IWindow<MSFieldValues>
     {
         // Terrain
         public static ChunkLevelEnum ChunkLevel = ChunkLevelEnum.Normal;
-        public static float Fertility = 0f;
+        public static RandomizableMultiplier Fertility;
+        public static RandomizableMultiplier Water;
+        public static RandomizableMultiplier Mountain;
 
-        public static RandomizableMultiplier Ore;
+        public static RandomizableMultiplier OreLevel;
         public static RandomizableMultiplier MinableSteel;
         public static RandomizableMultiplier MinablePlasteel;
         public static RandomizableMultiplier MinableComponentsIndustrial;
+
         public static RandomizableMultiplier Geysers;
-        public static RandomizableMultiplier Mountain;
-        public static RandomizableMultiplier Water;
 
         // coast level
         // caves
@@ -61,7 +45,6 @@ namespace ConfigurableMaps
         public static bool AreWallsMadeFromLocal = false;
         public static RandomizableMultiplier AnimalDensity;
         public static RandomizableMultiplier PlantDensity;
-        public static RandomizableMultiplier CaveHives;
         public static RandomizableMultiplier Ruins;
         public static RandomizableMultiplier Shrines;
 
@@ -72,18 +55,18 @@ namespace ConfigurableMaps
 
         private void Initialize()
         {
-            if (Ore == null)
+            if (Fertility == null)
             {
-                Ore = new RandomizableMultiplier();
+                Fertility = new RandomizableMultiplier();
+                Water = new RandomizableMultiplier();
+                OreLevel = new RandomizableMultiplier();
                 MinableSteel = new RandomizableMultiplier();
                 MinablePlasteel = new RandomizableMultiplier();
                 MinableComponentsIndustrial = new RandomizableMultiplier();
                 Geysers = new RandomizableMultiplier();
-                Mountain = new RandomizableMultiplier();
-                Water = new RandomizableMultiplier();
+                Mountain = new RandomizableMultiplier(1.4f);
                 AnimalDensity = new RandomizableMultiplier();
                 PlantDensity = new RandomizableMultiplier();
-                CaveHives = new RandomizableMultiplier();
                 Ruins = new RandomizableMultiplier();
                 Shrines = new RandomizableMultiplier();
             }
@@ -100,15 +83,18 @@ namespace ConfigurableMaps
             float y = baseY;
             Widgets.Label(new Rect(0, y, innerWidth, 28), "CM.TerrainType".Translate());
             y += 30;
+            WindowUtil.DrawEnumSelection(0, ref y, "CM.ChunksLevel", ChunkLevel, GetChunkLevelLabel, e => ChunkLevel = e);
+            y += 5;
+            WindowUtil.DrawInputWithSlider(0, ref y, fv.TerrainFertility, "PowerConsumptionLow".Translate().CapitalizeFirst(), "PowerConsumptionHigh".Translate().CapitalizeFirst());
+            y += 5;
+            WindowUtil.DrawInputWithSlider(0, ref y, fv.TerrainWaterLevel, "PowerConsumptionLow".Translate().CapitalizeFirst(), "PowerConsumptionHigh".Translate().CapitalizeFirst());
+            y += 5;
+            WindowUtil.DrawInputWithSlider(0, ref y, fv.TerrainMountainLevel, "PowerConsumptionLow".Translate().CapitalizeFirst(), "PowerConsumptionHigh".Translate().CapitalizeFirst());
+            Widgets.DrawLineHorizontal(5, y, width - 10);
+            y += 5;
             Widgets.BeginScrollView(new Rect(rect.x, y, width, rect.height - y), ref terrainScroll, new Rect(0, 0, innerWidth, lastYTerrain));
             lastYTerrain = 0;
-            WindowUtil.DrawEnumSelection(0, ref lastYTerrain, "CM.chunksLevel", ChunkLevel, GetChunkLevelLabel, e => ChunkLevel = e);
-            lastYTerrain += 5;
-            WindowUtil.DrawInputWithSlider(0, ref lastYTerrain, fv.TerrainFertility, "PlanetPopulation_Low".Translate().CapitalizeFirst(), "PsychicDroneLevel_BadExtreme".Translate().CapitalizeFirst());
-            lastYTerrain += 5;
-            Widgets.Label(new Rect(0, lastYTerrain, innerWidth, 28), "CM.Multipliers".Translate());
-            lastYTerrain += 30;
-            foreach (var v in fv.TerrainFieldValues)
+            foreach (var v in fv.TerrainOre)
                 WindowUtil.DrawInputRandomizableWithSlider(0, ref lastYTerrain, v);
             Widgets.EndScrollView();
 
@@ -146,20 +132,19 @@ namespace ConfigurableMaps
         {
             Initialize();
             Scribe_Values.Look(ref ChunkLevel, "ChunkLevel", ChunkLevelEnum.Normal);
-            Scribe_Values.Look(ref Fertility, "Fertility", 0);
+            Scribe_Deep.Look(ref Fertility, "Fertility");
+            Scribe_Deep.Look(ref Water, "Water");
             Scribe_Values.Look(ref AreWallsMadeFromLocal, "AreWallsMadeFromLocal", false);
 
-            Scribe_Deep.Look(ref Ore, "Ore");
+            Scribe_Deep.Look(ref OreLevel, "Ore");
             Scribe_Deep.Look(ref MinableSteel, "MinableSteel");
             Scribe_Deep.Look(ref MinablePlasteel, "MinablePlasteel");
             Scribe_Deep.Look(ref MinableComponentsIndustrial, "MinableComponentsIndustrial");
             Scribe_Deep.Look(ref Geysers, "Geysers");
             Scribe_Deep.Look(ref Mountain, "Mountain");
-            Scribe_Deep.Look(ref Water, "Water");
 
             Scribe_Deep.Look(ref AnimalDensity, "AnimalDensity");
             Scribe_Deep.Look(ref PlantDensity, "PlantDensity");
-            Scribe_Deep.Look(ref CaveHives, "CaveHives");
             Scribe_Deep.Look(ref Ruins, "Ruins");
             Scribe_Deep.Look(ref Shrines, "Shrines");
         }
@@ -169,22 +154,21 @@ namespace ConfigurableMaps
             Initialize();
             return new MSFieldValues()
             {
-                TerrainFertility = new FieldValue<float>("CM.fertilityLevel".Translate(), v => Fertility = v, () => Fertility, -0.3f, 0.3f, 0f),
-                TerrainFieldValues = new RandomizableFieldValue<float>[7]
+                TerrainFertility = new RandomizableMultiplierFieldValue("CM.FertilityLevel".Translate(), Fertility, -0.3f, 0.3f, 0f),
+                TerrainWaterLevel = new RandomizableMultiplierFieldValue("CM.WaterLevel".Translate(), Water, -0.75f, 0.75f, 0f),
+                TerrainMountainLevel = new RandomizableMultiplierFieldValue("CM.MountainLevel".Translate(), Mountain, -0.15f, 1f, 0.0f),
+                TerrainGeyserLevel = new RandomizableMultiplierFieldValue("CM.Geysers".Translate(), Geysers),
+                TerrainOre = new RandomizableFieldValue<float>[4]
                 {
-                    new RandomizableMultiplierFieldValue("CM.Ore".Translate(), Ore),
-                    new RandomizableMultiplierFieldValue("CM.MinableSteel".Translate(), MinableSteel),
-                    new RandomizableMultiplierFieldValue("CM.MinablePlasteel".Translate(), MinablePlasteel),
-                    new RandomizableMultiplierFieldValue("CM.MinableComponentsIndustrial".Translate(), MinableComponentsIndustrial),
-                    new RandomizableMultiplierFieldValue("CM.Geysers".Translate(), Geysers),
-                    new RandomizableMultiplierFieldValue("CM.Mountain".Translate(), Mountain),
-                    new RandomizableMultiplierFieldValue("CM.Water".Translate(), Water),
+                    new RandomizableMultiplierFieldValue("CM.Ore".Translate(), OreLevel, 0f, 4f, 1f),
+                    new RandomizableMultiplierFieldValue("CM.MinableSteel".Translate(), MinableSteel, 0f, 4f, 1f),
+                    new RandomizableMultiplierFieldValue("CM.MinablePlasteel".Translate(), MinablePlasteel, 0f, 4f, 1f),
+                    new RandomizableMultiplierFieldValue("CM.MinableComponentsIndustrial".Translate(), MinableComponentsIndustrial, 0f, 4f, 1f),
                 },
-                ThingsFieldValues = new RandomizableFieldValue<float>[5]
+                ThingsFieldValues = new RandomizableFieldValue<float>[4]
                 {
                     new RandomizableMultiplierFieldValue("CM.AnimalDensity".Translate(), AnimalDensity),
                     new RandomizableMultiplierFieldValue("CM.PlantDensity".Translate(), PlantDensity),
-                    new RandomizableMultiplierFieldValue("CM.CaveHives".Translate(), CaveHives),
                     new RandomizableMultiplierFieldValue("CM.Ruins".Translate(), Ruins),
                     new RandomizableMultiplierFieldValue("CM.Shrines".Translate(), Shrines),
                 },

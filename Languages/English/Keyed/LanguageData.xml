@@ -3,33 +3,46 @@
 	<!-- For versions 1.3 and newer -->
 	<ConfigurableMaps>Configurable Maps</ConfigurableMaps>
 	
-	<CM.WorldSettings>World Settings</CM.WorldSettings>
-	<CM.StoneTypes>Number of Different Stone Types for each Map Tile</CM.StoneTypes>
-	<CM.StoneCommonality>Chance that a stone type will appear on a map (0-100). Relative to each other.</CM.StoneCommonality>
-	<CM.Granite>Granite</CM.Granite>
-	<CM.Limestone>Limestone</CM.Limestone>
-	<CM.Marble>Marble</CM.Marble>
-	<CM.Sandstone>Sandstone</CM.Sandstone>
-	<CM.Slate>Slate</CM.Slate>
-	
-	<CM.Default>Default</CM.Default>
-	<CM.Random>Random</CM.Random>
-	
 	<CM.TerrainType>Terrain Modifiers)</CM.TerrainType>
 	<CM.ThingType>Things Modifiers</CM.ThingType>
 	<CM.Multipliers>Multiplier (0.15 = 15%, 1.0 = 100%, 2.5 = 250%, etc)</CM.Multipliers>
 	
-	<CM.chunksLevel>Stone Chunk Density</CM.chunksLevel>
+	<CM.WorldSettings>World Settings</CM.WorldSettings>
+	<CM.MapSettings>Map Settings</CM.MapSettings>
+	<CM.StoneTypes>Number of Different Stone Types for each Map Tile</CM.StoneTypes>
+	<CM.StoneCommonality>Chance that a stone type will appear on a map (0-100). Relative to each other.</CM.StoneCommonality>
+	
+	<CM.FertilityLevel>Soil Fertility</CM.FertilityLevel>
+	<CM.WaterLevel>Water Height</CM.WaterLevel>
+	<CM.MountainLevel>Mountain Amount</CM.MountainLevel>
+	<CM.Geysers>Geyser Multiplier</CM.Geysers>
+	<CM.Ore>Total Ore</CM.Ore>
+	<CM.MinableSteel>Steel %</CM.MinableSteel>
+	<CM.MinablePlasteel>Plasteel %</CM.MinablePlasteel>
+	<CM.MinableComponentsIndustrial>Ind Comp %</CM.MinableComponentsIndustrial>
+	<CM.AnimalDensity>Animal Density</CM.AnimalDensity>
+	<CM.PlantDensity>Plant Density</CM.PlantDensity>
+	<CM.Ruins>Ruins</CM.Ruins>
+	<CM.Shrines>Shrines</CM.Shrines>
+	<CM.OtherStone>Other Stone Types</CM.OtherStone>
+	
+	<CM.Default>Default</CM.Default>
+	<CM.Random>Random</CM.Random>
+	
+	<CM.ChunksLevel>Stone Chunk Density</CM.ChunksLevel>
+	<CM.WallsMadeFromLocal>Walls Made Local</CM.WallsMadeFromLocal>
 	
 	<CM.Rare>Rare</CM.Rare>
 	<CM.Uncommon>Uncommon</CM.Uncommon>
-	<!-- <CM.Normal>Normal</CM.Normal> PlanetPopulation_Normal -->
 	<CM.Common>Common</CM.Common>
 	<CM.Abundant>Abundant</CM.Abundant>
 	
-	<!-- <CM.VeryLow>Very Low</CM.VeryLow> PlanetPopulation_Low -->
 	<!-- <CM.Low>Low</CM.Low> PowerConsumptionLow -->
+	<!-- <CM.Normal>Normal</CM.Normal> PlanetPopulation_Normal -->
 	<!-- <CM.High>High</CM.High> PowerConsumptionHigh -->
+	
+	
+	<!-- <CM.VeryLow>Very Low</CM.VeryLow> PlanetPopulation_Low -->
 	<!-- <CM.VeryHigh>Very High</CM.VeryHigh> PsychicDroneLevel_BadExtreme -->
 
 	<!-- Left for legacy support -->

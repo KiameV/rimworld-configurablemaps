@@ -20,14 +20,12 @@ namespace ConfigurableMaps
             var harmony = new Harmony("com.configurablemaps.rimworld.mod");
             harmony.PatchAll(Assembly.GetExecutingAssembly());
             //LongEventHandler.QueueLongEvent(new Action(UpdateDefs), "LibraryStartup", false, null);
-            if (ModsConfig.ActiveModsInLoadOrder.Any(mod => mod.Name.Contains("[RF] Fertile Fields")))
-            {
-                Settings.detectedFertileFields = true;
-            }
-            if (ModsConfig.ActiveModsInLoadOrder.Any(mod => mod.Name.Contains("Cupro's Stones")))
-            {
-                Settings.detectedCuprosStones = true;
-            }
+            HashSet<string> mods = new HashSet<string>();
+            foreach (var m in ModsConfig.ActiveModsInLoadOrder)
+                mods.Add(m.Name);
+            Settings.detectedFertileFields = mods.Contains("[RF] Fertile Fields");
+            Settings.detectedCuprosStones = mods.Contains("Cupro's Stones");
+            Settings.detectedImpassableMaps = mods.Contains("[KV] Impassable Map Maker");
         }
     }
 
@@ -77,7 +75,7 @@ namespace ConfigurableMaps
     }
 
 
-    [HarmonyPatch(typeof(MainMenuDrawer), "DoMainMenuControls")]
+    /*[HarmonyPatch(typeof(MainMenuDrawer), "DoMainMenuControls")]
     static class Patch_MainMenuDrawer_DoMainMenuControls
     {
         static void Postfix(Rect rect, bool anyMapFiles)
@@ -95,10 +93,11 @@ namespace ConfigurableMaps
                 }
             }
         }
-    }
+    }*/
 
     // CommonMapGenerator.xml
     // def: Caves - GenStep_Caves
+    // def CaveHives - GenStep_CaveHives
     // def: RocksFromGrid - GenStep_RocksFromGrid
     // def: RocksFromGrid_NoMinerals - GenStep_RocksFromGrid
     // def: Terrain - GenStep_Terrain
@@ -109,22 +108,186 @@ namespace ConfigurableMaps
     [HarmonyPatch(typeof(MapGenerator), "GenerateMap")]
     public class MapGenerator_Generate
     {
-        public static System.Random r;
         public static void Prefix()
         {
-            r = new System.Random(DateTime.Now.Millisecond);
-            DefsUtil.Update(r);
+            DefsUtil.Update();
 
             GenStep_RockChunks_GrowLowRockFormationFrom.ChunkLevel = MapSettings.ChunkLevel;
             if (MapSettings.ChunkLevel == ChunkLevelEnum.Random)
             {
-                GenStep_RockChunks_GrowLowRockFormationFrom.ChunkLevel = (ChunkLevelEnum)r.Next(0, Enum.GetNames(typeof(ChunkLevelEnum)).Length - 1);
+                GenStep_RockChunks_GrowLowRockFormationFrom.ChunkLevel = (ChunkLevelEnum)Rand.RangeInclusive(0, Enum.GetNames(typeof(ChunkLevelEnum)).Length - 1);
             }
         }
         public static void Postfix()
         {
-            r = null;
             DefsUtil.Restore();
+        }
+    }
+
+    [HarmonyPatch(typeof(WorldGenerator), "GenerateWorld")]
+    public class WorldGenerator_Generate
+    {
+        struct WeightedStoneType
+        {
+            public ThingDef Def;
+            public float Weight;
+            public WeightedStoneType(ThingDef def, float weight)
+            {
+                this.Def = def;
+                this.Weight = weight;
+            }
+        }
+        private static List<WeightedStoneType> weighted = null;
+
+        public static void Postfix()
+        {
+            weighted?.Clear();
+            weighted = null;
+        }
+
+        public static List<ThingDef> GetRandomStone(int wanted)
+        {
+            Init();
+            List<ThingDef> result;
+            List<WeightedStoneType> w = new List<WeightedStoneType>(weighted.Count);
+            foreach (WeightedStoneType wst in weighted)
+            {
+                w.Add(wst);
+            }
+
+            if (weighted.Count <= wanted)
+            {
+                Log.Warning("[Configurable Maps] Not enough weighted stone types > 0, using them all.");
+                result = new List<ThingDef>(weighted.Count);
+                var defs = DefDatabase<ThingDef>.AllDefs.Where((ThingDef d) => d.IsNonResourceNaturalRock).ToList();
+                for (int i = 0; i < wanted && i < defs.Count; ++i)
+                    result.Add(defs[i]);
+                return result;
+            }
+            if (w.Count < wanted)
+            {
+                Log.Warning("[Configurable Maps] Not enough weighted stone types > 0, getting first found.");
+                result = new List<ThingDef>(wanted);
+                var defs = DefDatabase<ThingDef>.AllDefs.Where((ThingDef d) => d.IsNonResourceNaturalRock).ToList();
+                for (int i = 0; i < wanted && i < defs.Count; ++i)
+                    result.Add(defs[i]);
+                return result;
+            }
+            
+            result = new List<ThingDef>(wanted);
+            while (result.Count < wanted)
+            {
+                float sum = 0;
+                foreach (WeightedStoneType wst in w)
+                    sum += wst.Weight;
+                sum /= w.Count;
+                sum = Rand.RangeInclusive((int)(sum * 3), (int)(sum * 7));
+
+                while (sum > 0)
+                {
+                    for (int i = 0; i < w.Count; ++i)
+                    {
+                        sum -= w[i].Weight;
+                        if (sum <= 0)
+                        {
+                            result.Add(w[i].Def);
+                            w.RemoveAt(i);
+                            break;
+                        }
+
+                    }
+                }
+            }
+            return result;
+        }
+
+        private static void Init()
+        {
+            if (weighted != null && weighted.Count > 0)
+                return;
+
+            var stoneDefs = DefDatabase<ThingDef>.AllDefs.Where((ThingDef d) => d.IsNonResourceNaturalRock).ToList();
+            weighted = new List<WeightedStoneType>(stoneDefs.Count);
+
+            foreach (var d in stoneDefs)
+            {
+                if (WorldSettings.CommonalityRandom)
+                {
+                    var i = Rand.RangeInclusive(0, 10);
+                    weighted.Add(new WeightedStoneType(d, i));
+                }
+                else
+                {
+                    switch (d.defName.ToLower())
+                    {
+                        case "granite":
+                            if (WorldSettings.CommonalityGranite > 0)
+                                weighted.Add(new WeightedStoneType(d, WorldSettings.CommonalityGranite));
+                            break;
+                        case "limestone":
+                            if (WorldSettings.CommonalityLimestone > 0)
+                                weighted.Add(new WeightedStoneType(d, WorldSettings.CommonalityLimestone));
+                            break;
+                        case "marble":
+                            if (WorldSettings.CommonalityMarble > 0)
+                                weighted.Add(new WeightedStoneType(d, WorldSettings.CommonalityMarble));
+                            break;
+                        case "sandstone":
+                            if (WorldSettings.CommonalitySandstone > 0)
+                                weighted.Add(new WeightedStoneType(d, WorldSettings.CommonalitySandstone));
+                            break;
+                        case "slate":
+                            if (WorldSettings.CommonalitySlate > 0)
+                                weighted.Add(new WeightedStoneType(d, WorldSettings.CommonalitySlate));
+                            break;
+                        case "claystone":
+                            if (WorldSettings.CommonalityClaystone > 0)
+                                weighted.Add(new WeightedStoneType(d, WorldSettings.CommonalityClaystone));
+                            break;
+                        case "andesite":
+                            if (WorldSettings.CommonalityAndesite > 0)
+                                weighted.Add(new WeightedStoneType(d, WorldSettings.CommonalityAndesite));
+                            break;
+                        case "syenite":
+                            if (WorldSettings.CommonalitySyenite > 0)
+                                weighted.Add(new WeightedStoneType(d, WorldSettings.CommonalitySyenite));
+                            break;
+                        case "gneiss":
+                            if (WorldSettings.CommonalityGneiss > 0)
+                                weighted.Add(new WeightedStoneType(d, WorldSettings.CommonalityGneiss));
+                            break;
+                        case "quartzite":
+                            if (WorldSettings.CommonalityQuartzite > 0)
+                                weighted.Add(new WeightedStoneType(d, WorldSettings.CommonalityQuartzite));
+                            break;
+                        case "schis":
+                            if (WorldSettings.CommonalitySchist > 0)
+                                weighted.Add(new WeightedStoneType(d, WorldSettings.CommonalitySchist));
+                            break;
+                        case "gabbro":
+                            if (WorldSettings.CommonalityGabbro > 0)
+                                weighted.Add(new WeightedStoneType(d, WorldSettings.CommonalityGabbro));
+                            break;
+                        case "diorite":
+                            if (WorldSettings.CommonalityDiorite > 0)
+                                weighted.Add(new WeightedStoneType(d, WorldSettings.CommonalityDiorite));
+                            break;
+                        case "dunite":
+                            if (WorldSettings.CommonalityDunite > 0)
+                                weighted.Add(new WeightedStoneType(d, WorldSettings.CommonalityDunite));
+                            break;
+                        case "pegmatite":
+                            if (WorldSettings.CommonalityPegmatite > 0)
+                                weighted.Add(new WeightedStoneType(d, WorldSettings.CommonalityPegmatite));
+                            break;
+                        default:
+                            Log.Message($"[Configurable Maps] unknown stone type {d.defName}. Using weight {WorldSettings.CommonalityOther}");
+                            if (WorldSettings.CommonalityOther > 0)
+                                weighted.Add(new WeightedStoneType(d, WorldSettings.CommonalityOther));
+                            break;
+                    }
+                }
+            }
         }
     }
 
@@ -135,7 +298,7 @@ namespace ConfigurableMaps
         {
             if (__result == ThingDefOf.WoodLog)
                 return;
-            if (__result.defName.ToLower().Contains("steel") && MapGenerator_Generate.r.Next() % 3 > 0)
+            if (__result.defName.ToLower().Contains("steel") && Rand.Int % 3 > 0)
                 return;
 
             Map map = BaseGen.globalSettings.map;
@@ -171,32 +334,22 @@ namespace ConfigurableMaps
         public static bool Prefix(List<TerrainThreshold> threshes, float val, ref TerrainDef __result)
         {
             // val is fertility
-
+            float mod;
             var orig = __result;
             __result = null;
+            float chosenFertility = MapSettings.Fertility.Multiplier;
+            if (MapSettings.Fertility.IsRandom)
+            {
+                chosenFertility = (Rand.RangeInclusive(0, 600) - 300) * 0.001f;
+            }
             if (threshes[0].min < -900)
             {
                 //
                 // TerrainsByFertility
                 // 
-                float mod = 0.87f - MapSettings.Fertility;
+                mod = 0.87f - chosenFertility;
                 if (mod < 0)
                     mod = 0;
-                /*switch(MapSettings.Fertility)
-                {
-                    case FertilityLevelEnum.Rare:
-                        mod += 0.3f;
-                        break;
-                    case FertilityLevelEnum.Uncommon:
-                        mod += 0.15f;
-                        break;
-                    case FertilityLevelEnum.Common:
-                        mod += -0.15f;
-                        break;
-                    case FertilityLevelEnum.Abundant:
-                        mod += -0.3f;
-                        break;
-                }*/
                 if (threshes[0].terrain.defName == "Soil")
                 {
                     if (val >= -999f && val < mod)
@@ -225,56 +378,39 @@ namespace ConfigurableMaps
                 return false;
             }
 
-            /*/
+            //
             // TerrainPatchMakers
             //
-            float adjustment;
-            switch (MapSettings.Water)
+            float chosenWaterLevel = MapSettings.Water.Multiplier;
+            if (MapSettings.Water.IsRandom)
+                chosenWaterLevel = (Rand.RangeInclusive(0, 15000) - 7500) * 0.001f;
+            if (Math.Abs(chosenWaterLevel) < 0.01)
             {
-                case 
+                // Use base game's code
+                return true;
             }
-            if (v < 0 || v > 5)
-            {
-                v = Rand.Value * 5;
-            }
-            if (v < 1) { adjustment = 0.75f; }
-            else if (v < 2) { adjustment = 0.33f; }
-            else if (v < 3) { adjustment = 0.0f; }
-            else if (v < 4) { adjustment = -0.25f; }
-            else { adjustment = -0.5f; }
-
-            float richSoil;
-            v = TerrainSettings.fertilityLevel;
-            if (v < 0 || v > 5)
-            {
-                v = Rand.Value * 5;
-            }
-            if (v < 1) { richSoil = -0.06f; }
-            else if (v < 2) { richSoil = -0.03f; }
-            else if (v < 3) { richSoil = 0.0f; }
-            else if (v < 4) { richSoil = 0.03f; }
-            else { richSoil = 0.06f; }
+            chosenFertility *= -2;
             for (int i = 0; i < threshes.Count; i++)
             {
                 if (threshes[0].terrain.defName == "SoilRich")
                 {
                     if (i == 0)
                     {
-                        if ((threshes[i].min + adjustment) <= fertility && (threshes[i].max + adjustment + richSoil) > fertility)
+                        if ((threshes[i].min + chosenWaterLevel) <= val && (threshes[i].max + chosenWaterLevel + chosenFertility) > val)
                         {
                             __result = threshes[i].terrain;
                         }
                     }
                     if (i == 1)
                     {
-                        if ((threshes[i].min + adjustment + richSoil) <= fertility && (threshes[i].max + adjustment) > fertility)
+                        if ((threshes[i].min + chosenWaterLevel + chosenFertility) <= val && (threshes[i].max + chosenWaterLevel) > val)
                         {
                             __result = threshes[i].terrain;
                         }
                     }
                     else
                     {
-                        if ((threshes[i].min + adjustment) <= fertility && (threshes[i].max + adjustment) > fertility)
+                        if ((threshes[i].min + chosenWaterLevel) <= val && (threshes[i].max + chosenWaterLevel) > val)
                         {
                             __result = threshes[i].terrain;
                         }
@@ -282,314 +418,147 @@ namespace ConfigurableMaps
                 }
                 else
                 {
-                    if ((threshes[i].min + adjustment) <= fertility && (threshes[i].max + adjustment) > fertility)
+                    if ((threshes[i].min + chosenWaterLevel) <= val && (threshes[i].max + chosenWaterLevel) > val)
                     {
                         __result = threshes[i].terrain;
                     }
                 }
             }
-            return false;*/
-            return true;
-        }
-    }
-}
-/*
-[HarmonyPatch(typeof(GenStep_ElevationFertility), "Generate", null)]
-public static class GenStep_ElevationFertility_Generate
-{
-    private const float ElevationFreq = 0.021f;
-    private const float FertilityFreq = 0.021f;
-    private const float EdgeMountainSpan = 0.42f;
-    public static bool Prefix(Map map)
-    {
-#if DEBUG
-        Log.Warning("GenStep_ElevationFertility_Generate Prefix");
-#endif
-        Rot4 random;
-        NoiseRenderer.renderSize = new IntVec2(map.Size.x, map.Size.z);
-        ModuleBase perlin = new Perlin(0.0209999997168779, 2, 0.5, 6, Rand.Range(0, 2147483647), QualityMode.High);
-        perlin = new ScaleBias(0.5, 0.5, perlin);
-        NoiseDebugUI.StoreNoiseRender(perlin, "elev base");
-        float elevationFactorFlat = 1f;
-        float elevationScale = 1f;
-        switch (map.TileInfo.hilliness)
-        {
-            case Hilliness.Flat:
-                elevationFactorFlat = MapGenTuning.ElevationFactorFlat;
-                elevationScale = 0.1f;
-                break;
-            case Hilliness.SmallHills:
-                elevationFactorFlat = MapGenTuning.ElevationFactorSmallHills;
-                elevationScale = 0.3f;
-                break;
-            case Hilliness.LargeHills:
-                elevationFactorFlat = MapGenTuning.ElevationFactorLargeHills;
-                elevationScale = 0.6f;
-                break;
-            case Hilliness.Mountainous:
-                elevationFactorFlat = MapGenTuning.ElevationFactorMountains;
-                break;
-            case Hilliness.Impassable:
-                elevationFactorFlat = MapGenTuning.ElevationFactorImpassableMountains;
-                break;
-        }
-
-        if (TerrainSettings.mountainLevel < 1)
-        {
-            elevationFactorFlat -= (0.15f * elevationScale);
-        }
-        else if (TerrainSettings.mountainLevel < 2)
-        {
-            elevationFactorFlat -= (0.1f * elevationScale);
-        }
-        else if (TerrainSettings.mountainLevel < 3) { }
-        else if (TerrainSettings.mountainLevel < 4)
-        {
-            elevationFactorFlat += (0.2f * elevationScale);
-        }
-        else if (TerrainSettings.mountainLevel < 5)
-        {
-            elevationFactorFlat += (0.6f * elevationScale);
-        }
-        else
-        {
-            elevationFactorFlat += (1.4f * elevationScale);
-        }
-        perlin = new Multiply(perlin, new Const((double)elevationFactorFlat));
-        NoiseDebugUI.StoreNoiseRender(perlin, "elev world-factored");
-        if (map.TileInfo.hilliness == Hilliness.Mountainous || map.TileInfo.hilliness == Hilliness.Impassable)
-        {
-            IntVec3 size = map.Size;
-            ModuleBase distFromAxi = new DistFromAxis((float)size.x * 0.42f);
-            distFromAxi = new Clamp(0, 1, distFromAxi);
-            distFromAxi = new Invert(distFromAxi);
-            distFromAxi = new ScaleBias(1, 1, distFromAxi);
-            do
-            {
-                random = Rot4.Random;
-            }
-            while (random == Find.World.CoastDirectionAt(map.Tile));
-            if (random == Rot4.North)
-            {
-                distFromAxi = new Rotate(0, 90, 0, distFromAxi);
-                IntVec3 intVec3 = map.Size;
-                distFromAxi = new Translate(0, 0, (double)(-intVec3.z), distFromAxi);
-            }
-            else if (random == Rot4.East)
-            {
-                IntVec3 size1 = map.Size;
-                distFromAxi = new Translate((double)(-size1.x), 0, 0, distFromAxi);
-            }
-            else if (random == Rot4.South)
-            {
-                distFromAxi = new Rotate(0, 90, 0, distFromAxi);
-            }
-            else if (random == Rot4.West) { }
-            NoiseDebugUI.StoreNoiseRender(distFromAxi, "mountain");
-            perlin = new Add(perlin, distFromAxi);
-            NoiseDebugUI.StoreNoiseRender(perlin, "elev + mountain");
-        }
-        float single = (!map.TileInfo.WaterCovered ? Single.MaxValue : 0f);
-        MapGenFloatGrid elevation = MapGenerator.Elevation;
-        foreach (IntVec3 allCell in map.AllCells)
-        {
-            elevation[allCell] = Mathf.Min(perlin.GetValue(allCell), single);
-        }
-        ModuleBase scaleBia = new Perlin(0.0209999997168779, 2, 0.5, 6, Rand.Range(0, 2147483647), QualityMode.High);
-        scaleBia = new ScaleBias(0.5, 0.5, scaleBia);
-        NoiseDebugUI.StoreNoiseRender(scaleBia, "noiseFert base");
-        MapGenFloatGrid fertility = MapGenerator.Fertility;
-        foreach (IntVec3 allCell1 in map.AllCells)
-        {
-            fertility[allCell1] = scaleBia.GetValue(allCell1);
-        }
-        return false;
-    }
-}
-
-
-[HarmonyPatch(typeof(World), "NaturalRockTypesIn", null)]
-public static class World_NaturalRockTypesIn
-{
-    [HarmonyPriority(Priority.First)]
-    public static bool Prefix(int tile, ref IEnumerable<ThingDef> __result)
-    {
-        List<StonePercentChance> possible = GetStoneTypes();
-        if (possible.Count == 0)
-        {
-            Log.Warning("No rocks selected. Will use base game's logic.");
-            return true;
-        }
-
-        Rand.PushState();
-        Rand.Seed = tile;
-        try
-        {
-            int rockTypesInTile = Rand.RangeInclusive((int)WorldSettings.stoneMin, (int)WorldSettings.stoneMax);
-            if (rockTypesInTile > possible.Count)
-                rockTypesInTile = possible.Count;
-            var result = new List<ThingDef>(rockTypesInTile);
-            int i = 0;
-            while (i < 50 && result.Count < rockTypesInTile && possible.Count > 0)
-            {
-                var s = RandomWeightedSelect(possible);
-                result.Add(s.Def);
-                possible.Remove(s);
-                ++i;
-            }
-            __result = result;
-        }
-        finally
-        {
-            Rand.PopState();
-        }
-        return false;
-    }
-
-    private static StonePercentChance RandomWeightedSelect(List<StonePercentChance> possible)
-    {
-        float totalWeight = 0;
-        foreach (var st in possible)
-            totalWeight += st.Chance;
-        float r = Rand.RangeInclusive(0, (int)totalWeight);
-        StonePercentChance p = possible[0];
-        while (r > 0)
-        {
-            for (int i = 0; i < possible.Count && r > 0; ++i)
-            {
-                p = possible[i];
-                r -= p.Chance;
-            }
-        }
-        return p;
-    }
-
-    private struct StonePercentChance
-    {
-        public readonly float Chance;
-        public readonly ThingDef Def;
-        public StonePercentChance(float Chance, ThingDef d)
-        {
-            this.Chance = Chance;
-            this.Def = d;
+            return false;
         }
     }
 
-    private static List<StonePercentChance> GetStoneTypes()
+    [HarmonyPatch(typeof(GenStep_ElevationFertility), "Generate", null)]
+    public static class GenStep_ElevationFertility_Generate
     {
-        List<StonePercentChance> l = new List<StonePercentChance>();
-        foreach (ThingDef d in DefDatabase<ThingDef>.AllDefs.Where((ThingDef td) => td.IsNonResourceNaturalRock).ToList())
+        public static bool Prefix(Map map)
         {
-            if (d.defName == "Granite")
+            if (Settings.detectedImpassableMaps && map.TileInfo.hilliness == Hilliness.Impassable)
+                return true;
+
+            NoiseRenderer.renderSize = new IntVec2(map.Size.x, map.Size.z);
+            ModuleBase input = new Perlin(0.020999999716877937, 2.0, 0.5, 6, Rand.Range(0, int.MaxValue), QualityMode.High);
+            input = new ScaleBias(0.5, 0.5, input);
+            NoiseDebugUI.StoreNoiseRender(input, "elev base");
+            float num = 1f;
+            switch (map.TileInfo.hilliness)
             {
-                AddStoneType(l, WorldSettings.graniteCommonality, d);
+                case Hilliness.Flat:
+                    num = MapGenTuning.ElevationFactorFlat;
+                    break;
+                case Hilliness.SmallHills:
+                    num = MapGenTuning.ElevationFactorSmallHills;
+                    break;
+                case Hilliness.LargeHills:
+                    num = MapGenTuning.ElevationFactorLargeHills;
+                    break;
+                case Hilliness.Mountainous:
+                    num = MapGenTuning.ElevationFactorMountains;
+                    break;
+                case Hilliness.Impassable:
+                    num = MapGenTuning.ElevationFactorImpassableMountains;
+                    break;
             }
-            else if (d.defName == "Limestone")
+            input = new Multiply(input, new Const(num));
+            NoiseDebugUI.StoreNoiseRender(input, "elev world-factored");
+            if (map.TileInfo.hilliness == Hilliness.Mountainous || map.TileInfo.hilliness == Hilliness.Impassable)
             {
-                AddStoneType(l, WorldSettings.limestoneCommonality, d);
+                ModuleBase input2 = new DistFromAxis((float)map.Size.x * 0.42f);
+                input2 = new Clamp(0.0, 1.0, input2);
+                input2 = new Invert(input2);
+                input2 = new ScaleBias(1.0, 1.0, input2);
+                Rot4 random;
+                do
+                {
+                    random = Rot4.Random;
+                }
+                while (random == Find.World.CoastDirectionAt(map.Tile));
+                if (random == Rot4.North)
+                {
+                    input2 = new Rotate(0.0, 90.0, 0.0, input2);
+                    input2 = new Translate(0.0, 0.0, -map.Size.z, input2);
+                }
+                else if (random == Rot4.East)
+                {
+                    input2 = new Translate(-map.Size.x, 0.0, 0.0, input2);
+                }
+                else if (random == Rot4.South)
+                {
+                    input2 = new Rotate(0.0, 90.0, 0.0, input2);
+                }
+                else
+                {
+                    _ = random == Rot4.West;
+                }
+                NoiseDebugUI.StoreNoiseRender(input2, "mountain");
+                input = new Add(input, input2);
+                NoiseDebugUI.StoreNoiseRender(input, "elev + mountain");
             }
-            else if (d.defName == "Marble")
+            float b = (map.TileInfo.WaterCovered ? 0f : float.MaxValue);
+            MapGenFloatGrid elevation = MapGenerator.Elevation;
+            foreach (IntVec3 allCell in map.AllCells)
             {
-                AddStoneType(l, WorldSettings.marbleCommonality, d);
+                elevation[allCell] = Mathf.Min(input.GetValue(allCell), b);
             }
-            else if (d.defName == "Sandstone")
+            ModuleBase input3 = new Perlin(0.020999999716877937, 2.0, 0.5, 6, Rand.Range(0, int.MaxValue), QualityMode.High);
+            input3 = new ScaleBias(0.5, 0.5, input3);
+            NoiseDebugUI.StoreNoiseRender(input3, "noiseFert base");
+            MapGenFloatGrid fertility = MapGenerator.Fertility;
+            foreach (IntVec3 allCell2 in map.AllCells)
             {
-                AddStoneType(l, WorldSettings.sandstoneCommonality, d);
+                fertility[allCell2] = input3.GetValue(allCell2);
             }
-            else if (d.defName == "Slate")
-            {
-                AddStoneType(l, WorldSettings.slateCommonality, d);
-            }
-            else if (WorldSettings.extraStoneCommonality > 0)
-            {
-                AddStoneType(l, WorldSettings.extraStoneCommonality, d);
-            }
+            return false;
         }
-        return l;
     }
 
-    private static void AddStoneType(List<StonePercentChance> l, float chance, ThingDef d)
+    [HarmonyPatch(typeof(World), "NaturalRockTypesIn", null)]
+    public static class World_NaturalRockTypesIn
     {
-        if (chance < 0)
-            chance = 0;
-        else if (chance > 100)
-            chance = 100;
-        l.Add(new StonePercentChance(chance, d));
+        [HarmonyPriority(Priority.First)]
+        public static bool Prefix(int tile, ref IEnumerable<ThingDef> __result)
+        {
+            Rand.PushState();
+            Rand.Seed = tile;
+            try
+            {
+                if (WorldSettings.StoneMin <= 0)
+                    WorldSettings.StoneMin = 1;
+                if (WorldSettings.StoneMax < WorldSettings.StoneMin)
+                    WorldSettings.StoneMax = WorldSettings.StoneMin;
+                int rockTypesInTile = Rand.RangeInclusive(WorldSettings.StoneMin, WorldSettings.StoneMax);
+                __result = WorldGenerator_Generate.GetRandomStone(rockTypesInTile);
+            }
+            finally
+            {
+                Rand.PopState();
+            }
+            return false;
+        }
     }
-}
 
-[HarmonyPatch(typeof(RockNoises), "Init", null)]
-public static class RockNoises_Init
-{
-    public static bool Prefix(Map map)
+    /*[HarmonyPatch(typeof(RockNoises), "Init", null)]
+    public static class RockNoises_Init
     {
+        public static bool Prefix(Map map)
+        {
 #if DEBUG
         Log.Warning("RockNoises_Init Prefix");
 #endif
-        double multiplier = 0.5d * Find.World.NaturalRockTypesIn(map.Tile).ToList().Count;
-        int octaves = Rand.RangeInclusive(3, 8);
-        RockNoises.rockNoises = new List<RockNoises.RockNoise>();
-        foreach (ThingDef thingDef in Find.World.NaturalRockTypesIn(map.Tile))
-        {
-            RockNoises.RockNoise rockNoise = new RockNoises.RockNoise()
+            double multiplier = 0.5d * Find.World.NaturalRockTypesIn(map.Tile).ToList().Count;
+            int octaves = Rand.RangeInclusive(3, 8);
+            RockNoises.rockNoises = new List<RockNoises.RockNoise>();
+            foreach (ThingDef thingDef in Find.World.NaturalRockTypesIn(map.Tile))
             {
-                rockDef = thingDef,
-                noise = new Perlin((multiplier * 0.00499999988824129), 2, 0.5, octaves, Rand.Range(0, 2147483647), QualityMode.Medium)
-            };
-            RockNoises.rockNoises.Add(rockNoise);
-            NoiseDebugUI.StoreNoiseRender(rockNoise.noise, string.Concat(rockNoise.rockDef, " score"), map.Size.ToIntVec2);
+                RockNoises.RockNoise rockNoise = new RockNoises.RockNoise()
+                {
+                    rockDef = thingDef,
+                    noise = new Perlin((multiplier * 0.00499999988824129), 2, 0.5, octaves, Rand.Range(0, 2147483647), QualityMode.Medium)
+                };
+                RockNoises.rockNoises.Add(rockNoise);
+                NoiseDebugUI.StoreNoiseRender(rockNoise.noise, string.Concat(rockNoise.rockDef, " score"), map.Size.ToIntVec2);
+            }
+            return false;
         }
-        return false;
-    }
+    }*/
 }
-
-[HarmonyPatch(typeof(GenStep_ScatterLumpsMineable), "ScatterAt", null)]
-public static class GenStep_ScatterLumpsMineable_ScatterAt
-{
-    private static float originalPlasteelCommonality = -1;
-    private static float originalSteelCommonality = -1;
-    private static float originalComponentsIndustrialCommonality = -1;
-
-    [HarmonyPriority(Priority.First)]
-    public static void Prefix()
-    {
-        ThingDef plasteel = ThingDef.Named("MineablePlasteel");
-        ThingDef steel = ThingDefOf.MineableSteel;
-        ThingDef compInd = ThingDefOf.MineableComponentsIndustrial;
-
-        if (originalPlasteelCommonality == -1)
-        {
-            originalPlasteelCommonality = plasteel.building.mineableScatterCommonality;
-            originalSteelCommonality = steel.building.mineableScatterCommonality;
-            originalComponentsIndustrialCommonality = compInd.building.mineableScatterCommonality;
-        }
-
-        if (TerrainSettings.allowFakeOres)
-        {
-            steel.building.mineableScatterCommonality = originalSteelCommonality;
-            plasteel.building.mineableScatterCommonality = originalPlasteelCommonality;
-            compInd.building.mineableScatterCommonality = originalComponentsIndustrialCommonality;
-        }
-        else
-        {
-            steel.building.mineableScatterCommonality = 0f;
-            plasteel.building.mineableScatterCommonality = 0f;
-            compInd.building.mineableScatterCommonality = 0f;
-        }
-    }
-
-    [HarmonyPriority(Priority.Last)]
-    public static void Postfix()
-    {
-        if (!TerrainSettings.allowFakeOres)
-        {
-            ThingDefOf.MineableSteel.building.mineableScatterCommonality = originalSteelCommonality;
-            ThingDef.Named("MineablePlasteel").building.mineableScatterCommonality = originalPlasteelCommonality;
-            ThingDefOf.MineableComponentsIndustrial.building.mineableScatterCommonality = originalComponentsIndustrialCommonality;
-        }
-        originalPlasteelCommonality = -1;
-        originalSteelCommonality = -1;
-        originalComponentsIndustrialCommonality = -1;
-    }
-}
-}*/

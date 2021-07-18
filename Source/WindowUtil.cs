@@ -13,8 +13,7 @@ namespace ConfigurableMaps
             fv.Buffer = DrawLabeledInput(x, y, fv.Label, fv.Buffer, out float nextX);
             if (float.TryParse(fv.Buffer, out float f))
             {
-                if (fv.Min < 0 || f > 0)
-                    fv.OnChange(f);
+                fv.OnChange(f);
             }
             if (Widgets.ButtonText(new Rect(nextX, y, 100, 28), "CM.Default".Translate()))
             {
@@ -34,8 +33,7 @@ namespace ConfigurableMaps
                 fv.Buffer = DrawLabeledInput(x, y, fv.Label, fv.Buffer, out float nextX);
                 if (float.TryParse(fv.Buffer, out float f))
                 {
-                    if (fv.Min < 0 || f > 0)
-                        fv.OnChange(f);
+                    fv.OnChange(f);
                 }
                 if (fv.Default != 0 && Widgets.ButtonText(new Rect(nextX, y, 100, 28), "CM.Default".Translate()))
                 {
@@ -57,7 +55,7 @@ namespace ConfigurableMaps
             y += 10;
 
             if (!float.TryParse(fv.Buffer, out float orig))
-                orig = 0;
+                orig = -10000;
 
             if (leftLabel == null)
                 leftLabel = fv.Min.ToString("0.0");
@@ -96,8 +94,7 @@ namespace ConfigurableMaps
             fv.Buffer = DrawLabeledInput(x, y, fv.Label, fv.Buffer, out float nextX);
             if (Double.TryParse(fv.Buffer, out double d))
             {
-                if (fv.Min < 0 || d > 0)
-                    fv.OnChange((int)d);
+                fv.OnChange((int)d);
             }
             if (fv.Default != 0 && Widgets.ButtonText(new Rect(nextX, y, 100, 28), "CM.Default".Translate()))
             {

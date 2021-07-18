@@ -30,6 +30,7 @@ namespace ConfigurableMaps
 
     public class Settings : ModSettings
     {
+        public static bool detectedImpassableMaps = false;
         public static bool detectedFertileFields = false;
         public static bool detectedCuprosStones = false;
 
@@ -41,9 +42,9 @@ namespace ConfigurableMaps
         public static WorldSettings WorldSettings;
         public static MapSettings MapSettings;
 
-        public static float GetRandomMultiplier(System.Random r, int min = 0, int max = 40000)
+        public static float GetRandomMultiplier(int min = 0, int max = 40000)
         {
-            return r.Next(min, max) * 0.01f;
+            return Rand.RangeInclusive(min, max) * 0.01f;
         }
 
         public void DoWindowContents(Rect rect)
@@ -162,17 +163,25 @@ namespace ConfigurableMaps
     {
         public float Multiplier = Consts.DEFAULT_MULTIPLIER;
         public bool IsRandom = false;
+        private float max = 0;
 
-        public RandomizableMultiplier() { }
+        public RandomizableMultiplier() { this.max = 0; }
+        public RandomizableMultiplier(float max) { this.max = max; }
 
         public void ExposeData()
         {
             Scribe_Values.Look(ref this.Multiplier, "multiplier", Consts.DEFAULT_MULTIPLIER);
             Scribe_Values.Look(ref this.IsRandom, "isRandom", false);
         }
-        
+
         public float GetMultiplier() => this.Multiplier;
-        public void SetMultiplier(float v) => this.Multiplier = v;
+        public void SetMultiplier(float v)
+        {
+            if (this.max != 0 && this.Multiplier > max)
+                this.Multiplier = max;
+            else
+                this.Multiplier = v;
+        }
         public bool GetIsRandom() => this.IsRandom;
         public void SetIsRandom(bool b) => this.IsRandom = b;
     }

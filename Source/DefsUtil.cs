@@ -11,10 +11,10 @@ namespace ConfigurableMaps
         private static readonly List<Pair<GenStep_Scatterer, ScattererValues>> Scatterers = new List<Pair<GenStep_Scatterer, ScattererValues>>();
         private static readonly List<Pair<ThingDef, float>> Minability = new List<Pair<ThingDef, float>>();
 
-        public static void Update(Random r)
+        public static void Update()
         {
-            var animalMultiplier = MapSettings.AnimalDensity.IsRandom ? Settings.GetRandomMultiplier(r) : MapSettings.AnimalDensity.Multiplier;
-            var plantMultiplier = MapSettings.PlantDensity.IsRandom ? Settings.GetRandomMultiplier(r) : MapSettings.PlantDensity.Multiplier;
+            var animalMultiplier = MapSettings.AnimalDensity.IsRandom ? Settings.GetRandomMultiplier() : MapSettings.AnimalDensity.Multiplier;
+            var plantMultiplier = MapSettings.PlantDensity.IsRandom ? Settings.GetRandomMultiplier() : MapSettings.PlantDensity.Multiplier;
             float m;
             ThingDef td;
 
@@ -29,20 +29,20 @@ namespace ConfigurableMaps
 
             Scatterers.Clear();
             // Ruins
-            UpdateGenStepScatterer("ScatterRuinsSimple", MapSettings.Ruins, Scatterers, r);
+            UpdateGenStepScatterer("ScatterRuinsSimple", MapSettings.Ruins, Scatterers);
             // Shrines
-            UpdateGenStepScatterer("ScatterShrines", MapSettings.Shrines, Scatterers, r);
-            // Cave Hives
-            UpdateGenStepScatterer("CaveHives", MapSettings.CaveHives, Scatterers, r);
+            UpdateGenStepScatterer("ScatterShrines", MapSettings.Shrines, Scatterers);
             // SteamGeysers
-            UpdateGenStepScatterer("SteamGeysers", MapSettings.Geysers, Scatterers, r);
+            UpdateGenStepScatterer("SteamGeysers", MapSettings.Geysers, Scatterers);
+            // PreciousLump
+            UpdateGenStepScatterer("PreciousLump", MapSettings.OreLevel, Scatterers);
 
             // Minable
             Minability.Clear();
             td = DefDatabase<ThingDef>.GetNamed("MineablePlasteel", false);
             if (td != null)
             {
-                m = MapSettings.MinablePlasteel.IsRandom ? Settings.GetRandomMultiplier(r) : MapSettings.MinablePlasteel.Multiplier;
+                m = MapSettings.MinablePlasteel.IsRandom ? Settings.GetRandomMultiplier() : MapSettings.MinablePlasteel.Multiplier;
                 Minability.Add(new Pair<ThingDef, float>(td, td.building.mineableScatterCommonality));
                 td.building.mineableScatterCommonality *= m;
             }
@@ -51,22 +51,22 @@ namespace ConfigurableMaps
 
 
             td = ThingDefOf.MineableSteel;
-            m = MapSettings.MinableSteel.IsRandom ? Settings.GetRandomMultiplier(r) : MapSettings.MinableSteel.Multiplier;
+            m = MapSettings.MinableSteel.IsRandom ? Settings.GetRandomMultiplier() : MapSettings.MinableSteel.Multiplier;
             Minability.Add(new Pair<ThingDef, float>(td, td.building.mineableScatterCommonality));
             td.building.mineableScatterCommonality *= m;
 
             td = ThingDefOf.MineableComponentsIndustrial;
-            m = MapSettings.MinableComponentsIndustrial.IsRandom ? Settings.GetRandomMultiplier(r) : MapSettings.MinableComponentsIndustrial.Multiplier;
+            m = MapSettings.MinableComponentsIndustrial.IsRandom ? Settings.GetRandomMultiplier() : MapSettings.MinableComponentsIndustrial.Multiplier;
             Minability.Add(new Pair<ThingDef, float>(td, td.building.mineableScatterCommonality));
             td.building.mineableScatterCommonality *= m;
         }
 
-        private static void UpdateGenStepScatterer(string genStepDefName, RandomizableMultiplier ruins, List<Pair<GenStep_Scatterer, ScattererValues>> scatterers, Random r)
+        private static void UpdateGenStepScatterer(string genStepDefName, RandomizableMultiplier ruins, List<Pair<GenStep_Scatterer, ScattererValues>> scatterers)
         {
             GenStepDef d = DefDatabase<GenStepDef>.GetNamed(genStepDefName, false);
             if (d?.genStep is GenStep_Scatterer rs)
             {
-                float m = MapSettings.Ruins.IsRandom ? Settings.GetRandomMultiplier(r) : MapSettings.Ruins.Multiplier;
+                float m = MapSettings.Ruins.IsRandom ? Settings.GetRandomMultiplier() : MapSettings.Ruins.Multiplier;
                 Scatterers.Add(new Pair<GenStep_Scatterer, ScattererValues>(rs, new ScattererValues(rs.countPer10kCellsRange)));
                 rs.countPer10kCellsRange *= m;
             }

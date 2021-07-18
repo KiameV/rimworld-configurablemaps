@@ -11,9 +11,12 @@ namespace ConfigurableMaps
         public static void DrawFloatInput(float x, ref float y, FieldValue<float> fv)
         {
             fv.Buffer = DrawLabeledInput(x, y, fv.Label, fv.Buffer, out float nextX);
-            if (float.TryParse(fv.Buffer, out float f) && f > 0)
-                fv.OnChange(f);
-            if (fv.Default != 0 && Widgets.ButtonText(new Rect(nextX, y, 100, 28), "CM.Default".Translate()))
+            if (float.TryParse(fv.Buffer, out float f))
+            {
+                if (fv.Min < 0 || f > 0)
+                    fv.OnChange(f);
+            }
+            if (Widgets.ButtonText(new Rect(nextX, y, 100, 28), "CM.Default".Translate()))
             {
                 fv.OnChange(fv.Default);
                 fv.UpdateBuffer();
@@ -29,8 +32,11 @@ namespace ConfigurableMaps
             else
             {
                 fv.Buffer = DrawLabeledInput(x, y, fv.Label, fv.Buffer, out float nextX);
-                if (float.TryParse(fv.Buffer, out float f) && f > 0)
-                    fv.OnChange(f);
+                if (float.TryParse(fv.Buffer, out float f))
+                {
+                    if (fv.Min < 0 || f > 0)
+                        fv.OnChange(f);
+                }
                 if (fv.Default != 0 && Widgets.ButtonText(new Rect(nextX, y, 100, 28), "CM.Default".Translate()))
                 {
                     fv.OnChange(fv.Default);
@@ -45,7 +51,7 @@ namespace ConfigurableMaps
             y += 30;
         }
 
-        public static void DrawInputWithSlider(float x, ref float y, FieldValue<float> fv)
+        public static void DrawInputWithSlider(float x, ref float y, FieldValue<float> fv, string leftLabel = null, string rightLabel = null)
         {
             DrawFloatInput(x, ref y, fv);
             y += 10;
@@ -53,7 +59,11 @@ namespace ConfigurableMaps
             if (!float.TryParse(fv.Buffer, out float orig))
                 orig = 0;
 
-            var result = Widgets.HorizontalSlider(new Rect(x, y, 300, 20), orig, fv.Min, fv.Max, false, null, fv.Min.ToString("0.0"), fv.Max.ToString("0.0"));
+            if (leftLabel == null)
+                leftLabel = fv.Min.ToString("0.0");
+            if (rightLabel == null)
+                rightLabel = fv.Max.ToString("0.0");
+            var result = Widgets.HorizontalSlider(new Rect(x, y, 300, 20), orig, fv.Min, fv.Max, false, null, leftLabel, rightLabel);
             if (orig != result && Math.Abs(orig-result) > 0.001) {
                 fv.OnChange(result);
                 fv.UpdateBuffer();
@@ -84,8 +94,11 @@ namespace ConfigurableMaps
         public static void DrawIntInput(float x, ref float y, FieldValue<int> fv)
         {
             fv.Buffer = DrawLabeledInput(x, y, fv.Label, fv.Buffer, out float nextX);
-            if (Double.TryParse(fv.Buffer, out double d) && d > 0)
-                fv.OnChange((int)d);
+            if (Double.TryParse(fv.Buffer, out double d))
+            {
+                if (fv.Min < 0 || d > 0)
+                    fv.OnChange((int)d);
+            }
             if (fv.Default != 0 && Widgets.ButtonText(new Rect(nextX, y, 100, 28), "CM.Default".Translate()))
             {
                 fv.OnChange(fv.Default);

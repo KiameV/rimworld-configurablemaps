@@ -15,8 +15,9 @@
 	<CM.Default>Default</CM.Default>
 	<CM.Random>Random</CM.Random>
 	
-	<CM.TerrainTypeMultipliers>Terrain Multiplier (1.0 means 100%)</CM.TerrainTypeMultipliers>
-	<CM.ThingTypeMultipliers>Things Multiplier (1.0 means 100%)</CM.ThingTypeMultipliers>
+	<CM.TerrainType>Terrain Modifiers)</CM.TerrainType>
+	<CM.ThingType>Things Modifiers</CM.ThingType>
+	<CM.Multipliers>Multiplier (0.15 = 15%, 1.0 = 100%, 2.5 = 250%, etc)</CM.Multipliers>
 	
 	<CM.chunksLevel>Stone Chunk Density</CM.chunksLevel>
 	

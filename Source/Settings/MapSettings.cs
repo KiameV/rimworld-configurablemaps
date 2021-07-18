@@ -7,6 +7,7 @@ namespace ConfigurableMaps
 {
     public class MSFieldValues
     {
+        public FieldValue<float> TerrainFertility;
         public RandomizableFieldValue<float>[] TerrainFieldValues;
         public RandomizableFieldValue<float>[] ThingsFieldValues;
     }
@@ -29,11 +30,21 @@ namespace ConfigurableMaps
         Random
     }
 
+    public enum WaterLevelEnum
+    {
+        VeryLow,
+        Low,
+        Normal,
+        High,
+        VeryHigh,
+        Random
+    }
+
     public class MapSettings : IExposable, IWindow<MSFieldValues>
     {
         // Terrain
         public static ChunkLevelEnum ChunkLevel = ChunkLevelEnum.Normal;
-        public static FertilityLevelEnum Fertility = FertilityLevelEnum.Normal;
+        public static float Fertility = 0f;
 
         public static RandomizableMultiplier Ore;
         public static RandomizableMultiplier MinableSteel;
@@ -87,12 +98,15 @@ namespace ConfigurableMaps
 
             // Terrain
             float y = baseY;
-            Widgets.BeginScrollView(new Rect(rect.x, y, innerWidth, rect.height - y), ref terrainScroll, new Rect(0, 0, width - 16, lastYTerrain));
+            Widgets.Label(new Rect(0, y, innerWidth, 28), "CM.TerrainType".Translate());
+            y += 30;
+            Widgets.BeginScrollView(new Rect(rect.x, y, width, rect.height - y), ref terrainScroll, new Rect(0, 0, innerWidth, lastYTerrain));
             lastYTerrain = 0;
             WindowUtil.DrawEnumSelection(0, ref lastYTerrain, "CM.chunksLevel", ChunkLevel, GetChunkLevelLabel, e => ChunkLevel = e);
-            WindowUtil.DrawEnumSelection(0, ref lastYTerrain, "CM.fertilityLevel", Fertility, GetFertilityLabel, e => Fertility = e);
             lastYTerrain += 5;
-            Widgets.Label(new Rect(rect.x, lastYTerrain, innerWidth, 28), "CM.TerrainTypeMultipliers".Translate());
+            WindowUtil.DrawInputWithSlider(0, ref lastYTerrain, fv.TerrainFertility, "PlanetPopulation_Low".Translate().CapitalizeFirst(), "PsychicDroneLevel_BadExtreme".Translate().CapitalizeFirst());
+            lastYTerrain += 5;
+            Widgets.Label(new Rect(0, lastYTerrain, innerWidth, 28), "CM.Multipliers".Translate());
             lastYTerrain += 30;
             foreach (var v in fv.TerrainFieldValues)
                 WindowUtil.DrawInputRandomizableWithSlider(0, ref lastYTerrain, v);
@@ -100,9 +114,12 @@ namespace ConfigurableMaps
 
             // Things
             y = baseY;
-            WindowUtil.DrawBoolInput(half, ref y, "CM.WallsMadeFromLocal", AreWallsMadeFromLocal, v => AreWallsMadeFromLocal = v);
+            Widgets.Label(new Rect(half, y, width, 28), "CM.ThingType".Translate());
+            y += 30;
+
+            WindowUtil.DrawBoolInput(half, ref y, "CM.WallsMadeFromLocal".Translate(), AreWallsMadeFromLocal, v => AreWallsMadeFromLocal = v);
             y += 5;
-            Widgets.Label(new Rect(half, y, width, 28), "CM.ThingTypeMultipliers".Translate());
+            Widgets.Label(new Rect(half, y, width, 28), "CM.Multipliers".Translate());
             y += 30;
             Widgets.BeginScrollView(new Rect(half, y, width, rect.height - y), ref thingsScroll, new Rect(0, 0, width - 16, lastYThings));
             lastYThings = 0;
@@ -125,29 +142,11 @@ namespace ConfigurableMaps
             return "CM.Random".Translate();
         }
 
-        private string GetFertilityLabel(FertilityLevelEnum e)
-        {
-            switch (e)
-            {
-                case FertilityLevelEnum.Rare:
-                    return "PlanetPopulation_Low".Translate().CapitalizeFirst();
-                case FertilityLevelEnum.Uncommon:
-                    return "PowerConsumptionLow".Translate().CapitalizeFirst();
-                case FertilityLevelEnum.Normal:
-                    return "StoragePriorityNormal".Translate().CapitalizeFirst();
-                case FertilityLevelEnum.Common:
-                    return "PowerConsumptionHigh".Translate().CapitalizeFirst();
-                case FertilityLevelEnum.Abundant:
-                    return "PsychicDroneLevel_BadExtreme".Translate().CapitalizeFirst();
-            }
-            return "CM.Random".Translate();
-        }
-
         public void ExposeData()
         {
             Initialize();
             Scribe_Values.Look(ref ChunkLevel, "ChunkLevel", ChunkLevelEnum.Normal);
-            Scribe_Values.Look(ref Fertility, "Fertility", FertilityLevelEnum.Normal);
+            Scribe_Values.Look(ref Fertility, "Fertility", 0);
             Scribe_Values.Look(ref AreWallsMadeFromLocal, "AreWallsMadeFromLocal", false);
 
             Scribe_Deep.Look(ref Ore, "Ore");
@@ -170,6 +169,7 @@ namespace ConfigurableMaps
             Initialize();
             return new MSFieldValues()
             {
+                TerrainFertility = new FieldValue<float>("CM.fertilityLevel".Translate(), v => Fertility = v, () => Fertility, -0.3f, 0.3f, 0f),
                 TerrainFieldValues = new RandomizableFieldValue<float>[7]
                 {
                     new RandomizableMultiplierFieldValue("CM.Ore".Translate(), Ore),

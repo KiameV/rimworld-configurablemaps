@@ -38,19 +38,40 @@ namespace ConfigurableMaps
         {
             float y = rect.y + rect.height - 78f;
             Text.Font = GameFont.Small;
-            string label = "RFC.FactionControlName".Translate();
+            string label = "ConfigurableMaps".Translate();
             if (Widgets.ButtonText(new Rect(0, y, 150, 32), label))
             {
-                OpenSettingsWindow();
+                Find.WindowStack.TryRemove(typeof(EditWindow_Log));
+                if (!Find.WindowStack.TryRemove(typeof(SettingsWindow)))
+                {
+                    Find.WindowStack.Add(new SettingsWindow());
+                }
             }
         }
+    }
 
-        public static void OpenSettingsWindow()
+    [HarmonyPatch(typeof(Page_SelectStartingSite), "DoWindowContents")]
+    public static class Patch_Page_SelectStartingSite_DoWindowContents
+    {
+        static void Postfix()
         {
-            Find.WindowStack.TryRemove(typeof(EditWindow_Log));
-            if (!Find.WindowStack.TryRemove(typeof(SettingsWindow)))
+            Vector2 BottomButSize = new Vector2(150f, 38f);
+            int num = (TutorSystem.TutorialMode ? 4 : 5);
+            int num2 = ((num < 4 || !((float)UI.screenWidth < 540f + (float)num * (BottomButSize.x + 10f))) ? 1 : 2);
+            int num3 = Mathf.CeilToInt((float)num / (float)num2);
+            float num4 = BottomButSize.x * (float)num3 + 10f * (float)(num3 + 1);
+            float num5 = (float)num2 * BottomButSize.y + 10f * (float)(num2 + 1);
+            Rect rect = new Rect(((float)UI.screenWidth - num4) / 2f, (float)UI.screenHeight - num5 - 4f, num4, num5);
+            float num6 = rect.xMin + 10f;
+            float num7 = rect.yMin - 50f;
+            Text.Font = GameFont.Small;
+            if (Widgets.ButtonText(new Rect(num6, num7, BottomButSize.x, BottomButSize.y), "ConfigurableMaps".Translate()))
             {
-                Find.WindowStack.Add(new SettingsWindow());
+                Find.WindowStack.TryRemove(typeof(EditWindow_Log));
+                if (!Find.WindowStack.TryRemove(typeof(SettingsWindow)))
+                {
+                    Find.WindowStack.Add(new SettingsWindow());
+                }
             }
         }
     }
@@ -158,8 +179,10 @@ namespace ConfigurableMaps
                 //
                 // TerrainsByFertility
                 // 
-                float mod = 0.87f;
-                switch(MapSettings.Fertility)
+                float mod = 0.87f - MapSettings.Fertility;
+                if (mod < 0)
+                    mod = 0;
+                /*switch(MapSettings.Fertility)
                 {
                     case FertilityLevelEnum.Rare:
                         mod += 0.3f;
@@ -173,7 +196,7 @@ namespace ConfigurableMaps
                     case FertilityLevelEnum.Abundant:
                         mod += -0.3f;
                         break;
-                }
+                }*/
                 if (threshes[0].terrain.defName == "Soil")
                 {
                     if (val >= -999f && val < mod)
@@ -206,7 +229,10 @@ namespace ConfigurableMaps
             // TerrainPatchMakers
             //
             float adjustment;
-            float v = TerrainSettings.waterLevel;
+            switch (MapSettings.Water)
+            {
+                case 
+            }
             if (v < 0 || v > 5)
             {
                 v = Rand.Value * 5;

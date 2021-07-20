@@ -39,7 +39,7 @@ namespace ConfigurableMaps
             string label = "ConfigurableMaps".Translate();
             if (Widgets.ButtonText(new Rect(0, y, 150, 32), label))
             {
-                Find.WindowStack.TryRemove(typeof(EditWindow_Log));
+                //Find.WindowStack.TryRemove(typeof(EditWindow_Log));
                 if (!Find.WindowStack.TryRemove(typeof(SettingsWindow)))
                 {
                     Find.WindowStack.Add(new SettingsWindow());
@@ -48,7 +48,7 @@ namespace ConfigurableMaps
         }
     }
 
-    [HarmonyPatch(typeof(Page_SelectStartingSite), "DoWindowContents")]
+    /*[HarmonyPatch(typeof(Page_SelectStartingSite), "DoWindowContents")]
     public static class Patch_Page_SelectStartingSite_DoWindowContents
     {
         static void Postfix()
@@ -60,19 +60,25 @@ namespace ConfigurableMaps
             float num4 = BottomButSize.x * (float)num3 + 10f * (float)(num3 + 1);
             float num5 = (float)num2 * BottomButSize.y + 10f * (float)(num2 + 1);
             Rect rect = new Rect(((float)UI.screenWidth - num4) / 2f, (float)UI.screenHeight - num5 - 4f, num4, num5);
+            WorldInspectPane worldInspectPane = Find.WindowStack.WindowOfType<WorldInspectPane>();
+            if (worldInspectPane != null && rect.x < InspectPaneUtility.PaneWidthFor(worldInspectPane) + 4f)
+            {
+                rect.x = InspectPaneUtility.PaneWidthFor(worldInspectPane) + 4f;
+            }
+            Widgets.DrawWindowBackground(rect);
             float num6 = rect.xMin + 10f;
-            float num7 = rect.yMin - 50f;
+            float num7 = rect.yMin - BottomButSize.y * 2;
             Text.Font = GameFont.Small;
             if (Widgets.ButtonText(new Rect(num6, num7, BottomButSize.x, BottomButSize.y), "ConfigurableMaps".Translate()))
             {
-                Find.WindowStack.TryRemove(typeof(EditWindow_Log));
+                //Find.WindowStack.TryRemove(typeof(EditWindow_Log));
                 if (!Find.WindowStack.TryRemove(typeof(SettingsWindow)))
                 {
                     Find.WindowStack.Add(new SettingsWindow());
                 }
             }
         }
-    }
+    }*/
 
 
     /*[HarmonyPatch(typeof(MainMenuDrawer), "DoMainMenuControls")]
@@ -431,6 +437,7 @@ namespace ConfigurableMaps
     [HarmonyPatch(typeof(GenStep_ElevationFertility), "Generate", null)]
     public static class GenStep_ElevationFertility_Generate
     {
+        [HarmonyPriority(Priority.High)]
         public static bool Prefix(Map map)
         {
             if (Settings.detectedImpassableMaps && map.TileInfo.hilliness == Hilliness.Impassable)
@@ -459,7 +466,7 @@ namespace ConfigurableMaps
                     num = MapGenTuning.ElevationFactorImpassableMountains;
                     break;
             }
-            input = new Multiply(input, new Const(num));
+            input = new Multiply(input, new Const(num + MapSettings.Mountain.Multiplier));
             NoiseDebugUI.StoreNoiseRender(input, "elev world-factored");
             if (map.TileInfo.hilliness == Hilliness.Mountainous || map.TileInfo.hilliness == Hilliness.Impassable)
             {

@@ -162,24 +162,35 @@ namespace ConfigurableMaps
         {
             Init();
             List<ThingDef> result;
-            List<WeightedStoneType> w = new List<WeightedStoneType>(weighted.Count);
-            foreach (WeightedStoneType wst in weighted)
+            if (weighted.Count < wanted)
             {
-                w.Add(wst);
-            }
-
-            if (weighted.Count <= wanted)
-            {
-                Log.Warning("[Configurable Maps] Not enough weighted stone types > 0, using them all.");
+                string msg = "[Configurable Maps] Not enough weighted stone types > 0, using them all.";
+                Log.ErrorOnce(msg, msg.GetHashCode());
                 result = new List<ThingDef>(weighted.Count);
                 var defs = DefDatabase<ThingDef>.AllDefs.Where((ThingDef d) => d.IsNonResourceNaturalRock).ToList();
                 for (int i = 0; i < wanted && i < defs.Count; ++i)
                     result.Add(defs[i]);
                 return result;
             }
+
+            List<WeightedStoneType> w = new List<WeightedStoneType>(weighted.Count);
+            foreach (WeightedStoneType wst in weighted)
+            {
+                if (wst.Weight > 0)
+                    w.Add(wst);
+            }
+
+            if (w.Count == wanted)
+            {
+                result = new List<ThingDef>(wanted);
+                foreach (var i in w)
+                    if (i.Weight > 0)
+                        result.Add(i.Def);
+            }
             if (w.Count < wanted)
             {
-                Log.Warning("[Configurable Maps] Not enough weighted stone types > 0, getting first found.");
+                string msg = "[Configurable Maps] Not enough weighted stone types > 0, getting first found.";
+                Log.ErrorOnce(msg, msg.GetHashCode());
                 result = new List<ThingDef>(wanted);
                 var defs = DefDatabase<ThingDef>.AllDefs.Where((ThingDef d) => d.IsNonResourceNaturalRock).ToList();
                 for (int i = 0; i < wanted && i < defs.Count; ++i)
@@ -397,7 +408,7 @@ namespace ConfigurableMaps
             //
             // TerrainPatchMakers
             //
-            float chosenWaterLevel = MapSettings.Water.Multiplier;
+            float chosenWaterLevel = MapSettings.Water.Multiplier * -1;
             if (MapSettings.Water.IsRandom)
                 chosenWaterLevel = (Rand.RangeInclusive(0, 15000) - 7500) * 0.001f;
             if (Math.Abs(chosenWaterLevel) < 0.01)

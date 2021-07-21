@@ -161,12 +161,22 @@ namespace ConfigurableMaps
 
     public class RandomizableMultiplier : IExposable
     {
-        public float Multiplier = Consts.DEFAULT_MULTIPLIER;
+        public float Multiplier;
         public bool IsRandom = false;
         private float max = 0;
+        private float defaultValue;
 
-        public RandomizableMultiplier() { this.max = 0; }
-        public RandomizableMultiplier(float max) { this.max = max; }
+        public RandomizableMultiplier(float defaultValue = Consts.DEFAULT_MULTIPLIER)
+        {
+            this.defaultValue = defaultValue;
+            this.max = 0;
+            this.Multiplier = defaultValue;
+        }
+        public RandomizableMultiplier(float max, float defaultValue = Consts.DEFAULT_MULTIPLIER) {
+            this.max = max;
+            this.defaultValue = defaultValue;
+            this.Multiplier = defaultValue;
+        }
 
         public void ExposeData()
         {

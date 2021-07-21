@@ -57,14 +57,14 @@ namespace ConfigurableMaps
         {
             if (Fertility == null)
             {
-                Fertility = new RandomizableMultiplier();
-                Water = new RandomizableMultiplier();
+                Fertility = new RandomizableMultiplier(0);
+                Water = new RandomizableMultiplier(0);
                 OreLevel = new RandomizableMultiplier();
                 MinableSteel = new RandomizableMultiplier();
                 MinablePlasteel = new RandomizableMultiplier();
                 MinableComponentsIndustrial = new RandomizableMultiplier();
                 Geysers = new RandomizableMultiplier();
-                Mountain = new RandomizableMultiplier(1.4f);
+                Mountain = new RandomizableMultiplier(1.4f, 0);
                 AnimalDensity = new RandomizableMultiplier();
                 PlantDensity = new RandomizableMultiplier();
                 Ruins = new RandomizableMultiplier();

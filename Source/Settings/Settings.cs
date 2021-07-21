@@ -166,6 +166,12 @@ namespace ConfigurableMaps
         private float max = 0;
         private float defaultValue;
 
+        public RandomizableMultiplier()
+        {
+            this.defaultValue = Consts.DEFAULT_MULTIPLIER;
+            this.max = 0;
+            this.Multiplier = Consts.DEFAULT_MULTIPLIER;
+        }
         public RandomizableMultiplier(float defaultValue = Consts.DEFAULT_MULTIPLIER)
         {
             this.defaultValue = defaultValue;

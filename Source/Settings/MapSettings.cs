@@ -53,7 +53,7 @@ namespace ConfigurableMaps
 
         public string Name => "CM.MapSettings".Translate();
 
-        private void Initialize()
+        public static void Initialize()
         {
             if (Fertility == null)
             {

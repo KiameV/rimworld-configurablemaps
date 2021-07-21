@@ -13,6 +13,7 @@ namespace ConfigurableMaps
 
         public static void Update()
         {
+            MapSettings.Initialize();
             var animalMultiplier = MapSettings.AnimalDensity.IsRandom ? Settings.GetRandomMultiplier() : MapSettings.AnimalDensity.Multiplier;
             var plantMultiplier = MapSettings.PlantDensity.IsRandom ? Settings.GetRandomMultiplier() : MapSettings.PlantDensity.Multiplier;
             float m;
@@ -22,9 +23,16 @@ namespace ConfigurableMaps
             BiomeDefs.Clear();
             foreach (BiomeDef def in DefDatabase<BiomeDef>.AllDefs)
             {
-                BiomeDefs.Add(new Pair<BiomeDef, BiomeOriginalValues>(def, new BiomeOriginalValues(def.animalDensity, def.plantDensity)));
-                def.animalDensity *= animalMultiplier;
-                def.plantDensity *= plantMultiplier;
+                try
+                {
+                    BiomeDefs.Add(new Pair<BiomeDef, BiomeOriginalValues>(def, new BiomeOriginalValues(def.animalDensity, def.plantDensity)));
+                    def.animalDensity *= animalMultiplier;
+                    def.plantDensity *= plantMultiplier;
+                }
+                catch
+                {
+                    Log.Error("[Configurable Maps] failed to update biome " + def.defName);
+                }
             }
 
             Scatterers.Clear();
@@ -39,39 +47,77 @@ namespace ConfigurableMaps
 
             // Minable
             Minability.Clear();
-            td = DefDatabase<ThingDef>.GetNamed("MineablePlasteel", false);
-            if (td != null)
+            try
             {
-                m = MapSettings.MinablePlasteel.IsRandom ? Settings.GetRandomMultiplier() : MapSettings.MinablePlasteel.Multiplier;
-                Minability.Add(new Pair<ThingDef, float>(td, td.building.mineableScatterCommonality));
-                td.building.mineableScatterCommonality *= m;
+                td = DefDatabase<ThingDef>.GetNamed("MineablePlasteel", false);
+                if (td != null)
+                {
+                    m = MapSettings.MinablePlasteel.IsRandom ? Settings.GetRandomMultiplier() : MapSettings.MinablePlasteel.Multiplier;
+                    Minability.Add(new Pair<ThingDef, float>(td, td.building.mineableScatterCommonality));
+                    td.building.mineableScatterCommonality *= m;
+                }
+                else
+                    Log.Warning("[Configurable Maps] unable to patch MinablePlasteel.");
             }
-            else
-                Log.Warning("[Configurable Maps] unable to patch MineablePlasteel.");
+            catch
+            {
+                Log.Error("[Configurable Maps] failed to update MinablePlasteel");
+            }
 
 
-            td = ThingDefOf.MineableSteel;
-            m = MapSettings.MinableSteel.IsRandom ? Settings.GetRandomMultiplier() : MapSettings.MinableSteel.Multiplier;
-            Minability.Add(new Pair<ThingDef, float>(td, td.building.mineableScatterCommonality));
-            td.building.mineableScatterCommonality *= m;
+            try
+            {
+                td = ThingDefOf.MineableSteel;
+                if (td != null)
+                {
+                    m = MapSettings.MinableSteel.IsRandom ? Settings.GetRandomMultiplier() : MapSettings.MinableSteel.Multiplier;
+                    Minability.Add(new Pair<ThingDef, float>(td, td.building.mineableScatterCommonality));
+                    td.building.mineableScatterCommonality *= m;
+                }
+                else
+                    Log.Warning("[Configurable Maps] unable to patch MineableComponentsIndustrial.");
+            }
+            catch
+            {
+                Log.Error("[Configurable Maps] failed to update scatterer MineableSteel");
+            }
 
-            td = ThingDefOf.MineableComponentsIndustrial;
-            m = MapSettings.MinableComponentsIndustrial.IsRandom ? Settings.GetRandomMultiplier() : MapSettings.MinableComponentsIndustrial.Multiplier;
-            Minability.Add(new Pair<ThingDef, float>(td, td.building.mineableScatterCommonality));
-            td.building.mineableScatterCommonality *= m;
+            try
+            {
+                td = ThingDefOf.MineableComponentsIndustrial;
+                if (td != null)
+                {
+                    m = MapSettings.MinableComponentsIndustrial.IsRandom ? Settings.GetRandomMultiplier() : MapSettings.MinableComponentsIndustrial.Multiplier;
+                    Minability.Add(new Pair<ThingDef, float>(td, td.building.mineableScatterCommonality));
+                    td.building.mineableScatterCommonality *= m;
+                }
+                else
+                    Log.Warning("[Configurable Maps] unable to patch MineableComponentsIndustrial.");
+            }
+            catch
+            {
+                Log.Error("[Configurable Maps] failed to update MineableComponentsIndustrial");
+            }
         }
 
         private static void UpdateGenStepScatterer(string genStepDefName, RandomizableMultiplier ruins, List<Pair<GenStep_Scatterer, ScattererValues>> scatterers)
         {
-            GenStepDef d = DefDatabase<GenStepDef>.GetNamed(genStepDefName, false);
-            if (d?.genStep is GenStep_Scatterer rs)
+            try
             {
-                float m = MapSettings.Ruins.IsRandom ? Settings.GetRandomMultiplier() : MapSettings.Ruins.Multiplier;
-                Scatterers.Add(new Pair<GenStep_Scatterer, ScattererValues>(rs, new ScattererValues(rs.countPer10kCellsRange)));
-                rs.countPer10kCellsRange *= m;
+                GenStepDef d = DefDatabase<GenStepDef>.GetNamed(genStepDefName, false);
+                if (d?.genStep is GenStep_Scatterer rs)
+                {
+                    float m = MapSettings.Ruins.IsRandom ? Settings.GetRandomMultiplier() : MapSettings.Ruins.Multiplier;
+                    Scatterers.Add(new Pair<GenStep_Scatterer, ScattererValues>(rs, new ScattererValues(rs.countPer10kCellsRange)));
+                    rs.countPer10kCellsRange *= m;
+                }
+                else
+                    Log.Warning($"[Configurable Maps] unable to patch {genStepDefName}");
             }
-            else
-                Log.Warning($"[Configurable Maps] unable to patch {genStepDefName}");
+            catch
+            {
+                Log.Error("[Configurable Maps] failed to update scatterer " + genStepDefName);
+            }
         }
 
         public static void Restore()

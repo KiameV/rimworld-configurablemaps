@@ -116,7 +116,14 @@ namespace ConfigurableMaps
     {
         public static void Prefix()
         {
-            DefsUtil.Update();
+            try
+            {
+                DefsUtil.Update();
+            }
+            catch
+            {
+                Log.Error("[Configurable Maps] failed to apply map settings.");
+            }
 
             GenStep_RockChunks_GrowLowRockFormationFrom.ChunkLevel = MapSettings.ChunkLevel;
             if (MapSettings.ChunkLevel == ChunkLevelEnum.Random)
@@ -306,17 +313,20 @@ namespace ConfigurableMaps
                 return;
             if (__result.defName.ToLower().Contains("steel") && Rand.Int % 3 > 0)
                 return;
-
-            Map map = BaseGen.globalSettings.map;
-            ThingDef rockType = Find.World.NaturalRockTypesIn(map.Tile).RandomElement<ThingDef>();
-            if (rockType != null)
+            try
             {
-                var def = DefDatabase<ThingDef>.GetNamed("Blocks" + rockType.defName, false);
-                if (def != null)
-                    __result = def;
-                else
-                    Log.Warning("Configurable Maps: Failed to find Block for rock type " + rockType.defName);
+                Map map = BaseGen.globalSettings.map;
+                ThingDef rockType = Find.World.NaturalRockTypesIn(map.Tile).RandomElement<ThingDef>();
+                if (rockType != null)
+                {
+                    var def = DefDatabase<ThingDef>.GetNamed("Blocks" + rockType.defName, false);
+                    if (def != null)
+                        __result = def;
+                    else
+                        Log.Warning("Configurable Maps: Failed to find Block for rock type " + rockType.defName);
+                }
             }
+            catch { }
         }
     }
 

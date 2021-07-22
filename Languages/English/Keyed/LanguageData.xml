@@ -3,7 +3,7 @@
 	<!-- For versions 1.3 and newer -->
 	<ConfigurableMaps>Configurable Maps</ConfigurableMaps>
 	
-	<CM.TerrainType>Terrain Modifiers)</CM.TerrainType>
+	<CM.TerrainType>Terrain Modifiers</CM.TerrainType>
 	<CM.ThingType>Things Modifiers</CM.ThingType>
 	<CM.Multipliers>Multiplier (0.15 = 15%, 1.0 = 100%, 2.5 = 250%, etc)</CM.Multipliers>
 	
@@ -16,10 +16,15 @@
 	<CM.WaterLevel>Water Height</CM.WaterLevel>
 	<CM.MountainLevel>Mountain Amount</CM.MountainLevel>
 	<CM.Geysers>Geyser Multiplier</CM.Geysers>
-	<CM.Ore>Total Ore</CM.Ore>
-	<CM.MinableSteel>Steel %</CM.MinableSteel>
-	<CM.MinablePlasteel>Plasteel %</CM.MinablePlasteel>
-	<CM.MinableComponentsIndustrial>Ind Comp %</CM.MinableComponentsIndustrial>
+	<CM.MineableGold>Gold Multiplier</CM.MineableGold>
+	<CM.MineableSilver>Silver Multiplier</CM.MineableSilver>
+	<CM.MineableUranium>Uranium Multiplier</CM.MineableUranium>
+	<CM.MineableJade>Jade Multiplier</CM.MineableJade>
+	<CM.MineablePlasteel>Plasteel Multiplier</CM.MineablePlasteel>
+	<CM.MineableComponentsIndustrial>Ind Comp Multiplier</CM.MineableComponentsIndustrial>
+	<CM.MineableSteel>Steel Multiplier</CM.MineableSteel>
+	<CM.MineablePlasteel>Plasteel Multiplier</CM.MineablePlasteel>
+	<CM.MineableComponentsIndustrial>Ind Comp Multiplier</CM.MineableComponentsIndustrial>
 	<CM.AnimalDensity>Animal Density</CM.AnimalDensity>
 	<CM.PlantDensity>Plant Density</CM.PlantDensity>
 	<CM.Ruins>Ruins</CM.Ruins>

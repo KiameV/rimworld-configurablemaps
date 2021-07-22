@@ -96,6 +96,8 @@ namespace ConfigurableMaps
             base.ExposeData();
             Scribe_Deep.Look(ref WorldSettings, "WorldSettings");
             Scribe_Deep.Look(ref MapSettings, "MapSettings");
+
+            DefsUtil.Restore();
         }
     }
 
@@ -141,8 +143,8 @@ namespace ConfigurableMaps
 
     public class RandomizableMultiplierFieldValue : RandomizableFieldValue<float>
     {
-        public RandomizableMultiplierFieldValue(string label, RandomizableMultiplier rm, float min = 0, float max = 4, float d = Consts.DEFAULT_MULTIPLIER) : 
-            base(label, rm.SetMultiplier, rm.GetMultiplier, min, max, d, rm.SetIsRandom, rm.GetIsRandom)
+        public RandomizableMultiplierFieldValue(string label, RandomizableMultiplier rm) : 
+            base(label, rm.SetMultiplier, rm.GetMultiplier, rm.RandomMin, rm.RandomMax, rm.DefaultValue, rm.SetIsRandom, rm.GetIsRandom)
         {
             // Empty
         }
@@ -161,27 +163,21 @@ namespace ConfigurableMaps
 
     public class RandomizableMultiplier : IExposable
     {
-        public float Multiplier;
-        public bool IsRandom = false;
-        private float max = 0;
-        private float defaultValue;
+        private float Multiplier;
+        private bool IsRandom = false;
+        public float Min = 0;
+        public float Max = 100000;
+        public float DefaultValue;
+
+        public float RandomMin;
+        public float RandomMax;
 
         public RandomizableMultiplier()
         {
-            this.defaultValue = Consts.DEFAULT_MULTIPLIER;
-            this.max = 0;
+            this.DefaultValue = Consts.DEFAULT_MULTIPLIER;
             this.Multiplier = Consts.DEFAULT_MULTIPLIER;
-        }
-        public RandomizableMultiplier(float defaultValue = Consts.DEFAULT_MULTIPLIER)
-        {
-            this.defaultValue = defaultValue;
-            this.max = 0;
-            this.Multiplier = defaultValue;
-        }
-        public RandomizableMultiplier(float max, float defaultValue = Consts.DEFAULT_MULTIPLIER) {
-            this.max = max;
-            this.defaultValue = defaultValue;
-            this.Multiplier = defaultValue;
+            RandomMin = 0f;
+            RandomMax = 6f;
         }
 
         public void ExposeData()
@@ -190,15 +186,23 @@ namespace ConfigurableMaps
             Scribe_Values.Look(ref this.IsRandom, "isRandom", false);
         }
 
-        public float GetMultiplier() => this.Multiplier;
         public void SetMultiplier(float v)
         {
-            if (this.max != 0 && this.Multiplier > max)
-                this.Multiplier = max;
+            if (this.Multiplier > Max)
+                this.Multiplier = Max;
+            else if (this.Multiplier < Min)
+                this.Multiplier = Min;
             else
                 this.Multiplier = v;
         }
         public bool GetIsRandom() => this.IsRandom;
         public void SetIsRandom(bool b) => this.IsRandom = b;
+
+        public float GetMultiplier()
+        {
+            if (this.IsRandom)
+                return Rand.RangeInclusive((int)(this.RandomMin * 1000), (int)(this.RandomMax * 1000)) * 0.001f;
+            return this.Multiplier;
+        }
     }
 }

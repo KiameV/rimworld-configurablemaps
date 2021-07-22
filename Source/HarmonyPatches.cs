@@ -114,6 +114,7 @@ namespace ConfigurableMaps
     [HarmonyPatch(typeof(MapGenerator), "GenerateMap")]
     public class MapGenerator_Generate
     {
+        [HarmonyPriority(Priority.First)]
         public static void Prefix()
         {
             try
@@ -131,6 +132,7 @@ namespace ConfigurableMaps
                 GenStep_RockChunks_GrowLowRockFormationFrom.ChunkLevel = (ChunkLevelEnum)Rand.RangeInclusive(0, Enum.GetNames(typeof(ChunkLevelEnum)).Length - 1);
             }
         }
+        [HarmonyPriority(Priority.First)]
         public static void Postfix()
         {
             DefsUtil.Restore();
@@ -150,8 +152,22 @@ namespace ConfigurableMaps
                 this.Weight = weight;
             }
         }
-        private static List<WeightedStoneType> weighted = null;
 
+        [HarmonyPriority(Priority.First)]
+        public static void Prefix()
+        {
+            try
+            {
+                DefsUtil.Update();
+            }
+            catch
+            {
+                Log.Error("[Configurable Maps] failed to apply map settings.");
+            }
+        }
+
+        private static List<WeightedStoneType> weighted = null;
+        [HarmonyPriority(Priority.First)]
         public static void Postfix()
         {
             weighted?.Clear();
@@ -364,11 +380,7 @@ namespace ConfigurableMaps
             float mod;
             var orig = __result;
             __result = null;
-            float chosenFertility = MapSettings.Fertility.Multiplier;
-            if (MapSettings.Fertility.IsRandom)
-            {
-                chosenFertility = (Rand.RangeInclusive(0, 600) - 300) * 0.001f;
-            }
+            float chosenFertility = MapSettings.Fertility.GetMultiplier();
             if (threshes[0].min < -900)
             {
                 //
@@ -408,9 +420,7 @@ namespace ConfigurableMaps
             //
             // TerrainPatchMakers
             //
-            float chosenWaterLevel = MapSettings.Water.Multiplier * -1;
-            if (MapSettings.Water.IsRandom)
-                chosenWaterLevel = (Rand.RangeInclusive(0, 15000) - 7500) * 0.001f;
+            float chosenWaterLevel = MapSettings.Water.GetMultiplier() * -1;
             if (Math.Abs(chosenWaterLevel) < 0.01)
             {
                 // Use base game's code
@@ -487,7 +497,7 @@ namespace ConfigurableMaps
                     num = MapGenTuning.ElevationFactorImpassableMountains;
                     break;
             }
-            input = new Multiply(input, new Const(num + MapSettings.Mountain.Multiplier));
+            input = new Multiply(input, new Const(num + MapSettings.Mountain.GetMultiplier()));
             NoiseDebugUI.StoreNoiseRender(input, "elev world-factored");
             if (map.TileInfo.hilliness == Hilliness.Mountainous || map.TileInfo.hilliness == Hilliness.Impassable)
             {

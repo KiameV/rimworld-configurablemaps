@@ -35,7 +35,7 @@ namespace ConfigurableMaps
                 {
                     fv.OnChange(f);
                 }
-                if (Widgets.ButtonText(new Rect(nextX, y, 100, 28), "CM.Default".Translate()))
+                if (fv.Default != 0 && Widgets.ButtonText(new Rect(nextX, y, 100, 28), "CM.Default".Translate()))
                 {
                     fv.OnChange(fv.Default);
                     fv.UpdateBuffer();
@@ -58,18 +58,18 @@ namespace ConfigurableMaps
                 orig = -10000;
 
             if (leftLabel == null)
-                leftLabel = fv.Min.ToString("0.0");
+                leftLabel = fv.Min.ToString("0.00");
             if (rightLabel == null)
-                rightLabel = fv.Max.ToString("0.0");
+                rightLabel = fv.Max.ToString("0.00");
             var result = Widgets.HorizontalSlider(new Rect(x, y, 300, 20), orig, fv.Min, fv.Max, false, null, leftLabel, rightLabel);
-            if (orig != result && Math.Abs(orig-result) > 0.001) {
+            if (orig != result && Math.Abs(orig-result) > 0.01) {
                 fv.OnChange(result);
                 fv.UpdateBuffer();
             }
             y += 40;
         }
 
-        public static void DrawInputRandomizableWithSlider(float x, ref float y, RandomizableFieldValue<float> fv, string leftLabel = null, string rightLabel = null)
+        public static void DrawInputRandomizableWithSlider(float x, ref float y, RandomizableFieldValue<float> fv)
         {
             DrawRandomizableFloatInput(x, ref y, fv);
             y += 10;
@@ -77,15 +77,9 @@ namespace ConfigurableMaps
             if (!float.TryParse(fv.Buffer, out float orig))
                 orig = 0;
 
-            if (leftLabel == null)
-                leftLabel = fv.Min.ToString("0.0");
-
-            if (rightLabel == null)
-                rightLabel = fv.Max.ToString("0.0");
-
             if (!fv.GetRandomizableValue())
             {
-                var result = Widgets.HorizontalSlider(new Rect(x, y, 300, 20), orig, fv.Min, fv.Max, false, null, leftLabel, rightLabel);
+                var result = Widgets.HorizontalSlider(new Rect(x, y, 300, 20), orig, fv.Min, fv.Max, false, null, fv.Min.ToString("0.0"), fv.Max.ToString("0.0"));
                 if (orig != result && Math.Abs(orig - result) > 0.001)
                 {
                     fv.OnChange(result);
@@ -102,7 +96,7 @@ namespace ConfigurableMaps
             {
                 fv.OnChange((int)d);
             }
-            if (Widgets.ButtonText(new Rect(nextX, y, 100, 28), "CM.Default".Translate()))
+            if (fv.Default != 0 && Widgets.ButtonText(new Rect(nextX, y, 100, 28), "CM.Default".Translate()))
             {
                 fv.OnChange(fv.Default);
                 fv.UpdateBuffer();

@@ -35,7 +35,7 @@ namespace ConfigurableMaps
         public static bool detectedCuprosStones = false;
 
         private enum ToShow { None, World, Map }
-        private static ToShow toShow = ToShow.None;
+        private static ToShow toShow = ToShow.Map;
         private WSFieldValues wsFieldValues;
         private MSFieldValues msFieldValues;
 
@@ -163,6 +163,8 @@ namespace ConfigurableMaps
 
     public class RandomizableMultiplier : IExposable
     {
+        public ThingDef ThingDef;
+        public string ThingDefName;
         private float Multiplier;
         private bool IsRandom = false;
         public float Min = 0;
@@ -182,6 +184,7 @@ namespace ConfigurableMaps
 
         public void ExposeData()
         {
+            Scribe_Values.Look(ref this.ThingDefName, "defName", "");
             Scribe_Values.Look(ref this.Multiplier, "multiplier", Consts.DEFAULT_MULTIPLIER);
             Scribe_Values.Look(ref this.IsRandom, "isRandom", false);
         }
@@ -203,6 +206,26 @@ namespace ConfigurableMaps
             if (this.IsRandom)
                 return Rand.RangeInclusive((int)(this.RandomMin * 1000), (int)(this.RandomMax * 1000)) * 0.001f;
             return this.Multiplier;
+        }
+    }
+
+    public static class MineableStuff
+    {
+        private static readonly List<ThingDef> mineables = new List<ThingDef>();
+        public static List<ThingDef> GetMineables()
+        {
+            if (mineables.Count < 2)
+            {
+                mineables.Clear();
+                foreach (ThingDef d in DefDatabase<ThingDef>.AllDefsListForReading)
+                {
+                    if (d?.mineable == true && d.building?.isResourceRock == true)
+                    {
+                        mineables.Add(d);
+                    }
+                }
+            }
+            return mineables;
         }
     }
 }

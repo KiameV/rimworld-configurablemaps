@@ -11,20 +11,11 @@
 	<CM.MapSettings>Map Settings</CM.MapSettings>
 	<CM.StoneTypes>Number of Different Stone Types for each Map Tile</CM.StoneTypes>
 	<CM.StoneCommonality>Chance that a stone type will appear on a map (0-100). Relative to each other.</CM.StoneCommonality>
-	
+	<CM.TotalOreValue>Ore Value Multiplier</CM.TotalOreValue>
 	<CM.FertilityLevel>Soil Fertility</CM.FertilityLevel>
 	<CM.WaterLevel>Water Height</CM.WaterLevel>
 	<CM.MountainLevel>Mountain Amount</CM.MountainLevel>
 	<CM.Geysers>Geyser Multiplier</CM.Geysers>
-	<CM.MineableGold>Gold Multiplier</CM.MineableGold>
-	<CM.MineableSilver>Silver Multiplier</CM.MineableSilver>
-	<CM.MineableUranium>Uranium Multiplier</CM.MineableUranium>
-	<CM.MineableJade>Jade Multiplier</CM.MineableJade>
-	<CM.MineablePlasteel>Plasteel Multiplier</CM.MineablePlasteel>
-	<CM.MineableComponentsIndustrial>Ind Comp Multiplier</CM.MineableComponentsIndustrial>
-	<CM.MineableSteel>Steel Multiplier</CM.MineableSteel>
-	<CM.MineablePlasteel>Plasteel Multiplier</CM.MineablePlasteel>
-	<CM.MineableComponentsIndustrial>Ind Comp Multiplier</CM.MineableComponentsIndustrial>
 	<CM.AnimalDensity>Animal Density</CM.AnimalDensity>
 	<CM.PlantDensity>Plant Density</CM.PlantDensity>
 	<CM.Ruins>Ruins</CM.Ruins>

@@ -12,7 +12,7 @@ namespace ConfigurableMaps
         private static bool applied = false;
         private static readonly List<Pair<BiomeDef, BiomeOriginalValues>> BiomeDefs = new List<Pair<BiomeDef, BiomeOriginalValues>>();
         private static readonly List<Pair<GenStep_Scatterer, ScattererValues>> Scatterers = new List<Pair<GenStep_Scatterer, ScattererValues>>();
-        private static readonly List<Pair<ThingDef, float>> Minability = new List<Pair<ThingDef, float>>();
+        private static readonly List<Pair<ThingDef, float>> Mineability = new List<Pair<ThingDef, float>>();
         private static Pair<GenStep_PreciousLump, FloatRange> PreciousLump;
 
         public static void Update()
@@ -49,35 +49,32 @@ namespace ConfigurableMaps
             UpdateGenStepScatterer("ScatterShrines", MapSettings.Shrines, Scatterers, sb);
             // SteamGeysers
             UpdateGenStepScatterer("SteamGeysers", MapSettings.Geysers, Scatterers, sb);
+
             // Minable
-            UpdateMineable("MineableGold", MapSettings.MineableGold, Minability, sb);
-            UpdateMineable("MineableSilver", MapSettings.MineableSilver, Minability, sb);
-            UpdateMineable("MineableUranium", MapSettings.MineableUranium, Minability, sb);
-            UpdateMineable("MineableJade", MapSettings.MineableJade, Minability, sb);
-            UpdateMineable("MineablePlasteel", MapSettings.MineablePlasteel, Minability, sb);
-            UpdateMineable("MinableSteel", MapSettings.MineableSteel, Minability, sb);
-            UpdateMineable("MineableComponentsIndustrial", MapSettings.MineableComponentsIndustrial, Minability, sb);
+            foreach (var m in MapSettings.Mineables)
+            {
+                UpdateMineable(m, Mineability, sb);
+            }
 
             Log.Message(sb.ToString());
         }
 
-        private static void UpdateMineable(string mineableDefName, RandomizableMultiplier rm, List<Pair<ThingDef, float>> minability, StringBuilder sb)
+        private static void UpdateMineable(RandomizableMultiplier rm, List<Pair<ThingDef, float>> minability, StringBuilder sb)
         {
             try
             {
-                var td = DefDatabase<ThingDef>.GetNamed(mineableDefName, false);
-                if (td != null)
+                if (rm.ThingDef != null)
                 {
-                    Minability.Add(new Pair<ThingDef, float>(td, td.building.mineableScatterCommonality));
-                    td.building.mineableScatterCommonality *= rm.GetMultiplier();
-                    sb.AppendLine($"- {mineableDefName}.mineableScatterCommonality = {td.building.mineableScatterCommonality}");
+                    Mineability.Add(new Pair<ThingDef, float>(rm.ThingDef, rm.ThingDef.building.mineableScatterCommonality));
+                    rm.ThingDef.building.mineableScatterCommonality *= rm.GetMultiplier();
+                    sb.AppendLine($"- {rm.ThingDefName}.mineableScatterCommonality = {rm.ThingDef.building.mineableScatterCommonality}");
                 }
                 else
-                    Log.Warning($"$[Configurable Maps] unable to patch {mineableDefName}.");
+                    Log.Warning($"$[Configurable Maps] unable to patch {rm.ThingDefName}.");
             }
             catch
             {
-                Log.Error($"[Configurable Maps] failed to find and patch {mineableDefName}");
+                Log.Error($"[Configurable Maps] failed to find and patch {rm.ThingDefName}");
             }
         }
 
@@ -115,35 +112,6 @@ namespace ConfigurableMaps
             }
         }
 
-        private static void UpdateGenStepScatterer(string genStepDefName, float multiplier, List<Pair<GenStep_Scatterer, ScattererValues>> scatterers, StringBuilder sb)
-        {
-            try
-            {
-                GenStepDef d = DefDatabase<GenStepDef>.GetNamed(genStepDefName, false);
-                if (d?.genStep is GenStep_PreciousLump pl)
-                {
-                    PreciousLump = new Pair<GenStep_PreciousLump, FloatRange>(pl, new FloatRange(pl.totalValueRange.min, pl.totalValueRange.max));
-                    pl.totalValueRange.min *= multiplier;
-                    pl.totalValueRange.max *= multiplier;
-                    sb.AppendLine($"- {genStepDefName}.totalValueRange = {pl.totalValueRange}");
-                }
-                else if (d?.genStep is GenStep_Scatterer rs)
-                {
-                    Scatterers.Add(new Pair<GenStep_Scatterer, ScattererValues>(rs, new ScattererValues(rs.countPer10kCellsRange)));
-                    rs.countPer10kCellsRange.min *= multiplier;
-                    rs.countPer10kCellsRange.max *= multiplier;
-                    sb.AppendLine($"- {genStepDefName}.countPer10kCellsRange = {rs.countPer10kCellsRange}");
-                }
-                else
-                    Log.Warning($"[Configurable Maps] unable to patch {genStepDefName}");
-            }
-            catch
-            {
-                Log.Error("[Configurable Maps] failed to update scatterer " + genStepDefName);
-            }
-        }
-
-
         public static void Restore()
         {
             if (applied)
@@ -162,11 +130,11 @@ namespace ConfigurableMaps
                 }
                 Scatterers.Clear();
 
-                foreach (var p in Minability)
+                foreach (var p in Mineability)
                 {
                     p.First.building.mineableScatterCommonality = p.Second;
                 }
-                Minability.Clear();
+                Mineability.Clear();
 
                 if (PreciousLump.First != null)
                 {

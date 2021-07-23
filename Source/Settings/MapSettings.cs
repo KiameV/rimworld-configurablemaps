@@ -7,7 +7,7 @@ namespace ConfigurableMaps
 {
     public class MSFieldValues
     {
-        public FieldValue<float>[] TerrainFieldValues;
+        public List<FieldValue<float>> TerrainFieldValues;
         public RandomizableFieldValue<float>[] ThingsFieldValues;
     }
 
@@ -26,16 +26,10 @@ namespace ConfigurableMaps
         public static RandomizableMultiplier Fertility;
         public static RandomizableMultiplier Water;
         public static RandomizableMultiplier Mountain;
-
-        public static RandomizableMultiplier MineableGold;
-        public static RandomizableMultiplier MineableSilver;
-        public static RandomizableMultiplier MineableUranium;
-        public static RandomizableMultiplier MineableJade;
-        public static RandomizableMultiplier MineableSteel;
-        public static RandomizableMultiplier MineablePlasteel;
-        public static RandomizableMultiplier MineableComponentsIndustrial;
-
         public static RandomizableMultiplier Geysers;
+
+        public static List<RandomizableMultiplier> Mineables;
+
 
         // coast level
         // caves
@@ -49,6 +43,7 @@ namespace ConfigurableMaps
 
         private Vector2 terrainScroll = Vector2.zero, thingsScroll = Vector2.zero;
         private float lastYTerrain = 0, lastYThings;
+        private static bool initMineables = false;
 
         public string Name => "CM.MapSettings".Translate();
 
@@ -66,21 +61,59 @@ namespace ConfigurableMaps
             Water.RandomMin = -0.75f;
             Water.RandomMax = 0.75f;
 
-            if (MineableGold == null)
-                MineableGold = new RandomizableMultiplier();
-            if (MineableSilver == null)
-                MineableSilver = new RandomizableMultiplier();
-            if (MineableUranium == null)
-                MineableUranium = new RandomizableMultiplier();
-            if (MineableJade == null)
-                MineableJade = new RandomizableMultiplier();
-            if (MineableSteel == null)
-                MineableSteel = new RandomizableMultiplier();
-            if (MineablePlasteel == null)
-                MineablePlasteel = new RandomizableMultiplier();
-
-            if (MineableComponentsIndustrial == null)
-                MineableComponentsIndustrial = new RandomizableMultiplier();
+            var ms = MineableStuff.GetMineables();
+            if (Mineables == null && ms != null && ms.Count > 0)
+            {
+                Mineables = new List<RandomizableMultiplier>(ms.Count);
+                foreach (var m in ms)
+                {
+                    Mineables.Add(new RandomizableMultiplier()
+                    {
+                        ThingDef = m,
+                        ThingDefName = m.defName,
+                        DefaultValue = m.building.mineableScatterCommonality,
+                    });
+                }
+            }
+            else if (!initMineables && ms.Count > 0)
+            {
+                initMineables = true;
+                for (int i = Mineables.Count - 1; i >= 0; --i)
+                {
+                    var m = Mineables[i];
+                    if (m.ThingDef == null && m.ThingDefName != "")
+                    {
+                        m.ThingDef = DefDatabase<ThingDef>.GetNamed(m.ThingDefName, false);
+                        if (m.ThingDef == null)
+                        {
+                            Mineables.RemoveAt(i);
+                            Log.Message($"[Configurable Maps] Unable to load mineable thing def {m.ThingDefName}");
+                        }
+                    }
+                }
+                foreach (var m in ms)
+                {
+                    bool found = false;
+                    foreach (var r in Mineables)
+                    {
+                        found = r.ThingDefName == m.defName;
+                        if (found)
+                        {
+                            r.ThingDef = m;
+                            r.DefaultValue = m.building.mineableScatterCommonality;
+                            break;
+                        }
+                    }
+                    if (!found)
+                    {
+                        Mineables.Add(new RandomizableMultiplier()
+                        {
+                            ThingDef = m,
+                            ThingDefName = m.defName
+                        });
+                    }
+                }
+            }
 
             if (Geysers == null)
                 Geysers = new RandomizableMultiplier();
@@ -108,7 +141,6 @@ namespace ConfigurableMaps
             if (Shrines == null)
                 Shrines = new RandomizableMultiplier();
             Shrines.RandomMax = 50;
-
         }
 
         public void DoWindowContents(Rect rect, MSFieldValues fv)
@@ -125,7 +157,7 @@ namespace ConfigurableMaps
             WindowUtil.DrawEnumSelection(0, ref y, "CM.ChunksLevel", ChunkLevel, GetChunkLevelLabel, e => ChunkLevel = e);
             Widgets.BeginScrollView(new Rect(rect.x, y, width, rect.height - y), ref terrainScroll, new Rect(0, 0, innerWidth, lastYTerrain));
             lastYTerrain = 0;
-            for (int i = 0; i < fv.TerrainFieldValues.Length; ++i)
+            for (int i = 0; i < fv.TerrainFieldValues.Count; ++i)
             {
                 if (i < 4)
                     WindowUtil.DrawInputWithSlider(0, ref lastYTerrain, fv.TerrainFieldValues[i], "PowerConsumptionLow".Translate().CapitalizeFirst(), "PowerConsumptionHigh".Translate().CapitalizeFirst());
@@ -169,19 +201,14 @@ namespace ConfigurableMaps
         {
             Initialize();
             Scribe_Values.Look(ref ChunkLevel, "ChunkLevel", ChunkLevelEnum.Normal);
-            Scribe_Deep.Look(ref Fertility, "Fertility");
-            Scribe_Deep.Look(ref Water, "Water");
             Scribe_Values.Look(ref AreWallsMadeFromLocal, "AreWallsMadeFromLocal", false);
 
-            Scribe_Deep.Look(ref MineableGold, "MineableGold");
-            Scribe_Deep.Look(ref MineableSilver, "MineableSilver");
-            Scribe_Deep.Look(ref MineableUranium, "MineableUranium");
-            Scribe_Deep.Look(ref MineableJade, "MineableJade");
-            Scribe_Deep.Look(ref MineableSteel, "MineableSteel");
-            Scribe_Deep.Look(ref MineablePlasteel, "MineablePlasteel");
-            Scribe_Deep.Look(ref MineableComponentsIndustrial, "MineableComponentsIndustrial");
+            Scribe_Deep.Look(ref Fertility, "Fertility");
+            Scribe_Deep.Look(ref Water, "Water");
             Scribe_Deep.Look(ref Geysers, "Geysers");
             Scribe_Deep.Look(ref Mountain, "Mountain");
+
+            Scribe_Collections.Look(ref Mineables, "Mineables", LookMode.Deep);
 
             Scribe_Deep.Look(ref AnimalDensity, "AnimalDensity");
             Scribe_Deep.Look(ref PlantDensity, "PlantDensity");
@@ -192,29 +219,31 @@ namespace ConfigurableMaps
         public MSFieldValues GetFieldValues()
         {
             Initialize();
+            var l = new List<FieldValue<float>>(5 + Mineables.Count)
+            {
+                new RandomizableMultiplierFieldValue("CM.FertilityLevel".Translate(), Fertility),
+                new RandomizableMultiplierFieldValue("CM.WaterLevel".Translate(), Water),
+                new RandomizableMultiplierFieldValue("CM.MountainLevel".Translate(), Mountain),
+                new RandomizableMultiplierFieldValue("CM.Geysers".Translate(), Geysers),
+            };
+            foreach (var m in Mineables)
+            {
+                if (m.ThingDef != null)
+                {
+                    l.Add(new RandomizableMultiplierFieldValue(m.ThingDef.label, m));
+                }
+            }
+
             return new MSFieldValues()
             {
-                TerrainFieldValues = new FieldValue<float>[11]
-                {
-                    new RandomizableMultiplierFieldValue("CM.FertilityLevel".Translate(), Fertility),
-                    new RandomizableMultiplierFieldValue("CM.WaterLevel".Translate(), Water),
-                    new RandomizableMultiplierFieldValue("CM.MountainLevel".Translate(), Mountain),
-                    new RandomizableMultiplierFieldValue("CM.Geysers".Translate(), Geysers),
-                    new RandomizableMultiplierFieldValue("CM.MineableGold".Translate(), MineableGold),
-                    new RandomizableMultiplierFieldValue("CM.MineableSilver".Translate(), MineableSilver),
-                    new RandomizableMultiplierFieldValue("CM.MineableUranium".Translate(), MineableUranium),
-                    new RandomizableMultiplierFieldValue("CM.MineableJade".Translate(), MineableJade),
-                    new RandomizableMultiplierFieldValue("CM.MineableSteel".Translate(), MineableSteel),
-                    new RandomizableMultiplierFieldValue("CM.MineablePlasteel".Translate(), MineablePlasteel),
-                    new RandomizableMultiplierFieldValue("CM.MineableComponentsIndustrial".Translate(), MineableComponentsIndustrial),
-                },
+                TerrainFieldValues = l,
                 ThingsFieldValues = new RandomizableFieldValue<float>[4]
-                {
-                    new RandomizableMultiplierFieldValue("CM.AnimalDensity".Translate(), AnimalDensity),
-                    new RandomizableMultiplierFieldValue("CM.PlantDensity".Translate(), PlantDensity),
-                    new RandomizableMultiplierFieldValue("CM.Ruins".Translate(), Ruins),
-                    new RandomizableMultiplierFieldValue("CM.Shrines".Translate(), Shrines),
-                },
+                    {
+                        new RandomizableMultiplierFieldValue("CM.AnimalDensity".Translate(), AnimalDensity),
+                        new RandomizableMultiplierFieldValue("CM.PlantDensity".Translate(), PlantDensity),
+                        new RandomizableMultiplierFieldValue("CM.Ruins".Translate(), Ruins),
+                        new RandomizableMultiplierFieldValue("CM.Shrines".Translate(), Shrines),
+                    },
                 // new RandomizableMultiplierFieldValue("CM.".Translate(), v => .Multiplier = v, () => .Multiplier, 0, 4, DEFAULT_MULTIPLIER, b => .IsRandom = b, () => .IsRandom),
             };
         }

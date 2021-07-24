@@ -101,6 +101,63 @@ namespace ConfigurableMaps
         }
     }*/
 
+    /*[HarmonyPatch(typeof(ArenaUtility), "BeginArenaFight")]
+    public class ArenaUtility_BeginArenaFight
+    {
+        [HarmonyPriority(Priority.First)]
+        public static void Prefix() { MapGenerator_Generate.MGT = MapGenType.Arena; }
+        [HarmonyPriority(Priority.First)]
+        public static void Postfix() { MapGenerator_Generate.MGT = MapGenType.None; }
+    }
+
+    [HarmonyPatch(typeof(CaravanArrivalAction_VisitSite), "DoEnter")]
+    public class CaravanArrivalAction_VisitSite_DoEnter
+    {
+        [HarmonyPriority(Priority.First)]
+        public static void Prefix() { MapGenerator_Generate.MGT = MapGenType.CaravanArival; }
+        [HarmonyPriority(Priority.First)]
+        public static void Postfix() { MapGenerator_Generate.MGT = MapGenType.None; }
+    }
+
+    [HarmonyPatch(typeof(CaravanIncidentUtility), "GetOrGenerateMapForIncident")]
+    public class CaravanIncidentUtility_GetOrGenerateMapForIncident
+    {
+        [HarmonyPriority(Priority.First)]
+        public static void Prefix() { MapGenerator_Generate.MGT = MapGenType.CaravanIncident; }
+        [HarmonyPriority(Priority.First)]
+        public static void Postfix() { MapGenerator_Generate.MGT = MapGenType.None; }
+    }
+
+    [HarmonyPatch(typeof(TransportPodsArrivalAction_VisitSite), "Arrived")]
+    public class TransportPodsArrivalAction_VisitSite_Arrived
+    {
+        [HarmonyPriority(Priority.First)]
+        public static void Prefix() { MapGenerator_Generate.MGT = MapGenType.TransportPodsArrive; }
+        [HarmonyPriority(Priority.First)]
+        public static void Postfix() { MapGenerator_Generate.MGT = MapGenType.None; }
+    }
+
+    [HarmonyPatch(typeof(SettleInEmptyTileUtility), "Settle")]
+    public class SettleInEmptyTileUtility_Settle
+    {
+        [HarmonyPriority(Priority.First)]
+        public static void Prefix() { MapGenerator_Generate.MGT = MapGenType.SettleInEmpty; }
+        [HarmonyPriority(Priority.First)]
+        public static void Postfix() { MapGenerator_Generate.MGT = MapGenType.None; }
+    }
+
+    [HarmonyPatch(typeof(Game), "InitNewGame")]
+    public class Game_InitNewGame
+    {
+        [HarmonyPriority(Priority.First)]
+        public static void Prefix() { MapGenerator_Generate.MGT = MapGenType.SettleInEmpty; }
+        [HarmonyPriority(Priority.First)]
+        public static void Postfix() { MapGenerator_Generate.MGT = MapGenType.None; }
+    }
+
+    public enum MapGenType { None, Arena, CaravanArival, CaravanIncident, TransportPodsArrive, SettleInEmpty }
+    */
+
     // CommonMapGenerator.xml
     // def: Caves - GenStep_Caves
     // def CaveHives - GenStep_CaveHives
@@ -114,9 +171,26 @@ namespace ConfigurableMaps
     [HarmonyPatch(typeof(MapGenerator), "GenerateMap")]
     public class MapGenerator_Generate
     {
+        //public static MapGenType MGT;
+
         [HarmonyPriority(Priority.First)]
-        public static void Prefix()
+        public static void Prefix(MapParent parent, MapGeneratorDef mapGenerator)
         {
+            foreach (var q in Current.Game.questManager.QuestsListForReading)
+            {
+                if (q.State == QuestState.Ongoing)
+                {
+                    foreach (var qt in q.QuestLookTargets)
+                    {
+                        if (qt.Tile == parent.Tile)
+                        {
+                            Log.Message("[Configurable Maps] this tile has a quest on it. Disabling map modifications.");
+                            return;
+                        }
+                    }
+                }
+            }
+
             try
             {
                 DefsUtil.Update();

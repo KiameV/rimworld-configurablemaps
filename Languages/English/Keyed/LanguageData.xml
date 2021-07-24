@@ -22,24 +22,20 @@
 	<CM.Shrines>Shrines</CM.Shrines>
 	<CM.OtherStone>Other Stone Types</CM.OtherStone>
 	
+	<CM.AncientPipelineSection>Ancient Pipeline Section</CM.AncientPipelineSection>
+	<CM.AncientJunkClusters>Ancient Junk Clusters</CM.AncientJunkClusters>
+	
 	<CM.Default>Default</CM.Default>
 	<CM.Random>Random</CM.Random>
 	
 	<CM.ChunksLevel>Stone Chunk Density</CM.ChunksLevel>
 	<CM.WallsMadeFromLocal>Walls Made Local</CM.WallsMadeFromLocal>
 	
-	<CM.Rare>Rare</CM.Rare>
-	<CM.Uncommon>Uncommon</CM.Uncommon>
-	<CM.Common>Common</CM.Common>
-	<CM.Abundant>Abundant</CM.Abundant>
-	
-	<!-- <CM.Low>Low</CM.Low> PowerConsumptionLow -->
-	<!-- <CM.Normal>Normal</CM.Normal> PlanetPopulation_Normal -->
-	<!-- <CM.High>High</CM.High> PowerConsumptionHigh -->
-	
-	
-	<!-- <CM.VeryLow>Very Low</CM.VeryLow> PlanetPopulation_Low -->
-	<!-- <CM.VeryHigh>Very High</CM.VeryHigh> PsychicDroneLevel_BadExtreme -->
+	<!-- <CM.Low>Low</CM.Low> using PowerConsumptionLow -->
+	<!-- <CM.Normal>Normal</CM.Normal> using PlanetPopulation_Normal -->
+	<!-- <CM.High>High</CM.High> using PowerConsumptionHigh -->
+	<!-- <CM.VeryLow>Very Low</CM.VeryLow> using PlanetPopulation_Low -->
+	<!-- <CM.VeryHigh>Very High</CM.VeryHigh> using PsychicDroneLevel_BadExtreme -->
 
 	<!-- Left for legacy support -->
 	<!-- For versions 1.2 and older -->

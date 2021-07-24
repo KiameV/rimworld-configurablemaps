@@ -143,7 +143,7 @@ namespace ConfigurableMaps
 
     public class RandomizableMultiplierFieldValue : RandomizableFieldValue<float>
     {
-        public RandomizableMultiplierFieldValue(string label, RandomizableMultiplier rm) : 
+        public RandomizableMultiplierFieldValue(string label, ARandomizableMultiplier rm) : 
             base(label, rm.SetMultiplier, rm.GetMultiplier, rm.RandomMin, rm.RandomMax, rm.DefaultValue, rm.SetIsRandom, rm.GetIsRandom)
         {
             // Empty
@@ -161,10 +161,8 @@ namespace ConfigurableMaps
         T GetFieldValues();
     }
 
-    public class RandomizableMultiplier : IExposable
+    public abstract class ARandomizableMultiplier : IExposable
     {
-        public ThingDef ThingDef;
-        public string ThingDefName;
         private float Multiplier;
         private bool IsRandom = false;
         public float Min = 0;
@@ -174,17 +172,16 @@ namespace ConfigurableMaps
         public float RandomMin;
         public float RandomMax;
 
-        public RandomizableMultiplier()
+        public ARandomizableMultiplier()
         {
             this.DefaultValue = Consts.DEFAULT_MULTIPLIER;
             this.Multiplier = Consts.DEFAULT_MULTIPLIER;
-            RandomMin = 0f;
-            RandomMax = 6f;
+            this.RandomMin = 0f;
+            this.RandomMax = 6f;
         }
 
-        public void ExposeData()
+        public virtual void ExposeData()
         {
-            Scribe_Values.Look(ref this.ThingDefName, "defName", "");
             Scribe_Values.Look(ref this.Multiplier, "multiplier", Consts.DEFAULT_MULTIPLIER);
             Scribe_Values.Look(ref this.IsRandom, "isRandom", false);
         }
@@ -206,6 +203,39 @@ namespace ConfigurableMaps
             if (this.IsRandom)
                 return Rand.RangeInclusive((int)(this.RandomMin * 1000), (int)(this.RandomMax * 1000)) * 0.001f;
             return this.Multiplier;
+        }
+    }
+
+    public class RandomizableThingDefMultiplier : ARandomizableMultiplier
+    {
+        public ThingDef ThingDef;
+        public string ThingDefName;
+
+        public RandomizableThingDefMultiplier() : base() { }
+
+        public override void ExposeData()
+        {
+            base.ExposeData();
+            Scribe_Values.Look(ref this.ThingDefName, "defName", "");
+        }
+    }
+
+    public class RandomizableScattererMultiplier : ARandomizableMultiplier
+    {
+        public GenStepDef ScattereGenStepDef;
+        public string GenStepDefName;
+
+        public RandomizableScattererMultiplier() : base() { }
+        public RandomizableScattererMultiplier(GenStepDef def) : base()
+        {
+            this.ScattereGenStepDef = def;
+            this.GenStepDefName = def.defName;
+        }
+
+        public override void ExposeData()
+        {
+            base.ExposeData();
+            Scribe_Values.Look(ref this.GenStepDefName, "defName", "");
         }
     }
 

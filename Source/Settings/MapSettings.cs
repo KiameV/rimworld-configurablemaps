@@ -8,7 +8,7 @@ namespace ConfigurableMaps
     public class MSFieldValues
     {
         public List<FieldValue<float>> TerrainFieldValues;
-        public RandomizableFieldValue<float>[] ThingsFieldValues;
+        public List<RandomizableFieldValue<float>> ThingsFieldValues;
     }
 
     public enum ChunkLevelEnum
@@ -23,12 +23,12 @@ namespace ConfigurableMaps
     {
         // Terrain
         public static ChunkLevelEnum ChunkLevel = ChunkLevelEnum.Normal;
-        public static RandomizableMultiplier Fertility;
-        public static RandomizableMultiplier Water;
-        public static RandomizableMultiplier Mountain;
-        public static RandomizableMultiplier Geysers;
+        public static RandomizableThingDefMultiplier Fertility;
+        public static RandomizableThingDefMultiplier Water;
+        public static RandomizableThingDefMultiplier Mountain;
+        public static RandomizableThingDefMultiplier Geysers;
 
-        public static List<RandomizableMultiplier> Mineables;
+        public static List<RandomizableThingDefMultiplier> Mineables;
 
 
         // coast level
@@ -36,10 +36,13 @@ namespace ConfigurableMaps
 
         // Things
         public static bool AreWallsMadeFromLocal = false;
-        public static RandomizableMultiplier AnimalDensity;
-        public static RandomizableMultiplier PlantDensity;
-        public static RandomizableMultiplier Ruins;
-        public static RandomizableMultiplier Shrines;
+
+        public static RandomizableThingDefMultiplier AnimalDensity;
+        public static RandomizableThingDefMultiplier PlantDensity;
+        public static RandomizableThingDefMultiplier Ruins;
+        public static RandomizableThingDefMultiplier Shrines;
+
+        public static List<RandomizableScattererMultiplier> IdeoScatterables;
 
         private Vector2 terrainScroll = Vector2.zero, thingsScroll = Vector2.zero;
         private float lastYTerrain = 0, lastYThings;
@@ -50,13 +53,13 @@ namespace ConfigurableMaps
         public static void Initialize()
         {
             if (Fertility == null)
-                Fertility = new RandomizableMultiplier();
+                Fertility = new RandomizableThingDefMultiplier();
             Fertility.DefaultValue = 0;
             Fertility.RandomMin = -3;
             Fertility.RandomMax = 3;
 
             if (Water == null)
-                Water = new RandomizableMultiplier();
+                Water = new RandomizableThingDefMultiplier();
             Water.DefaultValue = 0;
             Water.RandomMin = -0.75f;
             Water.RandomMax = 0.75f;
@@ -64,10 +67,10 @@ namespace ConfigurableMaps
             var ms = MineableStuff.GetMineables();
             if (Mineables == null && ms != null && ms.Count > 0)
             {
-                Mineables = new List<RandomizableMultiplier>(ms.Count);
+                Mineables = new List<RandomizableThingDefMultiplier>(ms.Count);
                 foreach (var m in ms)
                 {
-                    Mineables.Add(new RandomizableMultiplier()
+                    Mineables.Add(new RandomizableThingDefMultiplier()
                     {
                         ThingDef = m,
                         ThingDefName = m.defName,
@@ -106,41 +109,76 @@ namespace ConfigurableMaps
                     }
                     if (!found)
                     {
-                        Mineables.Add(new RandomizableMultiplier()
+                        Mineables.Add(new RandomizableThingDefMultiplier()
                         {
                             ThingDef = m,
                             ThingDefName = m.defName
                         });
                     }
                 }
-            }
+            }    
 
             if (Geysers == null)
-                Geysers = new RandomizableMultiplier();
+                Geysers = new RandomizableThingDefMultiplier();
             Geysers.DefaultValue = 1;
 
             if (Mountain == null)
-                Mountain = new RandomizableMultiplier();
+                Mountain = new RandomizableThingDefMultiplier();
             Mountain.Max = 1.4f;
             Mountain.DefaultValue = 0;
             Mountain.RandomMin = -0.15f;
             Mountain.RandomMax = 1.4f;
 
             if (AnimalDensity == null)
-                AnimalDensity = new RandomizableMultiplier();
+                AnimalDensity = new RandomizableThingDefMultiplier();
             AnimalDensity.RandomMax = 6;
 
             if (PlantDensity == null)
-                PlantDensity = new RandomizableMultiplier();
+                PlantDensity = new RandomizableThingDefMultiplier();
             PlantDensity.RandomMax = 6;
 
             if (Ruins == null)
-                Ruins = new RandomizableMultiplier();
+                Ruins = new RandomizableThingDefMultiplier();
             Ruins.RandomMax = 50f;
 
             if (Shrines == null)
-                Shrines = new RandomizableMultiplier();
+                Shrines = new RandomizableThingDefMultiplier();
             Shrines.RandomMax = 50;
+            var ideo = ModLister.IdeologyInstalled;
+            if (!ideo && IdeoScatterables == null)
+                IdeoScatterables = new List<RandomizableScattererMultiplier>(0);
+            if (ideo && (IdeoScatterables == null || IdeoScatterables.Count == 0))
+            {
+                try
+                {
+                    IdeoScatterables = new List<RandomizableScattererMultiplier>(10)
+                    {
+                        CreateIdeoScatterer("AncientPipelineSection"),
+                        CreateIdeoScatterer("AncientJunkClusters"),
+                    };
+                    IdeoScatterables.RemoveAll(v => v == null);
+                }
+                catch
+                {
+                    IdeoScatterables?.Clear();
+                    IdeoScatterables = null;
+                }
+            }
+            foreach (var s in IdeoScatterables)
+            {
+                if (s.ScattereGenStepDef == null)
+                    s.ScattereGenStepDef = DefDatabase<GenStepDef>.GetNamed(s.GenStepDefName, false);
+            }
+        }
+
+        private static RandomizableScattererMultiplier CreateIdeoScatterer(string defName)
+        {
+            var d = DefDatabase<GenStepDef>.GetNamed(defName, false);
+            if (d == null)
+            {
+                return null;
+            }
+            return new RandomizableScattererMultiplier(d);
         }
 
         public void DoWindowContents(Rect rect, MSFieldValues fv)
@@ -208,6 +246,8 @@ namespace ConfigurableMaps
             Scribe_Deep.Look(ref Geysers, "Geysers");
             Scribe_Deep.Look(ref Mountain, "Mountain");
 
+            Scribe_Collections.Look(ref IdeoScatterables, "IdeoScatterables", LookMode.Deep);
+
             Scribe_Collections.Look(ref Mineables, "Mineables", LookMode.Deep);
 
             Scribe_Deep.Look(ref AnimalDensity, "AnimalDensity");
@@ -219,7 +259,7 @@ namespace ConfigurableMaps
         public MSFieldValues GetFieldValues()
         {
             Initialize();
-            var l = new List<FieldValue<float>>(5 + Mineables.Count)
+            var ml = new List<FieldValue<float>>(5 + Mineables.Count)
             {
                 new RandomizableMultiplierFieldValue("CM.FertilityLevel".Translate(), Fertility),
                 new RandomizableMultiplierFieldValue("CM.WaterLevel".Translate(), Water),
@@ -230,21 +270,29 @@ namespace ConfigurableMaps
             {
                 if (m.ThingDef != null)
                 {
-                    l.Add(new RandomizableMultiplierFieldValue(m.ThingDef.label, m));
+                    ml.Add(new RandomizableMultiplierFieldValue(m.ThingDef.label, m));
+                }
+            }
+
+            var tl = new List<RandomizableFieldValue<float>>(4 + IdeoScatterables.Count)
+            {
+                new RandomizableMultiplierFieldValue("CM.AnimalDensity".Translate(), AnimalDensity),
+                new RandomizableMultiplierFieldValue("CM.PlantDensity".Translate(), PlantDensity),
+                new RandomizableMultiplierFieldValue("CM.Ruins".Translate(), Ruins),
+                new RandomizableMultiplierFieldValue("CM.Shrines".Translate(), Shrines),
+            };
+            foreach(var s in IdeoScatterables)
+            {
+                if (s.ScattereGenStepDef != null)
+                {
+                    tl.Add(new RandomizableMultiplierFieldValue(("CM." + s.GenStepDefName).Translate(), s));
                 }
             }
 
             return new MSFieldValues()
             {
-                TerrainFieldValues = l,
-                ThingsFieldValues = new RandomizableFieldValue<float>[4]
-                    {
-                        new RandomizableMultiplierFieldValue("CM.AnimalDensity".Translate(), AnimalDensity),
-                        new RandomizableMultiplierFieldValue("CM.PlantDensity".Translate(), PlantDensity),
-                        new RandomizableMultiplierFieldValue("CM.Ruins".Translate(), Ruins),
-                        new RandomizableMultiplierFieldValue("CM.Shrines".Translate(), Shrines),
-                    },
-                // new RandomizableMultiplierFieldValue("CM.".Translate(), v => .Multiplier = v, () => .Multiplier, 0, 4, DEFAULT_MULTIPLIER, b => .IsRandom = b, () => .IsRandom),
+                TerrainFieldValues = ml,
+                ThingsFieldValues = tl,
             };
         }
     }

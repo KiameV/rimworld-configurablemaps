@@ -50,6 +50,10 @@ namespace ConfigurableMaps
             // SteamGeysers
             UpdateGenStepScatterer("SteamGeysers", MapSettings.Geysers, Scatterers, sb);
 
+            // Ideo Scatterables
+            foreach (var s in MapSettings.IdeoScatterables)
+                UpdateGenStepScatterer(s.GenStepDefName, s, Scatterers, sb);
+
             // Minable
             foreach (var m in MapSettings.Mineables)
             {
@@ -59,22 +63,50 @@ namespace ConfigurableMaps
             Log.Message(sb.ToString());
         }
 
-        private static void UpdateMineable(RandomizableMultiplier rm, List<Pair<ThingDef, float>> minability, StringBuilder sb)
+        private static void UpdateMineable(ARandomizableMultiplier arm, List<Pair<ThingDef, float>> minability, StringBuilder sb)
         {
             try
             {
-                if (rm.ThingDef != null)
+                if (arm is RandomizableThingDefMultiplier rm)
                 {
-                    Mineability.Add(new Pair<ThingDef, float>(rm.ThingDef, rm.ThingDef.building.mineableScatterCommonality));
-                    rm.ThingDef.building.mineableScatterCommonality *= rm.GetMultiplier();
-                    sb.AppendLine($"- {rm.ThingDefName}.mineableScatterCommonality = {rm.ThingDef.building.mineableScatterCommonality}");
+                    if (rm.ThingDef != null)
+                    {
+                        Mineability.Add(new Pair<ThingDef, float>(rm.ThingDef, rm.ThingDef.building.mineableScatterCommonality));
+                        rm.ThingDef.building.mineableScatterCommonality *= rm.GetMultiplier();
+                        sb.AppendLine($"- {rm.ThingDefName}.mineableScatterCommonality = {rm.ThingDef.building.mineableScatterCommonality}");
+                    }
+                    else
+                        Log.Warning($"$[Configurable Maps] unable to patch {rm.ThingDefName}.");
+                }
+                else if (arm is RandomizableScattererMultiplier sm)
+                {
+                    if (sm.ScattereGenStepDef != null)
+                    {
+                        if (sm.ScattereGenStepDef.genStep is GenStep_Scatterer s)
+                        {
+                            Scatterers.Add(new Pair<GenStep_Scatterer, ScattererValues>(s, new ScattererValues(new FloatRange(s.countPer10kCellsRange.min, s.countPer10kCellsRange.max))));
+                            s.countPer10kCellsRange *= sm.GetMultiplier();
+                            sb.AppendLine($"- {sm.GenStepDefName}.genStep.countPer10kCellsRange = {s.countPer10kCellsRange}");
+                        }
+                        else
+                            Log.Warning($"$[Configurable Maps] unable to patch {sm.GenStepDefName}'s genStep is not a GenStep_Scatterer.");
+                    }
+                    else
+                        Log.Warning($"$[Configurable Maps] unable to patch {sm.GenStepDefName}.");
                 }
                 else
-                    Log.Warning($"$[Configurable Maps] unable to patch {rm.ThingDefName}.");
+                    Log.Warning($"$[Configurable Maps] unable to patch unknown type (should never happen really).");
             }
             catch
             {
-                Log.Error($"[Configurable Maps] failed to find and patch {rm.ThingDefName}");
+                var defName = "";
+                if (arm is RandomizableThingDefMultiplier rm)
+                    defName = rm.ThingDefName;
+                else if (arm is RandomizableScattererMultiplier sm)
+                    defName = sm.GenStepDefName;
+                else
+                    return;
+                Log.Error($"[Configurable Maps] failed to find and patch {defName}");
             }
         }
 
@@ -83,7 +115,7 @@ namespace ConfigurableMaps
             return typeof(SitePartDef).GetField("totalValueRange", BindingFlags.NonPublic | BindingFlags.Instance);
         }
 
-        private static void UpdateGenStepScatterer(string genStepDefName, RandomizableMultiplier rm, List<Pair<GenStep_Scatterer, ScattererValues>> scatterers, StringBuilder sb)
+        private static void UpdateGenStepScatterer(string genStepDefName, ARandomizableMultiplier rm, List<Pair<GenStep_Scatterer, ScattererValues>> scatterers, StringBuilder sb)
         {
             try
             {

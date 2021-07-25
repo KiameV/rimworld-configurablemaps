@@ -63,7 +63,7 @@ namespace ConfigurableMaps
             Log.Message(sb.ToString());
         }
 
-        private static void UpdateMineable(ARandomizableMultiplier arm, List<Pair<ThingDef, float>> minability, StringBuilder sb)
+        private static void UpdateMineable(RandomizableMultiplier arm, List<Pair<ThingDef, float>> minability, StringBuilder sb)
         {
             try
             {
@@ -115,7 +115,7 @@ namespace ConfigurableMaps
             return typeof(SitePartDef).GetField("totalValueRange", BindingFlags.NonPublic | BindingFlags.Instance);
         }
 
-        private static void UpdateGenStepScatterer(string genStepDefName, ARandomizableMultiplier rm, List<Pair<GenStep_Scatterer, ScattererValues>> scatterers, StringBuilder sb)
+        private static void UpdateGenStepScatterer(string genStepDefName, RandomizableMultiplier rm, List<Pair<GenStep_Scatterer, ScattererValues>> scatterers, StringBuilder sb)
         {
             try
             {

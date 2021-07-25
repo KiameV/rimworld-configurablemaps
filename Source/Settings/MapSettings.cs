@@ -23,10 +23,10 @@ namespace ConfigurableMaps
     {
         // Terrain
         public static ChunkLevelEnum ChunkLevel = ChunkLevelEnum.Normal;
-        public static RandomizableThingDefMultiplier Fertility;
-        public static RandomizableThingDefMultiplier Water;
-        public static RandomizableThingDefMultiplier Mountain;
-        public static RandomizableThingDefMultiplier Geysers;
+        public static RandomizableMultiplier Fertility;
+        public static RandomizableMultiplier Water;
+        public static RandomizableMultiplier Mountain;
+        public static RandomizableMultiplier Geysers;
 
         public static List<RandomizableThingDefMultiplier> Mineables;
 
@@ -37,10 +37,10 @@ namespace ConfigurableMaps
         // Things
         public static bool AreWallsMadeFromLocal = false;
 
-        public static RandomizableThingDefMultiplier AnimalDensity;
-        public static RandomizableThingDefMultiplier PlantDensity;
-        public static RandomizableThingDefMultiplier Ruins;
-        public static RandomizableThingDefMultiplier Shrines;
+        public static RandomizableMultiplier AnimalDensity;
+        public static RandomizableMultiplier PlantDensity;
+        public static RandomizableMultiplier Ruins;
+        public static RandomizableMultiplier Shrines;
 
         public static List<RandomizableScattererMultiplier> IdeoScatterables;
 
@@ -53,13 +53,13 @@ namespace ConfigurableMaps
         public static void Initialize()
         {
             if (Fertility == null)
-                Fertility = new RandomizableThingDefMultiplier();
+                Fertility = new RandomizableMultiplier();
             Fertility.DefaultValue = 0;
             Fertility.RandomMin = -3;
             Fertility.RandomMax = 3;
 
             if (Water == null)
-                Water = new RandomizableThingDefMultiplier();
+                Water = new RandomizableMultiplier();
             Water.DefaultValue = 0;
             Water.RandomMin = -0.75f;
             Water.RandomMax = 0.75f;
@@ -70,12 +70,7 @@ namespace ConfigurableMaps
                 Mineables = new List<RandomizableThingDefMultiplier>(ms.Count);
                 foreach (var m in ms)
                 {
-                    Mineables.Add(new RandomizableThingDefMultiplier()
-                    {
-                        ThingDef = m,
-                        ThingDefName = m.defName,
-                        DefaultValue = m.building.mineableScatterCommonality,
-                    });
+                    Mineables.Add(new RandomizableThingDefMultiplier(m, m.building.mineableScatterCommonality));
                 }
             }
             else if (!initMineables && ms.Count > 0)
@@ -109,40 +104,49 @@ namespace ConfigurableMaps
                     }
                     if (!found)
                     {
-                        Mineables.Add(new RandomizableThingDefMultiplier()
-                        {
-                            ThingDef = m,
-                            ThingDefName = m.defName
-                        });
+                        Mineables.Add(new RandomizableThingDefMultiplier(m, m.building.mineableScatterCommonality));
                     }
                 }
-            }    
+            }
+            else if (ms.Count > 0)
+            {
+                foreach (var m in ms)
+                {
+                    foreach (var r in Mineables)
+                    {
+                        r.DefaultValue = m.building.mineableScatterCommonality;
+                    }
+                }
+            }
 
             if (Geysers == null)
-                Geysers = new RandomizableThingDefMultiplier();
+                Geysers = new RandomizableMultiplier();
             Geysers.DefaultValue = 1;
 
             if (Mountain == null)
-                Mountain = new RandomizableThingDefMultiplier();
+                Mountain = new RandomizableMultiplier();
             Mountain.Max = 1.4f;
             Mountain.DefaultValue = 0;
             Mountain.RandomMin = -0.15f;
             Mountain.RandomMax = 1.4f;
 
             if (AnimalDensity == null)
-                AnimalDensity = new RandomizableThingDefMultiplier();
+                AnimalDensity = new RandomizableMultiplier();
             AnimalDensity.RandomMax = 6;
+            AnimalDensity.DefaultValue = 1;
 
             if (PlantDensity == null)
-                PlantDensity = new RandomizableThingDefMultiplier();
+                PlantDensity = new RandomizableMultiplier();
             PlantDensity.RandomMax = 6;
+            PlantDensity.DefaultValue = 1;
 
             if (Ruins == null)
-                Ruins = new RandomizableThingDefMultiplier();
+                Ruins = new RandomizableMultiplier();
             Ruins.RandomMax = 50f;
+            Ruins.DefaultValue = 1;
 
             if (Shrines == null)
-                Shrines = new RandomizableThingDefMultiplier();
+                Shrines = new RandomizableMultiplier();
             Shrines.RandomMax = 50;
             var ideo = ModLister.IdeologyInstalled;
             if (!ideo && IdeoScatterables == null)
@@ -178,7 +182,7 @@ namespace ConfigurableMaps
             {
                 return null;
             }
-            return new RandomizableScattererMultiplier(d);
+            return new RandomizableScattererMultiplier(d, 1);
         }
 
         public void DoWindowContents(Rect rect, MSFieldValues fv)

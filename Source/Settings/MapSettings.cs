@@ -153,22 +153,25 @@ namespace ConfigurableMaps
             AncientJunkClusters.RandomMax = 50;
 
             int resetCount = 0;
-            foreach (var m in Mineables)
+            if (Mineables != null)
             {
-                if (m.GetMultiplier() == 1.0f)
-                    ++resetCount;
-            }
-            if (resetCount > 3)
-            {
-                Log.Message("[Configurable Maps] Correcting default values for mineables to their default values.");
                 foreach (var m in Mineables)
-                    m.SetMultiplier(m.DefaultValue);
+                {
+                    if (m.GetMultiplier() == 1.0f)
+                        ++resetCount;
+                }
+                if (resetCount > 3)
+                {
+                    Log.Message("[Configurable Maps] Correcting default values for mineables to their default values.");
+                    foreach (var m in Mineables)
+                        m.SetMultiplier(m.DefaultValue);
+                }
             }
 
             resetCount = 0;
-            resetCount += (Fertility.GetMultiplier() == 1f) ? 1 : 0;
-            resetCount += (Water.GetMultiplier() == 1f) ? 1 : 0;
-            resetCount += (Mountain.GetMultiplier() == 1f) ? 1 : 0;
+            resetCount += (Fertility?.GetMultiplier() == 1f) ? 1 : 0;
+            resetCount += (Water?.GetMultiplier() == 1f) ? 1 : 0;
+            resetCount += (Mountain?.GetMultiplier() == 1f) ? 1 : 0;
             if (resetCount >= 2)
             {
                 Fertility.SetMultiplier(Fertility.DefaultValue);

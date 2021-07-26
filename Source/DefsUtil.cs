@@ -70,7 +70,7 @@ namespace ConfigurableMaps
                 if (rm.ThingDef != null)
                 {
                     Mineability.Add(new Pair<ThingDef, float>(rm.ThingDef, rm.ThingDef.building.mineableScatterCommonality));
-                    rm.ThingDef.building.mineableScatterCommonality *= rm.GetMultiplier();
+                    rm.ThingDef.building.mineableScatterCommonality = rm.GetMultiplier();
                     sb.AppendLine($"- {rm.ThingDefName}.mineableScatterCommonality = {rm.ThingDef.building.mineableScatterCommonality}");
                 }
                 else
@@ -93,14 +93,15 @@ namespace ConfigurableMaps
             {
                 float m = rm.GetMultiplier();
                 GenStepDef d = DefDatabase<GenStepDef>.GetNamed(genStepDefName, false);
-                if (d?.genStep is GenStep_PreciousLump pl)
+                /*if (d?.genStep is GenStep_PreciousLump pl)
                 {
                     PreciousLump = new Pair<GenStep_PreciousLump, FloatRange>(pl, new FloatRange(pl.totalValueRange.min, pl.totalValueRange.max));
                     pl.totalValueRange.min *= m;
                     pl.totalValueRange.max *= m;
                     sb.AppendLine($"- {genStepDefName}.totalValueRange = {pl.totalValueRange} -- {pl.forcedLumpSize}");
                 }
-                else if (d?.genStep is GenStep_Scatterer rs)
+                else*/
+                if (d?.genStep is GenStep_Scatterer rs)
                 {
                     Scatterers.Add(new Pair<GenStep_Scatterer, ScattererValues>(rs, new ScattererValues(rs.countPer10kCellsRange)));
                     rs.countPer10kCellsRange.min *= m;

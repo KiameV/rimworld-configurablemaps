@@ -15,11 +15,16 @@ namespace ConfigurableMaps
         private static readonly List<Pair<ThingDef, float>> Mineability = new List<Pair<ThingDef, float>>();
         private static Pair<GenStep_PreciousLump, FloatRange> PreciousLump;
 
+        public static bool Enable { get; set; }
+        public static bool LumpsApplied { get; set; }
+
         public static void Update()
         {
             if (applied)
                 return;
             applied = true;
+            LumpsApplied = false;
+            Enable = true;
             MapSettings.Initialize();
             var animalMultiplier = MapSettings.AnimalDensity.GetMultiplier();
             var plantMultiplier = MapSettings.PlantDensity.GetMultiplier();
@@ -53,6 +58,9 @@ namespace ConfigurableMaps
             UpdateGenStepScatterer("AncientPipelineSection", MapSettings.AncientPipelineSection, Scatterers, sb);
             // AncientJunkClusters
             UpdateGenStepScatterer("AncientJunkClusters", MapSettings.AncientJunkClusters, Scatterers, sb);
+
+            var l = (DefDatabase<GenStepDef>.GetNamed("PreciousLump").genStep as GenStep_ScatterLumpsMineable);
+            l.count = 100;
 
             // Minable
             foreach (var m in MapSettings.Mineables)
@@ -147,6 +155,8 @@ namespace ConfigurableMaps
                     PreciousLump.First.totalValueRange.max = PreciousLump.Second.max;
                 }
                 applied = false;
+                LumpsApplied = true;
+                Enable = false;
             }
         }
 

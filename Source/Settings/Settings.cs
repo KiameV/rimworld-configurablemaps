@@ -143,7 +143,7 @@ namespace ConfigurableMaps
 
     public class RandomizableMultiplierFieldValue : RandomizableFieldValue<float>
     {
-        public RandomizableMultiplierFieldValue(string label, RandomizableMultiplier rm) : 
+        public RandomizableMultiplierFieldValue(string label, ARandomizableMultiplier rm) : 
             base(label, rm.SetMultiplier, rm.GetMultiplier, rm.RandomMin, rm.RandomMax, rm.DefaultValue, rm.SetIsRandom, rm.GetIsRandom)
         {
             // Empty
@@ -161,12 +161,12 @@ namespace ConfigurableMaps
         T GetFieldValues();
     }
 
-    public class RandomizableMultiplier : IExposable
+    public abstract class ARandomizableMultiplier : IExposable
     {
         public ThingDef ThingDef;
         public string ThingDefName;
-        private float Multiplier;
-        private bool IsRandom = false;
+        protected float Multiplier;
+        protected bool IsRandom = false;
         public float Min = 0;
         public float Max = 100000;
         public float DefaultValue;
@@ -174,7 +174,7 @@ namespace ConfigurableMaps
         public float RandomMin;
         public float RandomMax;
 
-        public RandomizableMultiplier()
+        public ARandomizableMultiplier()
         {
             this.DefaultValue = Consts.DEFAULT_MULTIPLIER;
             this.Multiplier = Consts.DEFAULT_MULTIPLIER;
@@ -182,10 +182,9 @@ namespace ConfigurableMaps
             RandomMax = 6f;
         }
 
-        public void ExposeData()
+        public virtual void ExposeData()
         {
             Scribe_Values.Look(ref this.ThingDefName, "defName", "");
-            Scribe_Values.Look(ref this.Multiplier, "multiplier", Consts.DEFAULT_MULTIPLIER);
             Scribe_Values.Look(ref this.IsRandom, "isRandom", false);
         }
 
@@ -206,6 +205,26 @@ namespace ConfigurableMaps
             if (this.IsRandom)
                 return Rand.RangeInclusive((int)(this.RandomMin * 1000), (int)(this.RandomMax * 1000)) * 0.001f;
             return this.Multiplier;
+        }
+    }
+
+    public class RandomizableMultiplier : ARandomizableMultiplier
+    {
+        public RandomizableMultiplier() : base() { }
+        public override void ExposeData()
+        {
+            base.ExposeData();
+            Scribe_Values.Look(ref this.Multiplier, "multiplier", Consts.DEFAULT_MULTIPLIER);
+        }
+    }
+
+    public class RandomizableMultiplier0 : ARandomizableMultiplier
+    {
+        public RandomizableMultiplier0() : base() { }
+        public override void ExposeData()
+        {
+            base.ExposeData();
+            Scribe_Values.Look(ref this.Multiplier, "multiplier", 0);
         }
     }
 

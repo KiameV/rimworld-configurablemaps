@@ -23,11 +23,12 @@ namespace ConfigurableMaps
     {
         // Terrain
         public static ChunkLevelEnum ChunkLevel = ChunkLevelEnum.Normal;
-        public static RandomizableMultiplier Fertility;
-        public static RandomizableMultiplier Water;
-        public static RandomizableMultiplier Mountain;
+        public static RandomizableMultiplier0 Fertility;
+        public static RandomizableMultiplier0 Water;
+        public static RandomizableMultiplier0 Mountain;
         public static RandomizableMultiplier Geysers;
 
+        public static RandomizableMultiplier OreLevels;
         public static List<RandomizableMultiplier> Mineables;
 
 
@@ -52,13 +53,13 @@ namespace ConfigurableMaps
         public static void Initialize()
         {
             if (Fertility == null)
-                Fertility = new RandomizableMultiplier();
+                Fertility = new RandomizableMultiplier0();
             Fertility.DefaultValue = 0;
             Fertility.RandomMin = -3;
             Fertility.RandomMax = 3;
 
             if (Water == null)
-                Water = new RandomizableMultiplier();
+                Water = new RandomizableMultiplier0();
             Water.DefaultValue = 0;
             Water.RandomMin = -0.75f;
             Water.RandomMax = 0.75f;
@@ -122,7 +123,7 @@ namespace ConfigurableMaps
             Geysers.DefaultValue = 1;
 
             if (Mountain == null)
-                Mountain = new RandomizableMultiplier();
+                Mountain = new RandomizableMultiplier0();
             Mountain.Max = 1.4f;
             Mountain.DefaultValue = 0;
             Mountain.RandomMin = -0.15f;
@@ -152,6 +153,13 @@ namespace ConfigurableMaps
                 AncientJunkClusters = new RandomizableMultiplier();
             AncientJunkClusters.RandomMax = 50;
 
+            if (OreLevels == null)
+                OreLevels = new RandomizableMultiplier();
+            OreLevels.DefaultValue = 1;
+            OreLevels.Min = 0;
+            OreLevels.RandomMin = 0;
+            OreLevels.RandomMax = 6;
+
             int resetCount = 0;
             if (Mineables != null)
             {
@@ -175,8 +183,8 @@ namespace ConfigurableMaps
             if (resetCount >= 2)
             {
                 Fertility.SetMultiplier(Fertility.DefaultValue);
-                Water.SetMultiplier(Fertility.DefaultValue);
-                Mountain.SetMultiplier(Fertility.DefaultValue);
+                Water.SetMultiplier(Water.DefaultValue);
+                Mountain.SetMultiplier(Mountain.DefaultValue);
                 Log.Message("[Configurable Maps] Correcting default values for Fertility, Water, and Mountain to their default values.");
             }
         }
@@ -246,6 +254,7 @@ namespace ConfigurableMaps
             Scribe_Deep.Look(ref Geysers, "Geysers");
             Scribe_Deep.Look(ref Mountain, "Mountain");
 
+            Scribe_Deep.Look(ref OreLevels, "OreLevels");
             Scribe_Collections.Look(ref Mineables, "Mineables", LookMode.Deep);
 
             Scribe_Deep.Look(ref AnimalDensity, "AnimalDensity");
@@ -259,12 +268,13 @@ namespace ConfigurableMaps
         public MSFieldValues GetFieldValues()
         {
             Initialize();
-            var l = new List<FieldValue<float>>(5 + Mineables.Count)
+            var l = new List<FieldValue<float>>(6 + Mineables.Count)
             {
                 new RandomizableMultiplierFieldValue("CM.FertilityLevel".Translate(), Fertility),
                 new RandomizableMultiplierFieldValue("CM.WaterLevel".Translate(), Water),
                 new RandomizableMultiplierFieldValue("CM.MountainLevel".Translate(), Mountain),
                 new RandomizableMultiplierFieldValue("CM.Geysers".Translate(), Geysers),
+                new RandomizableMultiplierFieldValue("CM.OreLevels".Translate(), OreLevels),
             };
             foreach (var m in Mineables)
             {

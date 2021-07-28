@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using UnityEngine;
 using Verse;
 using Verse.Noise;
@@ -48,131 +49,27 @@ namespace ConfigurableMaps
         }
     }
 
-    /*[HarmonyPatch(typeof(Page_SelectStartingSite), "DoWindowContents")]
-    public static class Patch_Page_SelectStartingSite_DoWindowContents
+    [HarmonyPatch(typeof(GenStep_Scatterer), "CountFromPer10kCells", null)]
+    public static class GenStep_Scatterer_CountFromPer10kCells
     {
-        static void Postfix()
+        public static void Prefix(ref float countPer10kCells)
         {
-            Vector2 BottomButSize = new Vector2(150f, 38f);
-            int num = (TutorSystem.TutorialMode ? 4 : 5);
-            int num2 = ((num < 4 || !((float)UI.screenWidth < 540f + (float)num * (BottomButSize.x + 10f))) ? 1 : 2);
-            int num3 = Mathf.CeilToInt((float)num / (float)num2);
-            float num4 = BottomButSize.x * (float)num3 + 10f * (float)(num3 + 1);
-            float num5 = (float)num2 * BottomButSize.y + 10f * (float)(num2 + 1);
-            Rect rect = new Rect(((float)UI.screenWidth - num4) / 2f, (float)UI.screenHeight - num5 - 4f, num4, num5);
-            WorldInspectPane worldInspectPane = Find.WindowStack.WindowOfType<WorldInspectPane>();
-            if (worldInspectPane != null && rect.x < InspectPaneUtility.PaneWidthFor(worldInspectPane) + 4f)
+            if (DefsUtil.Enable && !DefsUtil.LumpsApplied)
             {
-                rect.x = InspectPaneUtility.PaneWidthFor(worldInspectPane) + 4f;
-            }
-            Widgets.DrawWindowBackground(rect);
-            float num6 = rect.xMin + 10f;
-            float num7 = rect.yMin - BottomButSize.y * 2;
-            Text.Font = GameFont.Small;
-            if (Widgets.ButtonText(new Rect(num6, num7, BottomButSize.x, BottomButSize.y), "ConfigurableMaps".Translate()))
-            {
-                //Find.WindowStack.TryRemove(typeof(EditWindow_Log));
-                if (!Find.WindowStack.TryRemove(typeof(SettingsWindow)))
+                if (Environment.StackTrace.Contains("GenStep_ScatterLumpsMineable"))
                 {
-                    Find.WindowStack.Add(new SettingsWindow());
+                    float prev = countPer10kCells;
+                    countPer10kCells *= MapSettings.OreLevels.GetMultiplier();
+                    Log.Message($"[Configurable Maps] OreLevel = {countPer10kCells}. Was {prev}");
+                    DefsUtil.LumpsApplied = true;
                 }
             }
         }
-    }*/
-
-
-    /*[HarmonyPatch(typeof(MainMenuDrawer), "DoMainMenuControls")]
-    static class Patch_MainMenuDrawer_DoMainMenuControls
-    {
-        static void Postfix(Rect rect, bool anyMapFiles)
-        {
-            if (Current.ProgramState == ProgramState.Entry)
-            {
-                Text.Font = GameFont.Small;
-                float y = ((rect.yMax + rect.yMin) / 2.0f) - 8.5f + 40;
-                float x = Math.Max(0, rect.xMax - 598);
-                //float x = Math.Max(0, rect.xMax - 915);
-                Rect r = new Rect(x, y, 140, 45);
-                if (Widgets.ButtonText(r, "ConfigurableMaps".Translate(), true, false, true))
-                {
-                    Find.WindowStack.Add(new SettingsWindow());
-                }
-            }
-        }
-    }*/
-
-    /*[HarmonyPatch(typeof(ArenaUtility), "BeginArenaFight")]
-    public class ArenaUtility_BeginArenaFight
-    {
-        [HarmonyPriority(Priority.First)]
-        public static void Prefix() { MapGenerator_Generate.MGT = MapGenType.Arena; }
-        [HarmonyPriority(Priority.First)]
-        public static void Postfix() { MapGenerator_Generate.MGT = MapGenType.None; }
     }
-
-    [HarmonyPatch(typeof(CaravanArrivalAction_VisitSite), "DoEnter")]
-    public class CaravanArrivalAction_VisitSite_DoEnter
-    {
-        [HarmonyPriority(Priority.First)]
-        public static void Prefix() { MapGenerator_Generate.MGT = MapGenType.CaravanArival; }
-        [HarmonyPriority(Priority.First)]
-        public static void Postfix() { MapGenerator_Generate.MGT = MapGenType.None; }
-    }
-
-    [HarmonyPatch(typeof(CaravanIncidentUtility), "GetOrGenerateMapForIncident")]
-    public class CaravanIncidentUtility_GetOrGenerateMapForIncident
-    {
-        [HarmonyPriority(Priority.First)]
-        public static void Prefix() { MapGenerator_Generate.MGT = MapGenType.CaravanIncident; }
-        [HarmonyPriority(Priority.First)]
-        public static void Postfix() { MapGenerator_Generate.MGT = MapGenType.None; }
-    }
-
-    [HarmonyPatch(typeof(TransportPodsArrivalAction_VisitSite), "Arrived")]
-    public class TransportPodsArrivalAction_VisitSite_Arrived
-    {
-        [HarmonyPriority(Priority.First)]
-        public static void Prefix() { MapGenerator_Generate.MGT = MapGenType.TransportPodsArrive; }
-        [HarmonyPriority(Priority.First)]
-        public static void Postfix() { MapGenerator_Generate.MGT = MapGenType.None; }
-    }
-
-    [HarmonyPatch(typeof(SettleInEmptyTileUtility), "Settle")]
-    public class SettleInEmptyTileUtility_Settle
-    {
-        [HarmonyPriority(Priority.First)]
-        public static void Prefix() { MapGenerator_Generate.MGT = MapGenType.SettleInEmpty; }
-        [HarmonyPriority(Priority.First)]
-        public static void Postfix() { MapGenerator_Generate.MGT = MapGenType.None; }
-    }
-
-    [HarmonyPatch(typeof(Game), "InitNewGame")]
-    public class Game_InitNewGame
-    {
-        [HarmonyPriority(Priority.First)]
-        public static void Prefix() { MapGenerator_Generate.MGT = MapGenType.SettleInEmpty; }
-        [HarmonyPriority(Priority.First)]
-        public static void Postfix() { MapGenerator_Generate.MGT = MapGenType.None; }
-    }
-
-    public enum MapGenType { None, Arena, CaravanArival, CaravanIncident, TransportPodsArrive, SettleInEmpty }
-    */
-
-    // CommonMapGenerator.xml
-    // def: Caves - GenStep_Caves
-    // def CaveHives - GenStep_CaveHives
-    // def: RocksFromGrid - GenStep_RocksFromGrid
-    // def: RocksFromGrid_NoMinerals - GenStep_RocksFromGrid
-    // def: Terrain - GenStep_Terrain
-    // def: CavesTerrain - GenStep_CavesTerrain
-    // def: Roads - GenStep_Roads
-    // def: RockChunks - GenStep_RockChunks
 
     [HarmonyPatch(typeof(MapGenerator), "GenerateMap")]
     public class MapGenerator_Generate
     {
-        //public static MapGenType MGT;
-
         [HarmonyPriority(Priority.First)]
         public static void Prefix(MapParent parent, MapGeneratorDef mapGenerator)
         {
@@ -184,6 +81,7 @@ namespace ConfigurableMaps
                     {
                         if (qt.Tile == parent.Tile)
                         {
+                            DefsUtil.Enable = true;
                             Log.Message("[Configurable Maps] this tile has a quest on it. Disabling map modifications.");
                             return;
                         }
@@ -209,6 +107,7 @@ namespace ConfigurableMaps
         [HarmonyPriority(Priority.First)]
         public static void Postfix()
         {
+            DefsUtil.Enable = true;
             DefsUtil.Restore();
         }
     }

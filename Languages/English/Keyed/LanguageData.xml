@@ -9,6 +9,7 @@
 	
 	<CM.WorldSettings>World Settings</CM.WorldSettings>
 	<CM.MapSettings>Map Settings</CM.MapSettings>
+	
 	<CM.StoneTypes>Number of Different Stone Types for each Map Tile</CM.StoneTypes>
 	<CM.StoneCommonality>Chance that a stone type will appear on a map (0-100). Relative to each other.</CM.StoneCommonality>
 	<CM.TotalOreValue>Ore Value Multiplier</CM.TotalOreValue>
@@ -16,6 +17,7 @@
 	<CM.WaterLevel>Water Height</CM.WaterLevel>
 	<CM.MountainLevel>Mountain Amount</CM.MountainLevel>
 	<CM.Geysers>Geyser Multiplier</CM.Geysers>
+	<CM.OreLevels>Ore Levels</CM.OreLevels>
 	<CM.AnimalDensity>Animal Density</CM.AnimalDensity>
 	<CM.PlantDensity>Plant Density</CM.PlantDensity>
 	<CM.Ruins>Ruins</CM.Ruins>

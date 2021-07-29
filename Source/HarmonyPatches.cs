@@ -81,7 +81,7 @@ namespace ConfigurableMaps
                     {
                         if (qt.Tile == parent.Tile)
                         {
-                            DefsUtil.Enable = true;
+                            DefsUtil.Enable = false;
                             Log.Message("[Configurable Maps] this tile has a quest on it. Disabling map modifications.");
                             return;
                         }
@@ -444,6 +444,8 @@ namespace ConfigurableMaps
         [HarmonyPriority(Priority.High)]
         public static bool Prefix(Map map)
         {
+            if (!DefsUtil.Enable)
+                return true;
             if (Settings.detectedImpassableMaps && map.TileInfo.hilliness == Hilliness.Impassable)
                 return true;
 

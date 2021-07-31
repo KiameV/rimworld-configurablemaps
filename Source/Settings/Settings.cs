@@ -42,6 +42,12 @@ namespace ConfigurableMaps
         public static WorldSettings WorldSettings;
         public static MapSettings MapSettings;
 
+        // Used by map reroll
+        public static void OpenOnMapSettings()
+        {
+            toShow = ToShow.Map;
+        }
+
         public static float GetRandomMultiplier(int min = 0, int max = 40000)
         {
             return Rand.RangeInclusive(min, max) * 0.01f;

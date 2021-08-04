@@ -1,5 +1,55 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <LanguageData>
+  <!-- For versions 1.3 and newer -->
+  <ConfigurableMaps>Configurable Maps</ConfigurableMaps>
+
+  <CM.TerrainType>地表面の調整</CM.TerrainType>
+  <CM.ThingType>Thingsの調整</CM.ThingType>
+  <CM.Multipliers>係数（0.15＝15%、1.0＝100%、2.5＝250%、等)</CM.Multipliers>
+
+  <CM.WorldSettings>ワールド設定</CM.WorldSettings>
+  <CM.MapSettings>マップ設定</CM.MapSettings>
+
+  <CM.StoneTypes>各マップタイルごとに違う石種類の数</CM.StoneTypes>
+  <CM.StoneCommonality>石の種類がマップ(0%-100%)に出現する可能性があります。相互関係しています。</CM.StoneCommonality>
+  <CM.TotalOreValue>鉱石の数量係数</CM.TotalOreValue>
+  <CM.FertilityLevel>土壌肥沃度</CM.FertilityLevel>
+  <CM.WaterLevel>水位</CM.WaterLevel>
+  <CM.MountainLevel>山岳係数</CM.MountainLevel>
+  <CM.Geysers>間欠泉係数</CM.Geysers>
+  <CM.OreLevels>鉱石レベル</CM.OreLevels>
+  <CM.AnimalDensity>動物の密度</CM.AnimalDensity>
+  <CM.PlantDensity>植物の密度</CM.PlantDensity>
+  <CM.Ruins>遺跡</CM.Ruins>
+  <CM.Shrines>神殿跡</CM.Shrines>
+  <CM.OtherStone>その他の石種類</CM.OtherStone>
+
+  <CM.AncientPipelineSection>古代のパイプライン</CM.AncientPipelineSection>
+  <CM.AncientJunkClusters>古代のガラクタ塊</CM.AncientJunkClusters>
+
+  <CM.Default>初期化</CM.Default>
+  <CM.Random>ランダム</CM.Random>
+
+  <CM.ChunksLevel>岩の塊密度</CM.ChunksLevel>
+  <CM.WallsMadeFromLocal>マップ設定材料の壁</CM.WallsMadeFromLocal>
+
+  <CM.AncientThingsEnabled>古代のThingsを許可</CM.AncientThingsEnabled>
+  <CM.AncientUtilBuilding>実用的な建築物</CM.AncientUtilBuilding>
+  <CM.AncientMechanoidRemains>残留メカノイド</CM.AncientMechanoidRemains>
+  <CM.AncientTurrets>タレット</CM.AncientTurrets>
+  <CM.AncientMechs>メカノイド</CM.AncientMechs>
+  <CM.AncientLandingPad>着陸パッド</CM.AncientLandingPad>
+  <CM.AncientFences>フェンス</CM.AncientFences>
+  <CM.RequiresRestartIfAMapWasCreated>この設定を無効にしてマップを生成する場合は、ゲームをリセットする必要があります。</CM.RequiresRestartIfAMapWasCreated>
+
+  <!-- <CM.Low>低消費電力</CM.Low> -->
+  <!-- <CM.Normal>通常消費電力</CM.Normal> -->
+  <!-- <CM.High>高消費電力</CM.High> -->
+  <!-- <CM.VeryLow>超低消費電力</CM.VeryLow> -->
+  <!-- <CM.VeryHigh>超高消費電力</CM.VeryHigh> -->
+
+  <!-- Left for legacy support -->
+  <!-- For versions 1.2 and older -->
 
   <RFR.FewerRuinsTerrain>Configurable Maps -地形の設定</RFR.FewerRuinsTerrain>
   <RFR.FewerRuinsThings>Configurable Maps -遺跡/動植物の設定</RFR.FewerRuinsThings>

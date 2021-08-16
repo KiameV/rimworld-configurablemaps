@@ -34,8 +34,8 @@ namespace ConfigurableMaps
         public static bool detectedFertileFields = false;
         public static bool detectedCuprosStones = false;
 
-        private enum ToShow { None, World, Map }
-        private static ToShow toShow = ToShow.Map;
+        internal enum ToShow { None, World, Map }
+        internal static ToShow toShow = ToShow.World;
         private WSFieldValues wsFieldValues;
         private MSFieldValues msFieldValues;
 

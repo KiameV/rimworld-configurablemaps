@@ -15,7 +15,8 @@ namespace ConfigurableMaps
         private static readonly List<Pair<ThingDef, float>> Mineability = new List<Pair<ThingDef, float>>();
         private static Pair<GenStep_PreciousLump, FloatRange> PreciousLump;
 
-        public static bool Enable { get; set; }
+        //public static bool Enable { get; set; }
+        public static bool EnableMountainSettings { get; set; }
         public static bool LumpsApplied { get; set; }
 
         public static void Update()
@@ -24,7 +25,8 @@ namespace ConfigurableMaps
                 return;
             applied = true;
             LumpsApplied = false;
-            Enable = true;
+            //Enable = true;
+            EnableMountainSettings = true;
             MapSettings.Initialize();
             var animalMultiplier = MapSettings.AnimalDensity.GetMultiplier();
             var plantMultiplier = MapSettings.PlantDensity.GetMultiplier();
@@ -67,6 +69,48 @@ namespace ConfigurableMaps
             {
                 UpdateMineable(m, Mineability, sb);
             }
+
+            /*if (ModsConfig.IdeologyActive)
+            {
+                sb.AppendLine("Ancient Map Things (will only see these once ever time the game is loaded)");
+                foreach (var d in DefDatabase<MapGeneratorDef>.AllDefs)
+                {
+                    d.genSteps?.RemoveAll(gs =>
+                    {
+                        if (!MapSettings.EnableAncientUtilBuildings && gs.defName == "AncientUtilityBuilding")
+                        {
+                            sb.AppendLine("- disabled AncientUtilityBuilding");
+                            return true;
+                        }
+                        if (!MapSettings.EnableAncientMechanoidRemains && gs.defName == "MechanoidRemains")
+                        {
+                            sb.AppendLine("- disabled MechanoidRemains");
+                            return true;
+                        }
+                        if (!MapSettings.EnableAncientTurrets && gs.defName == "AncientTurret")
+                        {
+                            sb.AppendLine("- disabled AncientTurret");
+                            return true;
+                        }
+                        if (!MapSettings.EnableAncientMechs && gs.defName == "AncientMechs")
+                        {
+                            sb.AppendLine("- disabled AncientMechs");
+                            return true;
+                        }
+                        if (!MapSettings.EnableAncientLandingPad && gs.defName == "AncientLandingPad")
+                        {
+                            sb.AppendLine("- disabled AncientLandingPad");
+                            return true;
+                        }
+                        if (!MapSettings.EnableAncientFences && gs.defName == "AncientFences")
+                        {
+                            sb.AppendLine("- disabled AncientFences");
+                            return true;
+                        }
+                        return false;
+                    });
+                }
+            }*/
 
             Log.Message(sb.ToString());
         }
@@ -156,7 +200,8 @@ namespace ConfigurableMaps
                 }
                 applied = false;
                 LumpsApplied = true;
-                Enable = false;
+                //Enable = false;
+                EnableMountainSettings = false;
             }
         }
 

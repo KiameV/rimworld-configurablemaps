@@ -1,4 +1,4 @@
-﻿using System;
+﻿using RimWorld;
 using System.Collections.Generic;
 using UnityEngine;
 using Verse;
@@ -43,6 +43,12 @@ namespace ConfigurableMaps
         public static RandomizableMultiplier Shrines;
         public static RandomizableMultiplier AncientPipelineSection;
         public static RandomizableMultiplier AncientJunkClusters;
+        /*public static bool EnableAncientUtilBuildings;
+        public static bool EnableAncientMechanoidRemains;
+        public static bool EnableAncientTurrets;
+        public static bool EnableAncientMechs;
+        public static bool EnableAncientLandingPad;
+        public static bool EnableAncientFences;*/
 
         private Vector2 terrainScroll = Vector2.zero, thingsScroll = Vector2.zero;
         private float lastYTerrain = 0, lastYThings;
@@ -226,7 +232,32 @@ namespace ConfigurableMaps
             lastYThings = 0;
             foreach (var v in fv.ThingsFieldValues)
                 WindowUtil.DrawInputRandomizableWithSlider(0, ref lastYThings, v);
+
+            /*if (ModsConfig.IdeologyActive)
+            {
+                Widgets.Label(new Rect(0, lastYThings, width - 16, 28), "CM.AncientThingsEnabled".Translate() + ":");
+                lastYThings += 30;
+                CheckBox(5, ref lastYThings, "CM.AncientUtilBuilding".Translate(), ref EnableAncientUtilBuildings);
+                CheckBox(5, ref lastYThings, "CM.AncientMechanoidRemains".Translate(), ref EnableAncientMechanoidRemains);
+                CheckBox(5, ref lastYThings, "CM.AncientTurrets".Translate(), ref EnableAncientTurrets);
+                CheckBox(5, ref lastYThings, "CM.AncientMechs".Translate(), ref EnableAncientMechs);
+                CheckBox(5, ref lastYThings, "CM.AncientLandingPad".Translate(), ref EnableAncientLandingPad);
+                CheckBox(5, ref lastYThings, "CM.AncientFences".Translate(), ref EnableAncientFences);
+            }*/
             Widgets.EndScrollView();
+        }
+
+        private bool CheckBox(float x, ref float y, string label, ref bool b)
+        {
+            bool v = b;
+            Widgets.Label(new Rect(x, y, 200, 28), label);
+            Widgets.Checkbox(215, y, ref b);
+            y += 30;
+            if (v != b && b == true)
+            {
+                Messages.Message("CM.RequiresRestartIfAMapWasCreated".Translate(), MessageTypeDefOf.CautionInput);
+            }
+            return v != b;
         }
 
         private string GetChunkLevelLabel(ChunkLevelEnum e)
@@ -263,6 +294,13 @@ namespace ConfigurableMaps
             Scribe_Deep.Look(ref Shrines, "Shrines");
             Scribe_Deep.Look(ref AncientPipelineSection, "AncientPipelineSection");
             Scribe_Deep.Look(ref AncientJunkClusters, "AncientJunkClusters");
+            
+            /*Scribe_Values.Look(ref EnableAncientUtilBuildings, "EnableAncientUtilBuildings", true);
+            Scribe_Values.Look(ref EnableAncientMechanoidRemains, "MechanoidRemains", true);
+            Scribe_Values.Look(ref EnableAncientTurrets, "EnableAncientTurrets", true);
+            Scribe_Values.Look(ref EnableAncientMechs, "EnableAncientMechs", true);
+            Scribe_Values.Look(ref EnableAncientLandingPad, "EnableAncientLandingPad", true);
+            Scribe_Values.Look(ref EnableAncientFences, "EnableAncientFences", true);*/
         }
 
         public MSFieldValues GetFieldValues()

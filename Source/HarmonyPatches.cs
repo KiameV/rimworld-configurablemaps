@@ -53,7 +53,8 @@ namespace ConfigurableMaps
     {
         public static void Prefix(ref float countPer10kCells)
         {
-            if (DefsUtil.Enable && !DefsUtil.LumpsApplied)
+            //if (DefsUtil.Enable && !DefsUtil.LumpsApplied)
+            if (!DefsUtil.LumpsApplied)
             {
                 if (Environment.StackTrace.Contains("GenStep_ScatterLumpsMineable"))
                 {
@@ -80,8 +81,10 @@ namespace ConfigurableMaps
                     {
                         if (qt.Tile == parent.Tile)
                         {
-                            DefsUtil.Enable = false;
-                            Log.Message("[Configurable Maps] this tile has a quest on it. Disabling map modifications.");
+                            //DefsUtil.Enable = false;
+                            //Log.Message("[Configurable Maps] this tile has a quest on it. Disabling map modifications.");
+                            DefsUtil.EnableMountainSettings = false;
+                            Log.Message("[Configurable Maps] fertility, water, and mountain settings will be disabled for this map since it has a quest on it.");
                             return;
                         }
                     }
@@ -106,7 +109,8 @@ namespace ConfigurableMaps
         [HarmonyPriority(Priority.First)]
         public static void Postfix()
         {
-            DefsUtil.Enable = true;
+            DefsUtil.EnableMountainSettings = true;
+            //DefsUtil.Enable = true;
             DefsUtil.Restore();
         }
     }
@@ -192,8 +196,7 @@ namespace ConfigurableMaps
                 float sum = 0;
                 foreach (WeightedStoneType wst in w)
                     sum += wst.Weight;
-                sum /= w.Count;
-                sum = Rand.RangeInclusive((int)(sum * 3), (int)(sum * 7));
+                sum = Rand.RangeInclusive((int)(sum * 13), (int)(sum * 29));
 
                 while (sum > 0)
                 {
@@ -218,86 +221,20 @@ namespace ConfigurableMaps
             if (weighted != null && weighted.Count > 0)
                 return;
 
-            var stoneDefs = DefDatabase<ThingDef>.AllDefs.Where((ThingDef d) => d.IsNonResourceNaturalRock).ToList();
-            weighted = new List<WeightedStoneType>(stoneDefs.Count);
+            WorldSettings.Init();
 
-            foreach (var d in stoneDefs)
+            weighted = new List<WeightedStoneType>(WorldSettings.Commonalities.Count);
+
+            foreach (var c in WorldSettings.Commonalities)
             {
                 if (WorldSettings.CommonalityRandom)
                 {
                     var i = Rand.RangeInclusive(0, 10);
-                    weighted.Add(new WeightedStoneType(d, i));
+                    weighted.Add(new WeightedStoneType(c.StoneDef, i));
                 }
                 else
                 {
-                    switch (d.defName.ToLower())
-                    {
-                        case "granite":
-                            if (WorldSettings.CommonalityGranite > 0)
-                                weighted.Add(new WeightedStoneType(d, WorldSettings.CommonalityGranite));
-                            break;
-                        case "limestone":
-                            if (WorldSettings.CommonalityLimestone > 0)
-                                weighted.Add(new WeightedStoneType(d, WorldSettings.CommonalityLimestone));
-                            break;
-                        case "marble":
-                            if (WorldSettings.CommonalityMarble > 0)
-                                weighted.Add(new WeightedStoneType(d, WorldSettings.CommonalityMarble));
-                            break;
-                        case "sandstone":
-                            if (WorldSettings.CommonalitySandstone > 0)
-                                weighted.Add(new WeightedStoneType(d, WorldSettings.CommonalitySandstone));
-                            break;
-                        case "slate":
-                            if (WorldSettings.CommonalitySlate > 0)
-                                weighted.Add(new WeightedStoneType(d, WorldSettings.CommonalitySlate));
-                            break;
-                        case "claystone":
-                            if (WorldSettings.CommonalityClaystone > 0)
-                                weighted.Add(new WeightedStoneType(d, WorldSettings.CommonalityClaystone));
-                            break;
-                        case "andesite":
-                            if (WorldSettings.CommonalityAndesite > 0)
-                                weighted.Add(new WeightedStoneType(d, WorldSettings.CommonalityAndesite));
-                            break;
-                        case "syenite":
-                            if (WorldSettings.CommonalitySyenite > 0)
-                                weighted.Add(new WeightedStoneType(d, WorldSettings.CommonalitySyenite));
-                            break;
-                        case "gneiss":
-                            if (WorldSettings.CommonalityGneiss > 0)
-                                weighted.Add(new WeightedStoneType(d, WorldSettings.CommonalityGneiss));
-                            break;
-                        case "quartzite":
-                            if (WorldSettings.CommonalityQuartzite > 0)
-                                weighted.Add(new WeightedStoneType(d, WorldSettings.CommonalityQuartzite));
-                            break;
-                        case "schis":
-                            if (WorldSettings.CommonalitySchist > 0)
-                                weighted.Add(new WeightedStoneType(d, WorldSettings.CommonalitySchist));
-                            break;
-                        case "gabbro":
-                            if (WorldSettings.CommonalityGabbro > 0)
-                                weighted.Add(new WeightedStoneType(d, WorldSettings.CommonalityGabbro));
-                            break;
-                        case "diorite":
-                            if (WorldSettings.CommonalityDiorite > 0)
-                                weighted.Add(new WeightedStoneType(d, WorldSettings.CommonalityDiorite));
-                            break;
-                        case "dunite":
-                            if (WorldSettings.CommonalityDunite > 0)
-                                weighted.Add(new WeightedStoneType(d, WorldSettings.CommonalityDunite));
-                            break;
-                        case "pegmatite":
-                            if (WorldSettings.CommonalityPegmatite > 0)
-                                weighted.Add(new WeightedStoneType(d, WorldSettings.CommonalityPegmatite));
-                            break;
-                        default:
-                            Log.Message($"[Configurable Maps] unknown stone type {d.defName}. Using weight {WorldSettings.CommonalityOther}");
-                            if (WorldSettings.CommonalityOther > 0)
-                                weighted.Add(new WeightedStoneType(d, WorldSettings.CommonalityOther));
-                            break;
-                    }
+                    weighted.Add(new WeightedStoneType(c.StoneDef, c.Commonality));
                 }
             }
         }
@@ -348,6 +285,9 @@ namespace ConfigurableMaps
     {
         public static bool Prefix(List<TerrainThreshold> threshes, float val, ref TerrainDef __result)
         {
+            if (!DefsUtil.EnableMountainSettings)
+                return true;
+
             // val is fertility
             float mod;
             var orig = __result;
@@ -443,7 +383,9 @@ namespace ConfigurableMaps
         [HarmonyPriority(Priority.High)]
         public static bool Prefix(Map map)
         {
-            if (!DefsUtil.Enable)
+            //if (!DefsUtil.Enable)
+            //    return true;
+            if (!DefsUtil.EnableMountainSettings)
                 return true;
             if (Settings.detectedImpassableMaps && map.TileInfo.hilliness == Hilliness.Impassable)
                 return true;

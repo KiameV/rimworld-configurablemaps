@@ -32,6 +32,15 @@
 	
 	<CM.ChunksLevel>Stone Chunk Density</CM.ChunksLevel>
 	<CM.WallsMadeFromLocal>Walls Made Local</CM.WallsMadeFromLocal>
+
+	<CM.AncientThingsEnabled>Ancient Things Enabled</CM.AncientThingsEnabled>
+	<CM.AncientUtilBuilding>Util Buildings</CM.AncientUtilBuilding>
+	<CM.AncientMechanoidRemains>Mechanoid Remains</CM.AncientMechanoidRemains>
+	<CM.AncientTurrets>Turrets</CM.AncientTurrets>
+	<CM.AncientMechs>Mechs</CM.AncientMechs>
+	<CM.AncientLandingPad>Landing Pad</CM.AncientLandingPad>
+	<CM.AncientFences>Fences</CM.AncientFences>
+	<CM.RequiresRestartIfAMapWasCreated>Requires a game reset if a map has been generated with this setting disabled.</CM.RequiresRestartIfAMapWasCreated>
 	
 	<!-- <CM.Low>Low</CM.Low> using PowerConsumptionLow -->
 	<!-- <CM.Normal>Normal</CM.Normal> using PlanetPopulation_Normal -->

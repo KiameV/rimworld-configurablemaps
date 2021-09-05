@@ -232,6 +232,17 @@ namespace ConfigurableMaps
             base.ExposeData();
             Scribe_Values.Look(ref this.Multiplier, "multiplier", 0);
         }
+        public float Value
+        {
+            get
+            {
+                return base.Multiplier;
+            }
+            set
+            {
+                base.Multiplier = value;
+            }
+        }
     }
 
     public static class MineableStuff

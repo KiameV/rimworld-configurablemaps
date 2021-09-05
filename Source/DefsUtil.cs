@@ -16,7 +16,7 @@ namespace ConfigurableMaps
         private static Pair<GenStep_PreciousLump, FloatRange> PreciousLump;
 
         //public static bool Enable { get; set; }
-        public static bool EnableMountainSettings { get; set; }
+        //public static bool EnableMountainSettings { get; set; }
         public static bool LumpsApplied { get; set; }
 
         public static void Update()
@@ -26,7 +26,7 @@ namespace ConfigurableMaps
             applied = true;
             LumpsApplied = false;
             //Enable = true;
-            EnableMountainSettings = true;
+            //EnableMountainSettings = true;
             MapSettings.Initialize();
             var animalMultiplier = MapSettings.AnimalDensity.GetMultiplier();
             var plantMultiplier = MapSettings.PlantDensity.GetMultiplier();
@@ -201,7 +201,7 @@ namespace ConfigurableMaps
                 applied = false;
                 LumpsApplied = true;
                 //Enable = false;
-                EnableMountainSettings = false;
+                //EnableMountainSettings = false;
             }
         }
 

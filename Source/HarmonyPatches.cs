@@ -70,25 +70,43 @@ namespace ConfigurableMaps
     [HarmonyPatch(typeof(MapGenerator), "GenerateMap")]
     public class MapGenerator_Generate
     {
+        private static RandomizableMultiplier0 buMtnValue = null;
+        private static RandomizableMultiplier0 buWaterValue = null;
+
         [HarmonyPriority(Priority.First)]
-        public static void Prefix(MapParent parent, MapGeneratorDef mapGenerator)
+        public static void Prefix(MapParent parent, MapGeneratorDef mapGenerator, IEnumerable<GenStepWithParams> extraGenStepDefs)
         {
-            foreach (var q in Current.Game.questManager.QuestsListForReading)
+            const float MAX_MTN_VALUE = 0.7f;
+            buMtnValue = null;
+            buWaterValue = null;
+
+            if (shouldOverrideSettings(parent, mapGenerator, extraGenStepDefs))
             {
-                if (q.State == QuestState.Ongoing)
+                buMtnValue = MapSettings.Mountain;
+                buWaterValue = MapSettings.Water;
+
+                float value = buMtnValue.GetMultiplier();
+                if (value > MAX_MTN_VALUE)
                 {
-                    foreach (var qt in q.QuestLookTargets)
-                    {
-                        if (qt.Tile == parent.Tile)
-                        {
-                            //DefsUtil.Enable = false;
-                            //Log.Message("[Configurable Maps] this tile has a quest on it. Disabling map modifications.");
-                            DefsUtil.EnableMountainSettings = false;
-                            Log.Message("[Configurable Maps] fertility, water, and mountain settings will be disabled for this map since it has a quest on it.");
-                            return;
-                        }
-                    }
+                    Log.Warning($"[Configurable Maps] For quest maps, capping mountain density to {MAX_MTN_VALUE}");
+                    MapSettings.Mountain = new RandomizableMultiplier0();
+                    MapSettings.Mountain.SetIsRandom(false);
+                    MapSettings.Mountain.SetMultiplier(MAX_MTN_VALUE);
                 }
+
+                value = buWaterValue.GetMultiplier();
+                if (value > MAX_MTN_VALUE)
+                {
+                    Log.Warning($"[Configurable Maps] For quest maps, capping water density to {MAX_MTN_VALUE}");
+                    MapSettings.Water = new RandomizableMultiplier0();
+                    MapSettings.Water.SetIsRandom(false);
+                    MapSettings.Water.SetMultiplier(MAX_MTN_VALUE);
+                }
+
+                //DefsUtil.Enable = false;
+                //Log.Message("[Configurable Maps] this tile has a quest on it. Disabling map modifications.");
+                //DefsUtil.EnableMountainSettings = false;
+                //Log.Message("[Configurable Maps] fertility, water, and mountain settings will be disabled for this map since it has a quest on it.");
             }
 
             try
@@ -106,11 +124,60 @@ namespace ConfigurableMaps
                 GenStep_RockChunks_GrowLowRockFormationFrom.ChunkLevel = (ChunkLevelEnum)Rand.RangeInclusive(0, Enum.GetNames(typeof(ChunkLevelEnum)).Length - 1);
             }
         }
+
+        private static bool shouldOverrideSettings(MapParent parent, MapGeneratorDef mapGenerator, IEnumerable<GenStepWithParams> extraGenStepDefs)
+        {
+            foreach (var q in Current.Game.questManager.QuestsListForReading)
+            {
+                if (q.State == QuestState.Ongoing)
+                {
+                    foreach (var qt in q.QuestLookTargets)
+                    {
+                        if (qt.Tile == parent.Tile)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            foreach (var d in mapGenerator.genSteps)
+            {
+                if (d.genStep.def.defName.Contains("Archonexus"))
+                {
+                    return true;
+                }
+            }
+
+            if (extraGenStepDefs != null)
+            {
+                foreach (var d in extraGenStepDefs)
+                {
+                    if (d.def.defName.Contains("Archonexus"))
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
         [HarmonyPriority(Priority.First)]
         public static void Postfix()
         {
-            DefsUtil.EnableMountainSettings = true;
+            //DefsUtil.EnableMountainSettings = true;
             //DefsUtil.Enable = true;
+            if (buMtnValue != null)
+            {
+                MapSettings.Mountain = buMtnValue;
+                buMtnValue = null;
+            }
+            if (buWaterValue != null)
+            {
+                MapSettings.Water = buWaterValue;
+                buWaterValue = null;
+            }
+
             DefsUtil.Restore();
         }
     }
@@ -285,8 +352,8 @@ namespace ConfigurableMaps
     {
         public static bool Prefix(List<TerrainThreshold> threshes, float val, ref TerrainDef __result)
         {
-            if (!DefsUtil.EnableMountainSettings)
-                return true;
+            //if (!DefsUtil.EnableMountainSettings)
+            //    return true;
 
             // val is fertility
             float mod;
@@ -385,8 +452,8 @@ namespace ConfigurableMaps
         {
             //if (!DefsUtil.Enable)
             //    return true;
-            if (!DefsUtil.EnableMountainSettings)
-                return true;
+            //if (!DefsUtil.EnableMountainSettings)
+            //    return true;
             if (Settings.detectedImpassableMaps && map.TileInfo.hilliness == Hilliness.Impassable)
                 return true;
 

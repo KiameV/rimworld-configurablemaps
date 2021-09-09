@@ -28,8 +28,8 @@ namespace ConfigurableMaps
             //Enable = true;
             //EnableMountainSettings = true;
             MapSettings.Initialize();
-            var animalMultiplier = MapSettings.AnimalDensity.GetMultiplier();
-            var plantMultiplier = MapSettings.PlantDensity.GetMultiplier();
+            var animalMultiplier = (WorldComp.AnimalMultiplier < 0) ? MapSettings.AnimalDensity.GetMultiplier() : WorldComp.AnimalMultiplier;
+            var plantMultiplier = (WorldComp.PlantMultiplier < 0) ? MapSettings.PlantDensity.GetMultiplier() : WorldComp.PlantMultiplier;
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("[Configurable Maps] Using Map Settings:");
 

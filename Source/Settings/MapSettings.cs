@@ -294,7 +294,7 @@ namespace ConfigurableMaps
             Scribe_Deep.Look(ref Shrines, "Shrines");
             Scribe_Deep.Look(ref AncientPipelineSection, "AncientPipelineSection");
             Scribe_Deep.Look(ref AncientJunkClusters, "AncientJunkClusters");
-            
+
             /*Scribe_Values.Look(ref EnableAncientUtilBuildings, "EnableAncientUtilBuildings", true);
             Scribe_Values.Look(ref EnableAncientMechanoidRemains, "MechanoidRemains", true);
             Scribe_Values.Look(ref EnableAncientTurrets, "EnableAncientTurrets", true);

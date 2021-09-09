@@ -26,6 +26,11 @@ namespace ConfigurableMaps
             Settings.detectedFertileFields = mods.Contains("[RF] Fertile Fields");
             Settings.detectedCuprosStones = mods.Contains("Cupro's Stones");
             Settings.detectedImpassableMaps = mods.Contains("[KV] Impassable Map Maker");
+            //Settings.detectedInGameDefEditor = mods.Contains("[KV] In-Game Definition Editor");
+            foreach (var b in DefDatabase<BiomeDef>.AllDefs)
+            {
+                CurrentSettings.Biomes.Add(new OriginalAnimalPlant(b));
+            }
         }
     }
 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using RimWorld;
+using System.Collections.Generic;
 using UnityEngine;
 using Verse;
 using static ConfigurableMaps.WindowUtil;
@@ -34,18 +35,20 @@ namespace ConfigurableMaps
         public static bool detectedFertileFields = false;
         public static bool detectedCuprosStones = false;
 
-        internal enum ToShow { None, World, Map }
-        internal static ToShow toShow = ToShow.World;
+        internal enum ToShow { None, World, Map, CurrentGame }
+        internal static ToShow toShow = ToShow.None;
         private WSFieldValues wsFieldValues;
         private MSFieldValues msFieldValues;
+        private static List<FieldValue<float>> cgFieldValues;
 
         public static WorldSettings WorldSettings;
         public static MapSettings MapSettings;
+        public static CurrentSettings CurrentSettings;
 
         // Used by map reroll
         public static void OpenOnMapSettings()
         {
-            toShow = ToShow.Map;
+            toShow = ToShow.None;
         }
 
         public static float GetRandomMultiplier(int min = 0, int max = 40000)
@@ -59,6 +62,8 @@ namespace ConfigurableMaps
                 WorldSettings = new WorldSettings();
             if (MapSettings == null)
                 MapSettings = new MapSettings();
+            if (CurrentSettings == null)
+                CurrentSettings = new CurrentSettings();
 
             string label;
             if (toShow == ToShow.None)
@@ -70,11 +75,13 @@ namespace ConfigurableMaps
 
             if (Widgets.ButtonText(new Rect(rect.x, rect.y, 300, 28), label))
             {
-                List<FloatMenuOption> l = new List<FloatMenuOption>()
+                List<FloatMenuOption> l = new List<FloatMenuOption>(3)
                 {
                     new FloatMenuOption(WorldSettings.Name, () => { toShow = ToShow.World; }),
                     new FloatMenuOption(MapSettings.Name, () => { toShow = ToShow.Map; })
                 };
+                if (Current.Game != null)
+                    l.Add(new FloatMenuOption(CurrentSettings.Name, () => { toShow = ToShow.CurrentGame; }));
                 Find.WindowStack.Add(new FloatMenu(l));
             }
             rect.y += 30f;
@@ -90,6 +97,21 @@ namespace ConfigurableMaps
                     msFieldValues = MapSettings.GetFieldValues();
                 MapSettings.DoWindowContents(rect, msFieldValues);
             }
+            else if (toShow == ToShow.CurrentGame)
+            {
+                if (cgFieldValues == null)
+                    cgFieldValues = CurrentSettings.GetFieldValues();
+                CurrentSettings.DoWindowContents(rect, cgFieldValues);
+            }
+        }
+
+        public static void Reload()
+        {
+            if (cgFieldValues != null)
+            {
+                foreach (var fv in cgFieldValues)
+                    fv.UpdateBuffer();
+            }
         }
 
         public override void ExposeData()
@@ -102,6 +124,9 @@ namespace ConfigurableMaps
             base.ExposeData();
             Scribe_Deep.Look(ref WorldSettings, "WorldSettings");
             Scribe_Deep.Look(ref MapSettings, "MapSettings");
+
+            if (Scribe.mode == LoadSaveMode.Saving)
+                CurrentSettings.ApplySettings(cgFieldValues);
 
             DefsUtil.Restore();
         }

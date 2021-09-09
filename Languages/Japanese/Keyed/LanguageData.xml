@@ -9,6 +9,7 @@
 
   <CM.WorldSettings>ワールド設定</CM.WorldSettings>
   <CM.MapSettings>マップ設定</CM.MapSettings>
+  <CM.CurrentSettings>現在のゲーム設定</CM.CurrentSettings>
 
   <CM.StoneTypes>各マップタイルごとに違う石種類の数</CM.StoneTypes>
   <CM.StoneCommonality>石の種類がマップ(0%-100%)に出現する可能性があります。相互関係しています。</CM.StoneCommonality>

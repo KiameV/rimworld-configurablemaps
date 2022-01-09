@@ -125,7 +125,7 @@ namespace ConfigurableMaps
             Scribe_Deep.Look(ref WorldSettings, "WorldSettings");
             Scribe_Deep.Look(ref MapSettings, "MapSettings");
 
-            if (Scribe.mode == LoadSaveMode.Saving)
+            if (Scribe.mode == LoadSaveMode.Saving && cgFieldValues?.Count > 0)
                 CurrentSettings.ApplySettings(cgFieldValues);
 
             DefsUtil.Restore();

@@ -81,37 +81,44 @@ namespace ConfigurableMaps
         [HarmonyPriority(Priority.First)]
         public static void Prefix(MapParent parent, MapGeneratorDef mapGenerator, IEnumerable<GenStepWithParams> extraGenStepDefs)
         {
-            const float MAX_MTN_VALUE = 0.7f;
-            buMtnValue = null;
-            buWaterValue = null;
-
-            if (shouldOverrideSettings(parent, mapGenerator, extraGenStepDefs))
+            try
             {
-                buMtnValue = MapSettings.Mountain;
-                buWaterValue = MapSettings.Water;
+                const float MAX_MTN_VALUE = 0.7f;
+                buMtnValue = null;
+                buWaterValue = null;
 
-                float value = buMtnValue.GetMultiplier();
-                if (value > MAX_MTN_VALUE)
+                if (shouldOverrideSettings(parent, mapGenerator, extraGenStepDefs))
                 {
-                    Log.Warning($"[Configurable Maps] For quest maps, capping mountain density to {MAX_MTN_VALUE}");
-                    MapSettings.Mountain = new RandomizableMultiplier0();
-                    MapSettings.Mountain.SetIsRandom(false);
-                    MapSettings.Mountain.SetMultiplier(MAX_MTN_VALUE);
-                }
+                    buMtnValue = MapSettings.Mountain;
+                    buWaterValue = MapSettings.Water;
 
-                value = buWaterValue.GetMultiplier();
-                if (value > MAX_MTN_VALUE)
-                {
-                    Log.Warning($"[Configurable Maps] For quest maps, capping water density to {MAX_MTN_VALUE}");
-                    MapSettings.Water = new RandomizableMultiplier0();
-                    MapSettings.Water.SetIsRandom(false);
-                    MapSettings.Water.SetMultiplier(MAX_MTN_VALUE);
-                }
+                    float value = buMtnValue.GetMultiplier();
+                    if (value > MAX_MTN_VALUE)
+                    {
+                        Log.Warning($"[Configurable Maps] For quest maps, capping mountain density to {MAX_MTN_VALUE}");
+                        MapSettings.Mountain = new RandomizableMultiplier0();
+                        MapSettings.Mountain.SetIsRandom(false);
+                        MapSettings.Mountain.SetMultiplier(MAX_MTN_VALUE);
+                    }
 
-                //DefsUtil.Enable = false;
-                //Log.Message("[Configurable Maps] this tile has a quest on it. Disabling map modifications.");
-                //DefsUtil.EnableMountainSettings = false;
-                //Log.Message("[Configurable Maps] fertility, water, and mountain settings will be disabled for this map since it has a quest on it.");
+                    value = buWaterValue.GetMultiplier();
+                    if (value > MAX_MTN_VALUE)
+                    {
+                        Log.Warning($"[Configurable Maps] For quest maps, capping water density to {MAX_MTN_VALUE}");
+                        MapSettings.Water = new RandomizableMultiplier0();
+                        MapSettings.Water.SetIsRandom(false);
+                        MapSettings.Water.SetMultiplier(MAX_MTN_VALUE);
+                    }
+
+                    //DefsUtil.Enable = false;
+                    //Log.Message("[Configurable Maps] this tile has a quest on it. Disabling map modifications.");
+                    //DefsUtil.EnableMountainSettings = false;
+                    //Log.Message("[Configurable Maps] fertility, water, and mountain settings will be disabled for this map since it has a quest on it.");
+                }
+            }
+            catch
+            {
+                Log.Error("[Configurable Maps] Issue while creating map, not all settings applied.");
             }
 
             try
@@ -123,10 +130,17 @@ namespace ConfigurableMaps
                 Log.Error("[Configurable Maps] failed to apply map settings.");
             }
 
-            GenStep_RockChunks_GrowLowRockFormationFrom.ChunkLevel = MapSettings.ChunkLevel;
-            if (MapSettings.ChunkLevel == ChunkLevelEnum.Random)
+            try
             {
-                GenStep_RockChunks_GrowLowRockFormationFrom.ChunkLevel = (ChunkLevelEnum)Rand.RangeInclusive(0, Enum.GetNames(typeof(ChunkLevelEnum)).Length - 1);
+                GenStep_RockChunks_GrowLowRockFormationFrom.ChunkLevel = MapSettings.ChunkLevel;
+                if (MapSettings.ChunkLevel == ChunkLevelEnum.Random)
+                {
+                    GenStep_RockChunks_GrowLowRockFormationFrom.ChunkLevel = (ChunkLevelEnum)Rand.RangeInclusive(0, Enum.GetNames(typeof(ChunkLevelEnum)).Length - 1);
+                }
+            }
+            catch
+            {
+                Log.Error("[Configurable Maps] Failed to grow custom rock chunks.");
             }
         }
 

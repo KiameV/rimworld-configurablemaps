@@ -31,7 +31,10 @@ namespace ConfigurableMaps
 
         public void ApplySettings(List<FieldValue<float>> fvs)
         {
-            ApplySettings(fvs[0].GetValue(), fvs[1].GetValue());
+            if (fvs != null)
+                ApplySettings(fvs[0].GetValue(), fvs[1].GetValue());
+            else
+                Log.Warning("[Configurable Maps] No values to apply");
         }
 
         public static void ApplySettings(float animalMultiplier, float plantMultiplier)
